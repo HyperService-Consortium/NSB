@@ -6,6 +6,7 @@ import (
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
 	abcinsb "github.com/Myriad-Dreamin/NSB/nsb_abci/nsb"
+	"github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -18,24 +19,24 @@ const (
 )
 
 type NSB struct {
-	app *abcinsb.NSBApplication
-	srv *cmn.Service
-	cli *abcicli.Client
-	logger *log.Logger
+	app types.Application
+	srv cmn.Service
+	cli abcicli.Client
+	logger log.Logger
 }
 
-func NewNSBClient() (cli *abcicli.Client, err error) {
-	*cli, err = abcicli.NewClient(nsb_port, nsb_net_type, nsb_must_connected)
+func NewNSBClient() (cli abcicli.Client, err error) {
+	cli, err = abcicli.NewClient(nsb_port, nsb_net_type, nsb_must_connected)
 	return
 }
 
-func NewNSBServer(app *abcinsb.NSBApplication) (srv *cmn.Service, err error) {
-	*srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, app)
+func NewNSBServer(app types.Application) (srv cmn.Service, err error) {
+	srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, app)
 	return 
 }
 
 func NewNSB() (nsb NSB, err error) {
-	*nsb.logger = log.NewNopLogger()
+	nsb.logger = log.NewNopLogger()
 	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
 		return 
@@ -57,7 +58,7 @@ func (nsb *NSB) Start() (err error) {
 
 func (nsb *NSB) Loop() {
 	cmn.TrapSignal(
-		*nsb.logger, func() {
+		nsb.logger, func() {
 		// Cleanup
 		nsb.srv.Stop()
 	})
