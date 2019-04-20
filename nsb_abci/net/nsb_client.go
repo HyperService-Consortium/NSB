@@ -18,7 +18,7 @@ const (
 )
 
 type NSB struct {
-	app types.Application
+	app abcinsb.NSBApplication
 	srv cmn.Service
 	cli abcicli.Client
 }
@@ -55,7 +55,7 @@ func (nsb *NSB) Start() (err error) {
 
 func (nsb *NSB) Loop() {
 	cmn.TrapSignal(
-		nsb.app.Logger, func() {
+		nsb.app.logger, func() {
 		// Cleanup
 		nsb.srv.Stop()
 	})

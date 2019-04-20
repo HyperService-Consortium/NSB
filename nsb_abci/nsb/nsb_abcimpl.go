@@ -94,7 +94,7 @@ type NSBApplication struct {
 	state NSBState
 	
 	ValUpdates []types.ValidatorUpdate
-	Logger log.Logger
+	logger log.Logger
 }
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
@@ -108,7 +108,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 
 	return &NSBApplication{
 		state: state,
-		Logger: log.NewNopLogger(),
+		logger: log.NewNopLogger(),
 	}, nil
 }
 
@@ -129,7 +129,7 @@ func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseI
 	for _, v := range req.Validators {
 		r := nsb.updateValidator(v)
 		if r.IsErr() {
-			nsb.Logger.Error("Error updating validators", "r", r)
+			nsb.logger.Error("Error updating validators", "r", r)
 		}
 	}
 	return types.ResponseInitChain{}
@@ -152,7 +152,7 @@ func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 }
 
 func (nsb *NSBApplication) SetLogger(l log.Logger) {
-	nsb.Logger = l
+	nsb.logger = l
 }
 
 func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
