@@ -7,12 +7,12 @@ import (
 	"bytes"
 	"strings"
 	"strconv"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/crypto/trie"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/abci/types"
-	dbm "github.com/Myriad-Dreamin/NetworkStatusBlockChain/libs/db"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/version"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/libs/log"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/abci/example/code"
+	"github.com/Myriad-Dreamin/NSB/crypto/trie"
+	"github.com/tendermint/tendermint/abci/types"
+	dbm "github.com/tendermint/tendermint/libs/db"
+	"github.com/tendermint/tendermint/version"
+	"github.com/tendermint/tendermint/libs/log"
+	"github.com/tendermint/tendermint/abci/example/code"
 )
 
 var (
