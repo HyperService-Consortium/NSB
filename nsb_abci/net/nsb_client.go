@@ -40,18 +40,21 @@ func NewNSB() (nsb NSB, err error) {
 	fmt.Println("loading app...")
 	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
+		fmt.Println(err)
 		return 
 	}
 	fmt.Println("start server...")
 	nsb.srv, err = NewNSBServer(nsb.app)
 	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
 	if err != nil {
+		fmt.Println(err)
 		return 
 	}
 	nsb.srv.SetLogger(log.NewNopLogger())
 	
 	nsb.cli, err = NewNSBClient()
 	if err != nil {
+		fmt.Println(err)
 		nsb.srv.Stop()
 	}
 	nsb.cli.SetLogger(log.NewNopLogger())
