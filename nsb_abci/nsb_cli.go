@@ -5,7 +5,10 @@ import (
 )
 
 func main() {
-	nsb := nsbnet.NewNSB()
+	nsb, err := nsbnet.NewNSB()
+	if err != nil {
+		panic(err)
+	}
 	nsb.Start()
-	nsb.Loop()
+	nsb.LoopUntilStop()
 }

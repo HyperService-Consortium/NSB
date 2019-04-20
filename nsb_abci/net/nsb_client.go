@@ -45,7 +45,13 @@ func NewNSB() (nsb NSB, err error) {
 	if err != nil {
 		return 
 	}
+	nsb.srv.SetLogger(logger.With("module", "nsbabci-server"))
+	
 	nsb.cli, err = NewNSBClient()
+	if err != nil {
+		server.Stop()
+	}
+	nsb.cli.SetLogger(logger.With("module", "nsbabci-client"))
 	return
 }
 func (nsb *NSB) Start() (err error) {
@@ -56,7 +62,7 @@ func (nsb *NSB) Start() (err error) {
 	return
 }
 
-func (nsb *NSB) Loop() {
+func (nsb *NSB) LoopUntilStop() {
 	cmn.TrapSignal(
 		nsb.logger, func() {
 		// Cleanup
