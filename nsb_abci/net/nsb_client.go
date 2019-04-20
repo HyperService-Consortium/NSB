@@ -68,4 +68,5 @@ func (nsb *NSB) LoopUntilStop() {
 		// Cleanup
 		nsb.srv.Stop()
 	})
+	select{}
 }
