@@ -7,6 +7,7 @@ import (
 	abcisrv "github.com/tendermint/tendermint/abci/server"
 	abcinsb "github.com/Myriad-Dreamin/NSB/nsb_abci/nsb"
 	"github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 const (
@@ -21,6 +22,7 @@ type NSB struct {
 	app abcinsb.NSBApplication
 	srv cmn.Service
 	cli abcicli.Client
+	logger log.Logger
 }
 
 func NewNSBClient() (cli abcicli.Client, err error) {
@@ -29,11 +31,12 @@ func NewNSBClient() (cli abcicli.Client, err error) {
 }
 
 func NewNSBServer(app abcinsb.NSBApplication) (srv cmn.Service, err error) {
-	srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, app)
+	srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, &app)
 	return 
 }
 
 func NewNSB() (nsb NSB, err error) {
+	nsb.logger = log.NewNopLogger()
 	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
 		return 
@@ -55,7 +58,7 @@ func (nsb *NSB) Start() (err error) {
 
 func (nsb *NSB) Loop() {
 	cmn.TrapSignal(
-		nsb.app.logger, func() {
+		nsb.logger, func() {
 		// Cleanup
 		nsb.srv.Stop()
 	})
