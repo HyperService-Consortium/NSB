@@ -2,11 +2,11 @@ package nsbnet
 
 import (
 	"fmt"
-	cmn "github.com/Myriad-Dreamin/NetworkStatusBlockChain/libs/common"
-	abcicli "github.com/Myriad-Dreamin/NetworkStatusBlockChain/abci/client"
-	abcisrv "github.com/Myriad-Dreamin/NetworkStatusBlockChain/abci/server"
-	abcinsb "github.com/Myriad-Dreamin/NetworkStatusBlockChain/nsb_abci/nsb"
-	"github.com/Myriad-Dreamin/NetworkStatusBlockChain/abci/types"
+	cmn "github.com/tendermint/tendermint/libs/common"
+	abcicli "github.com/tendermint/tendermint/abci/client"
+	abcisrv "github.com/tendermint/tendermint/abci/server"
+	abcinsb "github.com/Myriad-Dreamin/NSB/nsb_abci/nsb"
+	"github.com/tendermint/tendermint/abci/types"
 )
 
 const (

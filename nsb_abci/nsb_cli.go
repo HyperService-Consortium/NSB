@@ -1,7 +1,7 @@
 package main
 
 import (
-	nsbnet "github.com/Myriad-Dreamin/NetworkStatusBlockChain/nsb_abci/net"
+	nsbnet "github.com/Myriad-Dreamin/NSB/nsb_abci/net"
 )
 
 func main() {
