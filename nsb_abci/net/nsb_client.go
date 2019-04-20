@@ -36,35 +36,45 @@ func NewNSBServer(app types.Application) (srv cmn.Service, err error) {
 }
 
 func NewNSB() (nsb NSB, err error) {
+
 	nsb.logger = log.NewNopLogger()
-	fmt.Println("loading app...")
+
+	fmt.Println("create app...")
 	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
 		return 
 	}
-	fmt.Println("start server...")
+
+	fmt.Println("create server...")
 	nsb.srv, err = NewNSBServer(nsb.app)
-	if err = nsb.srv.Start(); err != nil {
+	if err != nil {
 		return 
 	}
-	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
 	nsb.srv.SetLogger(log.NewNopLogger())
 	
-	fmt.Println("start client...")
+	fmt.Println("create client...")
 	nsb.cli, err = NewNSBClient()
-	if err = nsb.cli.Start(); err != nil {
-		nsb.srv.Stop()
+	if err != nil {
+		return
 	}
-	fmt.Println("client is IsRunning?", nsb.cli.IsRunning())
-
 	nsb.cli.SetLogger(log.NewNopLogger())
+
 	return
 }
 func (nsb *NSB) Start() (err error) {
+
+	fmt.Println("start server...")
 	if err = nsb.srv.Start(); err != nil {
-		fmt.Println(err)
-		fmt.Println("start error")
+		return
 	}
+	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
+	
+	fmt.Println("start client...")
+	if err = nsb.cli.Start(); err != nil {
+		nsb.srv.Stop()
+		return
+	}
+	fmt.Println("client is IsRunning?", nsb.cli.IsRunning())
 	return
 }
 

@@ -9,6 +9,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	nsb.Start()
+	err = nsb.Start()
+	if err != nil {
+		panic(err)
+	}
 	nsb.LoopUntilStop()
 }
