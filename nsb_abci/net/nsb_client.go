@@ -79,11 +79,18 @@ func (nsb *NSB) Start() (err error) {
 }
 
 func (nsb *NSB) LoopUntilStop() {
-	cmn.TrapSignal(
-		nsb.logger, func() {
-		// Cleanup
-		nsb.srv.Stop()
-		nsb.cli.Stop()
-	})
+	go func() {
+		
+	ForeverLoop:
+		fmt.Println("looping")
+		cmn.TrapSignal(
+			nsb.logger, func() {
+			// Cleanup
+			nsb.srv.Stop()
+			nsb.cli.Stop()
+		})
+		continue ForeverLoop
+	}()
+
 	select{}
 }
