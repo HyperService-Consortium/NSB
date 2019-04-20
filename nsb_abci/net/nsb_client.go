@@ -44,7 +44,7 @@ func NewNSB() (nsb NSB, err error) {
 	}
 	fmt.Println("start server...")
 	nsb.srv, err = NewNSBServer(nsb.app)
-	if err := nsb.srv.Start(); err != nil {
+	if err = nsb.srv.Start(); err != nil {
 		return 
 	}
 	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
