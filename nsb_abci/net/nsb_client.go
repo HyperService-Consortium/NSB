@@ -37,11 +37,14 @@ func NewNSBServer(app types.Application) (srv cmn.Service, err error) {
 
 func NewNSB() (nsb NSB, err error) {
 	nsb.logger = log.NewNopLogger()
+	fmt.Println("loading app...")
 	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
 		return 
 	}
+	fmt.Println("start server...")
 	nsb.srv, err = NewNSBServer(nsb.app)
+	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
 	if err != nil {
 		return 
 	}
