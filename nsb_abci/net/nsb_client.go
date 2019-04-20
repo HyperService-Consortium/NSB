@@ -55,7 +55,7 @@ func NewNSB() (nsb NSB, err error) {
 	if err = nsb.cli.Start(); err != nil {
 		nsb.srv.Stop()
 	}
-	fmt.Println("client is IsRunning?", nsb.srv.IsRunning())
+	fmt.Println("client is IsRunning?", nsb.cli.IsRunning())
 
 	nsb.cli.SetLogger(log.NewNopLogger())
 	return
