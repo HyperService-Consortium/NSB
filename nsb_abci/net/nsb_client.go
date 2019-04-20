@@ -45,13 +45,13 @@ func NewNSB() (nsb NSB, err error) {
 	if err != nil {
 		return 
 	}
-	nsb.srv.SetLogger(logger.With("module", "nsbabci-server"))
+	nsb.srv.SetLogger(log.NewNopLogger())
 	
 	nsb.cli, err = NewNSBClient()
 	if err != nil {
 		server.Stop()
 	}
-	nsb.cli.SetLogger(logger.With("module", "nsbabci-client"))
+	nsb.cli.SetLogger(log.NewNopLogger())
 	return
 }
 func (nsb *NSB) Start() (err error) {
