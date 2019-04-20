@@ -49,7 +49,7 @@ func NewNSB() (nsb NSB, err error) {
 	
 	nsb.cli, err = NewNSBClient()
 	if err != nil {
-		server.Stop()
+		nsb.srv.Stop()
 	}
 	nsb.cli.SetLogger(log.NewNopLogger())
 	return
