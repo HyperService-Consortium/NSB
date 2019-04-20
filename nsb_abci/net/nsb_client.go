@@ -55,7 +55,7 @@ func (nsb *NSB) Start() (err error) {
 
 func (nsb *NSB) Loop() {
 	cmn.TrapSignal(
-		nsb.app.logger, func() {
+		nsb.app.Logger, func() {
 		// Cleanup
 		nsb.srv.Stop()
 	})
