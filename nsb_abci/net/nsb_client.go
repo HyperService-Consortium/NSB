@@ -90,7 +90,7 @@ func (nsb *NSB) LoopUntilStop() {
 			nsb.cli.Stop()
 		})
 		select{}
-		continue ForeverLoop
+		goto ForeverLoop
 	}()
 
 	select{}
