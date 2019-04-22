@@ -1,0 +1,3 @@
+[submodule "rlp"]
+	path = rlp
+	url = ../go-rlp
