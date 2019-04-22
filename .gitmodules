@@ -1,3 +1,4 @@
 [submodule "rlp"]
-	path = rlp
-	url = ../go-rlp
+
+path = rlp
+url = https://github.com/Myriad-Dreamin/go-rlp
