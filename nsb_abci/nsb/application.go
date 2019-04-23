@@ -10,6 +10,7 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/abci/example/code"
+	"github.com/tendermint/tendermint/version"
 )
 
 
