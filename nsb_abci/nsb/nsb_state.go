@@ -12,13 +12,12 @@ type NSBState struct {
 
 func NewNSBState() *NSBState {
 	return &NSBState{
-		db: nil
-		ActionRoot: nil
-		MerkleProofRoot: nil
-		ActiveISCRoot: nil
-		Height: 0
-		AppHash: nil
-	}
+		db: nil,
+		ActionRoot: nil,
+		MerkleProofRoot: nil,
+		ActiveISCRoot: nil,
+		Height: 0,
+		AppHash: nil}
 }
 
 func loadState(db dbm.DB) *NSBState {

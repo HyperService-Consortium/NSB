@@ -3,8 +3,6 @@ package nsb
 import (
 	"fmt"
 	"encoding/hex"
-	"encoding/json"
-	"bytes"
 	"encoding/binary"
 	"strings"
 	"strconv"
