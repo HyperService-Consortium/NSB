@@ -235,10 +235,10 @@ func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.Respon
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	// Using a memdb - just return the big endian size of the db
 	appHash := make([]byte, 32)
-	binary.PutVarint(appHash, app.state.Height)
-	app.state.AppHash = appHash
-	app.state.Height += 1
-	saveState(app.state)
+	binary.PutVarint(appHash, nsb.state.Height)
+	nsb.state.AppHash = appHash
+	nsb.state.Height += 1
+	saveState(nsb.state)
 	return types.ResponseCommit{Data: appHash}
 }
 
@@ -269,12 +269,12 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 	if req.Prove {
 		ret.Code = CodeOK
 		ret.Key = req.Data
-		ret.Value = req.Path
+		ret.Value = []byte(req.Path)
 		ret.Log = "asking Prove"
 	} else {
 		ret.Code = CodeOK
 		ret.Key = req.Data
-		ret.Value = req.Path
+		ret.Value = []byte(req.Path)
 		ret.Log = "asking not Prove"
 	}
 }

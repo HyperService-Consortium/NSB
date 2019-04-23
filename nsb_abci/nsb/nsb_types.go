@@ -17,7 +17,7 @@ const (
 	TendermintMerkleProof
 )
 
-type ResponseCode uint8
+type ResponseCode uint32
 const (
 	CodeOK ResponseCode = 0 + iota
 	CodeFail
