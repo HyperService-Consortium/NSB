@@ -30,5 +30,5 @@ func isValidatorTx(tx []byte) bool {
 }
 
 func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{Code: CodeOK}
+	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
 }
