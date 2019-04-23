@@ -177,6 +177,15 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 		ret.Value = []byte(req.Path)
 		ret.Log = fmt.Sprintf("asking Prove key: %v, value %v", req.Data, req.Path);
 	} else {
+		// start new ISC
+		// add MerkleProof
+		// add Action
+		// insurance claim
+		// settle contract
+		// return/stake funds
+		
+		// 
+
 		ret.Code = uint32(CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
