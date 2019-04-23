@@ -267,15 +267,16 @@ type Proof struct {
 */
 func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuery) {
 	if req.Prove {
-		ret.Code = CodeOK
+		ret.Code = uint32(CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
 		ret.Log = "asking Prove"
 	} else {
-		ret.Code = CodeOK
+		ret.Code = uint32(CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
 		ret.Log = "asking not Prove"
 	}
+	return 
 }
 
