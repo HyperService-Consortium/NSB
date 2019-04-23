@@ -8,95 +8,22 @@ import (
 	"encoding/binary"
 	"strings"
 	"strconv"
-	trie "github.com/Myriad-Dreamin/go-mpt"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
-	"github.com/tendermint/tendermint/version"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/abci/example/code"
 )
 
 
-var (
-	stateKey = []byte("NSBStateKey")
-	actionHeader = []byte("NACHD:")
-)
-const (
-	NSBVersion version.Protocol = 0x1
-)
-
-type NSBState struct {
-	db dbm.DB
-	ActionRoot trie.MerkleHash `json:"action_root"`
-	MerkleProofRoot trie.MerkleHash `json:"merkle_proof_root"`
-	ActiveISCRoot trie.MerkleHash `json:"active_isc_root"`
-	Height  int64  `json:"height"`
-	AppHash []byte `json:"app_hash"`
-}
-
-func loadState(db dbm.DB) NSBState {
-	stateBytes := db.Get(stateKey)
-	var state NSBState
-	if len(stateBytes) != 0 {
-		err := json.Unmarshal(stateBytes, &state)
-		if err != nil {
-			panic(err)
-		}
-	}
-	state.db = db
-	return state
-}
-
-func saveState(state NSBState) {
-	stateBytes, err := json.Marshal(state)
-	if err != nil {
-		panic(err)
-	}
-	state.db.Set(stateKey, stateBytes)
-}
-
-func getActionByMsgHash(db dbm.DB, msgHash []byte) Action {
-	actionBytes := db.Get(msgHash)
-	var action Action
-	if len(actionBytes) != 0 {
-		err := json.Unmarshal(actionBytes, &action)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return action
-}
-
-func getActionBySignature(db dbm.DB, signature []byte) Action {
-	msgHash := db.Get(signature)
-	var action Action
-	if len(msgHash) != 0 {
-		action = getActionByMsgHash(db, msgHash)
-	}
-	return action
-}
-
-
-func getMerkleProofByHash(db dbm.DB, prvHash []byte) MerkleProof {
-	proofBytes := db.Get(prvHash)
-	var merkleProof MerkleProof
-	if len(proofBytes) != 0 {
-		err := json.Unmarshal(proofBytes, &merkleProof)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return merkleProof
-}
-
 
 type NSBApplication struct {
 	types.BaseApplication
-	state NSBState
+	state *NSBState
 	
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
 }
+
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	name := "nsb"
@@ -113,6 +40,12 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	}, nil
 }
 
+
+func (nsb *NSBApplication) SetLogger(l log.Logger) {
+	nsb.logger = l
+}
+
+
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
 		Data:       fmt.Sprintf(
@@ -125,6 +58,7 @@ func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	}
 }
 
+
 // Save the validators in the merkle tree
 func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseInitChain {
 	for _, v := range req.Validators {
@@ -135,6 +69,7 @@ func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseI
 	}
 	return types.ResponseInitChain{}
 }
+
 
 // Track the block hash and header information
 func (nsb *NSBApplication) BeginBlock(req types.RequestBeginBlock) types.ResponseBeginBlock {
@@ -152,9 +87,7 @@ func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 	return types.ResponseCheckTx{Code: code.CodeTypeOK, GasWanted: 1}
 }
 
-func (nsb *NSBApplication) SetLogger(l log.Logger) {
-	nsb.logger = l
-}
+
 
 func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK}
@@ -171,29 +104,6 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 
 	// otherwise, update the key-value store
 	return nsb.deliverTx(tx)
-}
-
-func (nsb *NSBApplication) Validators() (validators []types.ValidatorUpdate) {
-	itr := nsb.state.db.Iterator(nil, nil)
-	for ; itr.Valid(); itr.Next() {
-		if isValidatorTx(itr.Key()) {
-			validator := new(types.ValidatorUpdate)
-			err := types.ReadMessage(bytes.NewBuffer(itr.Value()), validator)
-			if err != nil {
-				panic(err)
-			}
-			validators = append(validators, *validator)
-		}
-	}
-	return
-}
-
-func MakeValSetChangeTx(pubkey types.PubKey, power int64) []byte {
-	return []byte(fmt.Sprintf("val:%X/%d", pubkey.Data, power))
-}
-
-func isValidatorTx(tx []byte) bool {
-	return true// strings.HasPrefix(string(tx), ValidatorSetChangePrefix)
 }
 
 func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
@@ -226,10 +136,6 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 
 	// update
 	return nsb.updateValidator(types.Ed25519ValidatorUpdate(pubkey, int64(power)))
-}
-
-func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{Code: code.CodeTypeOK}
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {

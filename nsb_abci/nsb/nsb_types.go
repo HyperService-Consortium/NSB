@@ -4,12 +4,6 @@ import (
 	_	"bytes"
 )
 
-type ActionType uint8;
-const (
-	EthereumAction ActionType = 0 + iota
-	NebulasAction
-	TendermintAction
-)
 type MerkleProofType uint8;
 const (
 	EthereumMerkleProof MerkleProofType = 0 + iota
@@ -26,11 +20,7 @@ const (
 	CodeTODO
 )
 
-type Action struct {
-	Atype       ActionType          `json:"action_type"`
-	Signature   []byte              `json:"signatrue"`
-	MsgHash     []byte              `json:"msg_hash"`
-}
+
 
 type MerkleProof struct {
 	Mtype       MerkleProofType     `json:"merkle_proof_type"`
