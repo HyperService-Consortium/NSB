@@ -270,12 +270,12 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 		ret.Code = uint32(CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
-		ret.Log = "asking Prove"
+		ret.Log = fmt.Sprintf("asking Prove key: %v, value %v", req.Data, req.Path);
 	} else {
 		ret.Code = uint32(CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
-		ret.Log = "asking not Prove"
+		ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path);
 	}
 	return 
 }
