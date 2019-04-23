@@ -2,6 +2,7 @@ package nsb
 
 import (
 	dbm "github.com/tendermint/tendermint/libs/db"
+	"encoding/json"
 )
 
 
