@@ -1,5 +1,9 @@
 package nsb
 
+import (
+	trie "github.com/Myriad-Dreamin/go-mpt"
+	dbm "github.com/tendermint/tendermint/libs/db"
+)
 
 type NSBState struct {
 	db dbm.DB
