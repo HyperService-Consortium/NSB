@@ -5,15 +5,17 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"bytes"
+	"binary"
 	"strings"
 	"strconv"
-	"github.com/Myriad-Dreamin/NSB/crypto/trie"
+	"github.com/Myriad-Dreamin/NSB/trie"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/version"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/abci/example/code"
 )
+
 
 var (
 	stateKey = []byte("NSBStateKey")
@@ -52,7 +54,6 @@ func saveState(state NSBState) {
 	}
 	state.db.Set(stateKey, stateBytes)
 }
-
 
 func getActionByMsgHash(db dbm.DB, msgHash []byte) Action {
 	actionBytes := db.Get(msgHash)
@@ -231,8 +232,50 @@ func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.Respon
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK}
 }
 
+func (nsb *NSBApplication) Commit() types.ResponseCommit {
+	// Using a memdb - just return the big endian size of the db
+	appHash := make([]byte, 32)
+	binary.PutVarint(appHash, app.state.Height)
+	app.state.AppHash = appHash
+	app.state.Height += 1
+	saveState(app.state)
+	return types.ResponseCommit{Data: appHash}
+}
 
-// func (nsb *NSBApplication) Query(req types.RequestQuery) types.ResponseQuery {
-
-// }
+/*
+type RequestQuery struct {
+    Data                 []byte   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+    Path                 string   `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+    Height               int64    `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+    Prove                bool     `protobuf:"varint,4,opt,name=prove,proto3" json:"prove,omitempty"`
+}
+type ResponseQuery struct {
+    Code uint32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+    // bytes data = 2; // use "value" instead.
+    Log                  string        `protobuf:"bytes,3,opt,name=log,proto3" json:"log,omitempty"`
+    Info                 string        `protobuf:"bytes,4,opt,name=info,proto3" json:"info,omitempty"`
+    Index                int64         `protobuf:"varint,5,opt,name=index,proto3" json:"index,omitempty"`
+    Key                  []byte        `protobuf:"bytes,6,opt,name=key,proto3" json:"key,omitempty"`
+    Value                []byte        `protobuf:"bytes,7,opt,name=value,proto3" json:"value,omitempty"`
+    Proof                *merkle.Proof `protobuf:"bytes,8,opt,name=proof" json:"proof,omitempty"`
+    Height               int64         `protobuf:"varint,9,opt,name=height,proto3" json:"height,omitempty"`
+    Codespace            string        `protobuf:"bytes,10,opt,name=codespace,proto3" json:"codespace,omitempty"`
+}
+type Proof struct {
+    Ops                  []ProofOp `protobuf:"bytes,1,rep,name=ops" json:"ops"`
+}
+*/
+func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuery) {
+	if req.Prove {
+		ret.Code = CodeOK
+		ret.Key = req.Data
+		ret.Value = req.Path
+		ret.Log = "asking Prove"
+	} else {
+		ret.Code = CodeOK
+		ret.Key = req.Data
+		ret.Value = req.Path
+		ret.Log = "asking not Prove"
+	}
+}
 

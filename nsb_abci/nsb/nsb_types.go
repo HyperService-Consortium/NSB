@@ -17,6 +17,15 @@ const (
 	TendermintMerkleProof
 )
 
+type ResponseCode uint8
+const (
+	CodeOK ResponseCode = 0 + iota
+	CodeFail
+	CodeUnknown
+	CodeMissing
+	CodeTODO
+)
+
 type Action struct {
 	Atype       ActionType          `json:"action_type"`
 	Signature   []byte              `json:"signatrue"`
