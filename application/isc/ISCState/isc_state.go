@@ -1,7 +1,8 @@
 package ISCState
-type StateType uint8
+
+type Type uint8
 const (
-	initing StateType = 0 + iota
+	initing Type = 0 + iota
 	inited
 	opening
 	settling
