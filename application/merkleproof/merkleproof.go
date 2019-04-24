@@ -9,11 +9,11 @@ import (
 )
 
 type MerkleProof struct {
-	Mtype       MerkleProofType.Type     `json:"merkle_proof_type"`
-	ChainId     string                   `json:"chain_id"`
-	StorageHash []byte                   `json:"storage_hash"`
-	Key         []byte                   `json:"key"`
-	Value       []byte                   `json:"value"`
+	Mtype       MerkleProofType.Type        `json:"merkle_proof_type"`
+	ChainId     string                      `json:"chain_id"`
+	StorageHash []byte                      `json:"storage_hash"`
+	Key         []byte                      `json:"key"`
+	Value       []byte                      `json:"value"`
 }
 
 
