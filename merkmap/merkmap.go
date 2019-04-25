@@ -15,10 +15,14 @@ type MerkMap struct {
 	slot []byte
 }
 
-func concatBytes(lef []byte, rig []byte) []byte {
-	var buff = bytes.NewBuffer(lef)
-	buff.Write(rig)
-	return buff.Next(len(lef) + len(rig))
+func concatBytes(dat ...[]byte) []byte {
+	var buff bytes.Buffer
+	var totlen int
+	for _, btdat := range dat {
+		buff.Write(btdat)
+		totlen += len(btdat)
+	}
+	return buff.Next(totlen)
 }
 
 func NewMerkMapFromDB(db *leveldb.DB, rootHash trie.Hash, slot interface{}) (mp *MerkMap, err error) {
@@ -80,6 +84,10 @@ func (mp *MerkMap) TryGet(key []byte) ([]byte, error) {
 
 func (mp *MerkMap) TryDelete(key []byte) error {
 	return mp.merk.TryDelete(mp.location(key))
+}
+
+func (mp *MerkMap) Commit(cb trie.LeafCallback) (root trie.Hash, err error) {
+	return mp.merk.Commit(cb)
 }
 
 func (mp *MerkMap) Close() error {
