@@ -19,13 +19,6 @@ func (st *NSBState) String() string {
 		"Height: "      + string(st.Height)     + "\n")
 }
 
-func NewNSBState() *NSBState {
-	return &NSBState{
-		db: nil,
-		StateRoot: nil,
-		Height: 0}
-}
-
 func loadState(db dbm.DB) *NSBState {
 	stateBytes := db.Get(stateKey)
 	var state NSBState

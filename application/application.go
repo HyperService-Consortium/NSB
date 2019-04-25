@@ -41,7 +41,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	if err != nil {
 		return nil, err
 	}
-	stmp, err = merkmap.NewMerkMapFromDB(stdb, *state.StateRoot, "00")
+	stmp, err = merkmap.NewMerkMapFromDB(stdb, state.StateRoot, "00")
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
 	var err error
-	*nsb.state.StateRoot, err = nsb.stateMap.Commit(nil)
+	nsb.state.StateRoot, err = nsb.stateMap.Commit(nil)
 	if err != nil {
 		panic(err)
 	}
