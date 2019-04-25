@@ -88,19 +88,16 @@ func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
 }
 
-var (
-	validatorsTxPrefix = []byte("validators")
-)
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	if len(bytesTx) != 2 {
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
 	}
-	switch bytesTx[0] {
-	case validatorsTxPrefix:
+	switch string(bytesTx[0]) {
+	case "validators":
 		return nsb.execValidatorTx(bytesTx[1])
-	case addActionTxPrefix:
+	case "addAction":
 		return nsb.deliverTx(bytesTx[1])
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
