@@ -9,10 +9,10 @@ import (
 
 
 type RequestCreateISC struct {
-	IscOwners          [][]byte                  `json:"isc_owners"`
-	Funds              []uint32                  `json:"required_funds"`
-	VesSig             []byte                    `json:ves_signature`
-	TransactionIntents []transaction.Transaction `json: transactionIntents`
+	IscOwners          [][]byte                        `json:"isc_owners"`
+	Funds              []uint32                        `json:"required_funds"`
+	VesSig             []byte                          `json:ves_signature`
+	TransactionIntents []transaction.TransactionIntent `json: transactionIntents`
 }
 
 
