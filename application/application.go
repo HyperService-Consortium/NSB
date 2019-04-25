@@ -62,7 +62,7 @@ func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
 		Data:       fmt.Sprintf(
 			"{\"state_root\":%v, \"height\":%v, }",
-			hex.EncodeToString(nsb.state.StateRoot),
+			hex.EncodeToString(nsb.state.StateRoot.Bytes()),
 			nsb.state.Height),
 		Version:    version.ABCIVersion,
 		AppVersion: NSBVersion.Uint64(),
