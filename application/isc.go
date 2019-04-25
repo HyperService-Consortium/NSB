@@ -28,6 +28,7 @@ func (nsb *NSBApplication) createISC(byteJson []byte) (types.ResponseDeliverTx) 
 	fmt.Print(req)
 	return types.ResponseDeliverTx{
 		Code: uint32(CodeOK),
+		Log: fmt.Sprintf("%v", req),
 	}
 }
 
