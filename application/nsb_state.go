@@ -51,7 +51,7 @@ func (st *NSBState) Close() error {
 	if st.db == nil {
 		return errors.New("the state db is not opened now")
 	}
-	st.db.Close()
+	err := st.db.Close()
 	st.db = nil
-	return
+	return err
 }
