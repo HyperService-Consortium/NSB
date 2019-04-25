@@ -5,6 +5,7 @@ import (
 	"github.com/Myriad-Dreamin/NSB/application/isc/transaction"
 	"github.com/tendermint/tendermint/abci/types"
 	"encoding/json"
+	"fmt"
 )
 
 
@@ -18,7 +19,7 @@ type RequestCreateISC struct {
 
 func (nsb *NSBApplication) createISC(byteJson []byte) (types.ResponseDeliverTx) {
 	var req RequestCreateISC
-	err := json.Unmashal(byteJson, &req)
+	err := json.Unmarshal(byteJson, &req)
 	if err != nil {
 		return types.ResponseDeliverTx{
 			Code: uint32(CodeDecodeJsonError),
