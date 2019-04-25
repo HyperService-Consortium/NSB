@@ -15,6 +15,15 @@ type NSBState struct {
 	AppHash []byte `json:"app_hash"`
 }
 
+func String() {
+	return string(
+		"ActionRoot: "      + string(ActionRoot)      + "\n" + 
+		"MerkleProofRoot: " + string(MerkleProofRoot) + "\n" +
+		"ActiveISCRoot: "   + string(ActiveISCRoot)   + "\n" +
+		"Height: "          + string(Height)          + "\n" + 
+		"AppHash: "         + string(AppHash)         + "\n")
+}
+
 func NewNSBState() *NSBState {
 	return &NSBState{
 		db: nil,
