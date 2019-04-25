@@ -23,7 +23,7 @@ type NSBApplication struct {
 
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
-	name := "nsb"
+	name := "nsbstate"
 	db, err := dbm.NewGoLevelDB(name, dbDir)
 	if err != nil {
 		return nil, err
