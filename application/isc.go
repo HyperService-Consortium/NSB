@@ -20,18 +20,18 @@ func (nsb *NSBApplication) createISC(byteJson []byte) (types.ResponseDeliverTx) 
 	var req RequestCreateISC
 	err := json.Unmashal(byteJson, &req)
 	if err != nil {
-		return &types.ResponseDeliverTx{
+		return types.ResponseDeliverTx{
 			Code: CodeDecodeJsonError,
 		}
 	}
 	fmt.Print(req)
-	return &types.ResponseDeliverTx{
+	return types.ResponseDeliverTx{
 		Code: CodeOK,
 	}
 }
 
 func (nsb *NSBApplication) getAction(byteJson []byte) (types.ResponseDeliverTx) {
-	return &types.ResponseDeliverTx{
+	return types.ResponseDeliverTx{
 		Code: CodeOK,
 	}
 }
