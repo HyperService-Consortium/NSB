@@ -182,3 +182,7 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 	return 
 }
 
+func (nsb *NSBApplication) Stop() (err1 error, err2 error) {
+	err1 = nsb.state.Close()
+	err2 = nsb.stateMap.Close()
+}

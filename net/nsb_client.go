@@ -86,6 +86,7 @@ func (nsb *NSB) LoopUntilStop() {
 		cmn.TrapSignal(
 			nsb.logger, func() {
 			// Cleanup
+			nsb.app.Stop()
 			nsb.srv.Stop()
 			nsb.cli.Stop()
 		})

@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"errors"
 	"github.com/Myriad-Dreamin/go-mpt"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
@@ -44,4 +45,12 @@ func saveState(state *NSBState) {
 		panic(err)
 	}
 	state.db.Set(stateKey, stateBytes)
+}
+
+func (st *NSBState) Close() error {
+	if state.db == nil {
+		return errors.New("the state db is not opened now")
+	}
+	state.db.Close()
+	state.db = nil
 }
