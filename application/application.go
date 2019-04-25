@@ -44,11 +44,11 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &NSBApplication{
 		state: state,
 		logger: log.NewNopLogger(),
-
+		stateMap: stmp
 	}, nil
 }
 
