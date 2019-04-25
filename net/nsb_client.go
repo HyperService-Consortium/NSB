@@ -59,6 +59,8 @@ func NewNSB() (nsb NSB, err error) {
 	}
 	nsb.cli.SetLogger(log.NewNopLogger())
 
+	fmt.Printf("the application is listening %v\n", nsb_tcp)
+
 	return
 }
 func (nsb *NSB) Start() (err error) {
