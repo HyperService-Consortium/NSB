@@ -115,7 +115,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	case "addAction":
 		return nsb.deliverTx(bytesTx[1])
 	case "createISC":
-		return nsb.createISC(bytesTx[1)
+		return nsb.createISC(bytesTx[1])
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
 	}
