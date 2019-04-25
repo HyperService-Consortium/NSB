@@ -4,12 +4,9 @@ import (
 	"fmt"
 	"encoding/hex"
 	"encoding/binary"
-	"strings"
-	"strconv"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
-	"github.com/tendermint/tendermint/abci/example/code"
 	"github.com/tendermint/tendermint/version"
 )
 
@@ -90,10 +87,6 @@ func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
 }
 
-
-func isValidatorTx(tx []byte) bool {
-	return true// strings.HasPrefix(string(tx), ValidatorSetChangePrefix)
-}
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	// if it starts with "val:", update the validator set

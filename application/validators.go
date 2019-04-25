@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"bytes"
 	"github.com/tendermint/tendermint/abci/types"
+	"strings"
+	"strconv"
+	"github.com/tendermint/tendermint/abci/example/code"
 )
 
 func (nsb *NSBApplication) Validators() (validators []types.ValidatorUpdate) {
