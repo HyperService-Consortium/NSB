@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"bytes"
 	"github.com/tendermint/tendermint/abci/types"
+	"encoding/hex"
 	"strings"
 	"strconv"
 	"github.com/tendermint/tendermint/abci/example/code"
