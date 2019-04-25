@@ -132,7 +132,7 @@ func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	}
 	nsb.state.Height += 1
 	saveState(nsb.state)
-	return types.ResponseCommit{Data: nsb.state.StateRoot}
+	return types.ResponseCommit{Data: nsb.state.StateRoot.Bytes()}
 }
 
 /*
