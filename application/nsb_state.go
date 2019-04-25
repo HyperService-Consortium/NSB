@@ -8,20 +8,20 @@ import (
 
 type NSBState struct {
 	db dbm.DB
-	StorageRoot trie.MerkleHash `json:"action_root"`
+	StateRoot trie.MerkleHash `json:"action_root"`
 	Height  int64  `json:"height"`
 }
 
 func (st *NSBState) String() string {
 	return string(
-		"StorageRoot: "      + string(st.ActionRoot)      + "\n" + 
-		"Height: "          + string(st.Height)          + "\n")
+		"StateRoot: " + string(st.ActionRoot) + "\n" + 
+		"Height: "      + string(st.Height)     + "\n")
 }
 
 func NewNSBState() *NSBState {
 	return &NSBState{
 		db: nil,
-		StorageRoot: nil,
+		StateRoot: nil,
 		Height: 0}
 }
 

@@ -17,7 +17,6 @@ import (
 type NSBApplication struct {
 	types.BaseApplication
 	state *NSBState
-	actionTree *trie.Trie
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
 }
@@ -48,10 +47,9 @@ func (nsb *NSBApplication) SetLogger(l log.Logger) {
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
 		Data:       fmt.Sprintf(
-			"{\"action_root\":%v, \"merkle_proof_root\":%v, \"active_isc_root\":%v, }",
-			hex.EncodeToString(nsb.state.ActionRoot),
-			hex.EncodeToString(nsb.state.MerkleProofRoot),
-			hex.EncodeToString(nsb.state.ActiveISCRoot)),
+			"{\"state_root\":%v, \"height\":%v, }",
+			hex.EncodeToString(nsb.state.StateRoot),
+			nsb.state.Height),
 		Version:    version.ABCIVersion,
 		AppVersion: NSBVersion.Uint64(),
 	}
