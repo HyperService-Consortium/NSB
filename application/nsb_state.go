@@ -27,7 +27,7 @@ func NewNSBState() *NSBState {
 
 func loadState(db dbm.DB) *NSBState {
 	stateBytes := db.Get(stateKey)
-	var state *NSBState
+	var state NSBState
 	if len(stateBytes) != 0 {
 		err := json.Unmarshal(stateBytes, &state)
 		if err != nil {
@@ -35,7 +35,7 @@ func loadState(db dbm.DB) *NSBState {
 		}
 	}
 	state.db = db
-	return state
+	return &state
 }
 
 func saveState(state *NSBState) {
