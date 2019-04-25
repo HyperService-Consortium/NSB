@@ -4,6 +4,8 @@ github.com/Myriad-Dreamin/go-hexutil v1.0.0 h1:dk5E5xS7iLL3xSMkXcNjZS7p2wXNAS14P
 github.com/Myriad-Dreamin/go-hexutil v1.0.0/go.mod h1:dA7CDVx/LjztO02qxAvrdDNDivCdfnAApOBBgprKpnc=
 github.com/Myriad-Dreamin/go-mpt v1.0.0 h1:Q+4nEfAqVIhP6QW+x6JqDn/c+mMorBUINCiTTLXQY0w=
 github.com/Myriad-Dreamin/go-mpt v1.0.0/go.mod h1:RvIpJwn4h4cRnufZ1tC4CeX9owHTvns9tU8fxUZ7/rI=
+github.com/Myriad-Dreamin/go-mpt v1.0.1 h1:u/L41ew/BBpiGx0yPlHuJOCdRObBy5BW43j7ycTx+ug=
+github.com/Myriad-Dreamin/go-mpt v1.0.1/go.mod h1:RvIpJwn4h4cRnufZ1tC4CeX9owHTvns9tU8fxUZ7/rI=
 github.com/Myriad-Dreamin/go-rlp v1.0.1 h1:6ygY9VhxCNjD34q0nOmyqEATkHHh3vfr5yC+mDDobOk=
 github.com/Myriad-Dreamin/go-rlp v1.0.1/go.mod h1:zB5TOEH12Hi6px2FiJF9V8h3NWrSczcHt0tkz91DGIs=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
