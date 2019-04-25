@@ -14,7 +14,7 @@ type NSBState struct {
 
 func (st *NSBState) String() string {
 	return string(
-		"StateRoot: " + string(st.ActionRoot) + "\n" + 
+		"StateRoot: " + string(st.StateRoot) + "\n" + 
 		"Height: "      + string(st.Height)     + "\n")
 }
 
