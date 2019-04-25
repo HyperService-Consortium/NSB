@@ -14,9 +14,7 @@ type NSBState struct {
 }
 
 func (st *NSBState) String() string {
-	return string(
-		"StateRoot: " + string(st.StateRoot.Bytes()) + "\n" + 
-		"Height: "      + string(st.Height)     + "\n")
+	return "StateRoot: " + string(st.StateRoot.Bytes()) + "\nHeight: " + string(st.Height) + "\n"
 }
 
 func loadState(db dbm.DB) *NSBState {
