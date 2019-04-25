@@ -53,4 +53,5 @@ func (st *NSBState) Close() error {
 	}
 	st.db.Close()
 	st.db = nil
+	return
 }
