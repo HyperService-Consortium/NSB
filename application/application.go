@@ -104,6 +104,20 @@ func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 }
 
 
+func (nsb *NSBApplication) parseTransaction(tx []byte) types.ResponseDeliverTx {
+	bytesTx := bytes.Split(tx, []byte("\x18"))
+	if len(bytesTx) != 2 {
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+	}
+	switch string(bytesTx[0]) {
+	case "isc":
+		return isc.ExecTransaction(bytesTx[1])
+	default:
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
+	}
+}
+
+
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	if len(bytesTx) != 2 {
@@ -112,16 +126,13 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	switch string(bytesTx[0]) {
 	case "validators":
 		return nsb.execValidatorTx(bytesTx[1])
-	case "addAction":
-		return nsb.deliverTx(bytesTx[1])
-	case "createISC":
-		return nsb.createISC(bytesTx[1])
+	case "transact":
+		return nsb.parseTransaction(bytesTx[1])
+	case "sendTransaction":
+		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
 	}
-
-	// otherwise, update the key-value store
-	
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
