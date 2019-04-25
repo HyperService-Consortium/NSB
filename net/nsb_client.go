@@ -59,8 +59,6 @@ func NewNSB() (nsb NSB, err error) {
 	}
 	nsb.cli.SetLogger(log.NewNopLogger())
 
-	fmt.Printf("the application is listening %v\n", nsb_tcp)
-
 	return
 }
 func (nsb *NSB) Start() (err error) {
@@ -69,14 +67,14 @@ func (nsb *NSB) Start() (err error) {
 	if err = nsb.srv.Start(); err != nil {
 		return
 	}
-	fmt.Println("server is IsRunning?", nsb.srv.IsRunning())
 	
 	fmt.Println("start client...")
 	if err = nsb.cli.Start(); err != nil {
 		nsb.srv.Stop()
 		return
 	}
-	fmt.Println("client is IsRunning?", nsb.cli.IsRunning())
+
+	fmt.Printf("the application is listening %v\n", nsb_tcp)
 	return
 }
 
@@ -91,6 +89,7 @@ func (nsb *NSB) LoopUntilStop() {
 			nsb.app.(*abcinsb.NSBApplication).Stop()
 			nsb.srv.Stop()
 			nsb.cli.Stop()
+			fmt.Println("stopped")
 		})
 		select{}
 		goto ForeverLoop
