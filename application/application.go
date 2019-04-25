@@ -12,6 +12,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
 	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/Myriad-Dreamin/NSB/application/isc"
 )
 
 
@@ -109,12 +110,7 @@ func (nsb *NSBApplication) parseTransaction(tx []byte) types.ResponseDeliverTx {
 	if len(bytesTx) != 2 {
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
 	}
-	switch string(bytesTx[0]) {
-	case "isc":
-		return isc.ExecTransaction(bytesTx[1])
-	default:
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
-	}
+	return nsb.foundContracts(contractName, bytesTx[1])
 }
 
 
@@ -124,12 +120,19 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
 	}
 	switch string(bytesTx[0]) {
-	case "validators":
+
+	case "validators": // nsb validators
 		return nsb.execValidatorTx(bytesTx[1])
-	case "transact":
+
+	case "sendTransaction": // transact contract methods
 		return nsb.parseTransaction(bytesTx[1])
-	case "sendTransaction":
+
+	case "transact": // send token
 		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
+
+	case "createContract": // create on-chain contracts
+		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
+		
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
 	}

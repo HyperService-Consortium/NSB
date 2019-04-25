@@ -6,8 +6,9 @@ const ( // base
 	CodeOK ResponseCode = 0 + iota
 	CodeExecFail
 	CodeUnknown
-	CodeMissing
-	CodeTODO
+	CodeMissingTxMethod
+	CodeMissingContract
+	CodeTODO = 99
 )
 
 const ( // Decode
