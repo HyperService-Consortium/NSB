@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"encoding/hex"
 	"encoding/binary"
+	"bytes"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
@@ -87,18 +88,26 @@ func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
 }
 
+var (
+	validatorsTxPrefix = []byte("validators")
+)
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
-	// if it starts with "val:", update the validator set
-	// format is "val:pubkey/power"
-	if isValidatorTx(tx) {
-		// update validators in the merkle tree
-		// and in app.ValUpdates
-		return nsb.execValidatorTx(tx)
+	bytesTx := bytes.Split(tx, []byte("\x19"))
+	if len(bytesTx) != 2 {
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+	}
+	switch bytesTx[0] {
+	case validatorsTxPrefix:
+		return nsb.execValidatorTx(bytesTx[1])
+	case addActionTxPrefix:
+		return nsb.deliverTx(bytesTx[1])
+	default:
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
 	}
 
 	// otherwise, update the key-value store
-	return nsb.deliverTx(tx)
+	
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {

@@ -7,5 +7,7 @@ const (
 	CodeFail
 	CodeUnknown
 	CodeMissing
+	CodeInvalidTxInputFormat
+	CodeInvalidTxType
 	CodeTODO
 )
