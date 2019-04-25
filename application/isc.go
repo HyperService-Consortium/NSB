@@ -2,7 +2,7 @@ package nsb
 
 
 import (
-	"github.com/Myriad-Dreamin/NSB/application"
+	"github.com/Myriad-Dreamin/NSB/application/isc/transaction"
 	"github.com/tendermint/tendermint/abci/types"
 	"encoding/json"
 )
