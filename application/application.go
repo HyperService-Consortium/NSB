@@ -48,7 +48,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	return &NSBApplication{
 		state: state,
 		logger: log.NewNopLogger(),
-		stateMap: stmp
+		stateMap: stmp,
 	}, nil
 }
 
