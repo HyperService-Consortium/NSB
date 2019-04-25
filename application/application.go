@@ -7,9 +7,10 @@ import (
 	"bytes"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
+	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
-	"github.com/Myriad-Dreamin/go-mpt"
+	"github.com/Myriad-Dreamin/NSB/merkmap"
 )
 
 
@@ -17,6 +18,7 @@ import (
 type NSBApplication struct {
 	types.BaseApplication
 	state *NSBState
+	stateMap *merkmap.MerkMap
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
 }
@@ -32,9 +34,21 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	state := loadState(db)
 	fmt.Println(state.String())
 
+	var stdb *leveldb.DB
+	var stmp *merkmap.MerkMap
+	stdb, err = leveldb.OpenFile("./data/trienode.db", nil)
+	if err != nil {
+		return nil, err
+	}
+	stmp, err = merkmap.NewMerkMapFromDB(stdb, state.StateRoot, "00")
+	if err != nil {
+		return nil, err
+	}
+	
 	return &NSBApplication{
 		state: state,
 		logger: log.NewNopLogger(),
+
 	}, nil
 }
 
