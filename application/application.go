@@ -126,13 +126,13 @@ func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
 	var err error
-	nsb.state.stateRoot, err = nsb.stateMap.Commit(nil)
+	nsb.state.StateRoot, err = nsb.stateMap.Commit(nil)
 	if err != nil {
 		panic(err)
 	}
 	nsb.state.Height += 1
 	saveState(nsb.state)
-	return types.ResponseCommit{Data: nsb.state.stateRoot}
+	return types.ResponseCommit{Data: nsb.state.StateRoot}
 }
 
 /*
