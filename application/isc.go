@@ -21,17 +21,17 @@ func (nsb *NSBApplication) createISC(byteJson []byte) (types.ResponseDeliverTx) 
 	err := json.Unmashal(byteJson, &req)
 	if err != nil {
 		return types.ResponseDeliverTx{
-			Code: CodeDecodeJsonError,
+			Code: uint32(CodeDecodeJsonError),
 		}
 	}
 	fmt.Print(req)
 	return types.ResponseDeliverTx{
-		Code: CodeOK,
+		Code: uint32(CodeOK),
 	}
 }
 
-func (nsb *NSBApplication) getAction(byteJson []byte) (types.ResponseDeliverTx) {
+func (nsb *NSBApplication) activeISC(byteJson []byte) (types.ResponseDeliverTx) {
 	return types.ResponseDeliverTx{
-		Code: CodeOK,
+		Code: uint32(CodeOK),
 	}
 }
