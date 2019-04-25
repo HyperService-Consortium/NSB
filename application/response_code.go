@@ -9,5 +9,6 @@ const (
 	CodeMissing
 	CodeInvalidTxInputFormat
 	CodeInvalidTxType
+	CodeDecodeJsonError
 	CodeTODO
 )
