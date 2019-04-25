@@ -28,8 +28,10 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println("here", db)
 	state := loadState(db)
+
+	fmt.Println("here", state)
 
 	return &NSBApplication{
 		state: state,
