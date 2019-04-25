@@ -86,10 +86,13 @@ func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 	return types.ResponseCheckTx{Code: uint32(CodeOK), GasWanted: 1}
 }
 
-
-
 func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
+}
+
+
+func isValidatorTx(tx []byte) bool {
+	return true// strings.HasPrefix(string(tx), ValidatorSetChangePrefix)
 }
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
@@ -103,38 +106,6 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 
 	// otherwise, update the key-value store
 	return nsb.deliverTx(tx)
-}
-
-func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
-	// tx = tx[len(ValidatorSetChangePrefix):]
-
-	//get the pubkey and power
-	pubKeyAndPower := strings.Split(string(tx), "/")
-	if len(pubKeyAndPower) != 2 {
-		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
-			Log:  fmt.Sprintf("Expected 'pubkey/power'. Got %v", pubKeyAndPower)}
-	}
-	pubkeyS, powerS := pubKeyAndPower[0], pubKeyAndPower[1]
-
-	// decode the pubkey
-	pubkey, err := hex.DecodeString(pubkeyS)
-	if err != nil {
-		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
-			Log:  fmt.Sprintf("Pubkey (%s) is invalid hex", pubkeyS)}
-	}
-
-	// decode the power
-	power, err := strconv.ParseInt(powerS, 10, 64)
-	if err != nil {
-		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
-			Log:  fmt.Sprintf("Power (%s) is not an int", powerS)}
-	}
-
-	// update
-	return nsb.updateValidator(types.Ed25519ValidatorUpdate(pubkey, int64(power)))
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
