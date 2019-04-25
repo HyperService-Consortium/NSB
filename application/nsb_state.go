@@ -9,7 +9,7 @@ import (
 
 type NSBState struct {
 	db dbm.DB
-	StateRoot *trie.Hash `json:"action_root"`
+	StateRoot trie.Hash `json:"action_root"`
 	Height  int64  `json:"height"`
 }
 
