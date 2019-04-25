@@ -125,10 +125,14 @@ func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	// Using a memdb - just return the big endian size of the db
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
-	nsb.state.AppHash = appHash
+	var err error
+	nsb.sate.stateRoot, err = stateMap.Commit(nil)
+	if err != nil {
+		panic(err)
+	}
 	nsb.state.Height += 1
 	saveState(nsb.state)
-	return types.ResponseCommit{Data: appHash}
+	return types.ResponseCommit{Data: nsb.sate.stateRoot}
 }
 
 /*
