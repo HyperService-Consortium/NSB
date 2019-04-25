@@ -1,5 +1,23 @@
 package nsb
 
+import (
+	"github.com/Myriad-Dreamin/NSB/account"
+)
+
+type TransactionHeader struct {
+	From account.Account  `json:"from"`
+	ContractAddress  `json:"from"`
+}
+
+func (nsb *NSBApplication) parseTransaction(tx []byte) types.ResponseDeliverTx {
+	bytesTx := bytes.Split(tx, []byte("\x18"))
+	if len(bytesTx) != 2 {
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+	}
+	return nsb.foundContracts(contractName, bytesTx[1])
+}
+
+
 // function addTransactionProposal(address isc_addr, uint tx_count)
 // 	public
 // 	returns (bool addingSuccess)

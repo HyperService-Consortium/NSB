@@ -105,15 +105,6 @@ func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
 }
 
 
-func (nsb *NSBApplication) parseTransaction(tx []byte) types.ResponseDeliverTx {
-	bytesTx := bytes.Split(tx, []byte("\x18"))
-	if len(bytesTx) != 2 {
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
-	}
-	return nsb.foundContracts(contractName, bytesTx[1])
-}
-
-
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	if len(bytesTx) != 2 {
@@ -132,7 +123,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 
 	case "createContract": // create on-chain contracts
 		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
-		
+
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
 	}
