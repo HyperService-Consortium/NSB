@@ -9,7 +9,7 @@ import (
 
 type NSBState struct {
 	db dbm.DB
-	StateRoot trie.Hash `json:"action_root"`
+	StateRoot *trie.Hash `json:"action_root"`
 	Height  int64  `json:"height"`
 }
 
@@ -48,9 +48,9 @@ func saveState(state *NSBState) {
 }
 
 func (st *NSBState) Close() error {
-	if state.db == nil {
+	if st.db == nil {
 		return errors.New("the state db is not opened now")
 	}
-	state.db.Close()
-	state.db = nil
+	st.db.Close()
+	st.db = nil
 }
