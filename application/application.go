@@ -9,6 +9,7 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
+	"github.com/Myriad-Dreamin/go-mpt"
 )
 
 
@@ -16,7 +17,7 @@ import (
 type NSBApplication struct {
 	types.BaseApplication
 	state *NSBState
-	
+	actionTree *trie.Trie
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
 }

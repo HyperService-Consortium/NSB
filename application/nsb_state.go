@@ -8,30 +8,21 @@ import (
 
 type NSBState struct {
 	db dbm.DB
-	ActionRoot trie.MerkleHash `json:"action_root"`
-	MerkleProofRoot trie.MerkleHash `json:"merkle_proof_root"`
-	ActiveISCRoot trie.MerkleHash `json:"active_isc_root"`
+	StorageRoot trie.MerkleHash `json:"action_root"`
 	Height  int64  `json:"height"`
-	AppHash []byte `json:"app_hash"`
 }
 
 func (st *NSBState) String() string {
 	return string(
-		"ActionRoot: "      + string(st.ActionRoot)      + "\n" + 
-		"MerkleProofRoot: " + string(st.MerkleProofRoot) + "\n" +
-		"ActiveISCRoot: "   + string(st.ActiveISCRoot)   + "\n" +
-		"Height: "          + string(st.Height)          + "\n" + 
-		"AppHash: "         + string(st.AppHash)         + "\n")
+		"StorageRoot: "      + string(st.ActionRoot)      + "\n" + 
+		"Height: "          + string(st.Height)          + "\n")
 }
 
 func NewNSBState() *NSBState {
 	return &NSBState{
 		db: nil,
-		ActionRoot: nil,
-		MerkleProofRoot: nil,
-		ActiveISCRoot: nil,
-		Height: 0,
-		AppHash: nil}
+		StorageRoot: nil,
+		Height: 0}
 }
 
 func loadState(db dbm.DB) *NSBState {
