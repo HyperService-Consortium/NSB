@@ -18,7 +18,7 @@ func (mbt MyBytes) Bytes() []byte {
 	return []byte(mbt)
 }
 
-func TestCreateUserDefinedMap(t *testing.T) {
+func TestCreateMap(t *testing.T) {
 	var testdb *leveldb.DB
 	var err error
 	testdb, err = leveldb.OpenFile("./testdb", nil)
@@ -34,7 +34,7 @@ func TestCreateUserDefinedMap(t *testing.T) {
 		return
 	}
 
-	udmap := storage.NewUserDefinedMap("myMap")
+	udmap := storage.NewMap("myMap")
 
 
 	var mykey = MyString("www")
