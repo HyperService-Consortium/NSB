@@ -6,16 +6,31 @@ import (
 
 type TransactionHeader struct {
 	From account.Account  `json:"from"`
-	ContractAddress  `json:"from"`
+	ContractAddress  `json:"to"`
+	JsonParas []byte `json:"data"`
 }
 
-func (nsb *NSBApplication) parseTransaction(tx []byte) types.ResponseDeliverTx {
+type ContractEnvironment struct {
+	LocalStorage 
+}
+
+func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
 	}
-	return nsb.foundContracts(contractName, bytesTx[1])
+	return nsb.foundContracts(bytesTx[0], bytesTx[1])
 }
+
+
+func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
+	bytesTx := bytes.Split(tx, []byte("\x18"))
+	if len(bytesTx) != 2 {
+		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+	}
+	return nsb.createContracts(bytesTx[0], bytesTx[1])
+}
+
 
 
 // function addTransactionProposal(address isc_addr, uint tx_count)

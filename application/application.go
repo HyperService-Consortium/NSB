@@ -21,6 +21,7 @@ type NSBApplication struct {
 	types.BaseApplication
 	state *NSBState
 	stateMap *merkmap.MerkMap
+	statedb *leveldb.DB
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
 }
@@ -36,13 +37,12 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	state := loadState(db)
 	fmt.Println(state.String())
 
-	var stdb *leveldb.DB
 	var stmp *merkmap.MerkMap
-	stdb, err = leveldb.OpenFile("./data/trienode.db", nil)
+	statedb, err = leveldb.OpenFile("./data/trienode.db", nil)
 	if err != nil {
 		return nil, err
 	}
-	stmp, err = merkmap.NewMerkMapFromDB(stdb, state.StateRoot, "00")
+	stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +51,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		state: state,
 		logger: log.NewNopLogger(),
 		stateMap: stmp,
+		statedb: statedb
 	}, nil
 }
 
@@ -116,13 +117,13 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		return nsb.execValidatorTx(bytesTx[1])
 
 	case "sendTransaction": // transact contract methods
-		return nsb.parseTransaction(bytesTx[1])
+		return nsb.parseFuncTransaction(bytesTx[1])
 
 	case "transact": // send token
 		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
 
 	case "createContract": // create on-chain contracts
-		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
+		return nsb.parseCreateTransaction(bytesTx[1])
 
 	default:
 		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}

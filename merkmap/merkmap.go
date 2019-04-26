@@ -25,7 +25,20 @@ func concatBytes(dat ...[]byte) []byte {
 	return buff.Next(totlen)
 }
 
-func NewMerkMapFromDB(db *leveldb.DB, rootHash trie.Hash, slot interface{}) (mp *MerkMap, err error) {
+func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp *MerkMap, err error) {
+	
+	var rootHash trie.Hash
+	switch rtHash.(type) {
+	case string:
+		rootHash = trie.HexToHash(rtHash.(string))
+	case []byte:
+		rootHash = trie.BytesToHash(rtHash.([]byte))
+	case [32]byte:
+		rootHash = trie.BytesToHash(rtHash.([]byte)[:])
+	default:
+		return nil, MerkMapError.UnrecognizedType
+	}
+	
 	mp = new(MerkMap)
 	mp.db, _ = trie.NewNodeBasefromDB(db)
 	mp.merk, err = trie.NewTrie(rootHash, mp.db)
@@ -44,23 +57,21 @@ func NewMerkMapFromDB(db *leveldb.DB, rootHash trie.Hash, slot interface{}) (mp 
 			return nil, MerkMapError.DecodeOverflow
 		}
 		mp.slot = concatBytes(make([]byte, 32-len(mp.slot)), mp.slot)
-		return
 	case []byte:
 		// trans into [32]byte
 		if len(ori_slot) > 32 {
 			return nil, MerkMapError.DecodeOverflow
 		}
 		mp.slot = concatBytes(make([]byte, 32-len(ori_slot)), ori_slot)
-		return
 	case [32]byte:
 		mp.slot = ori_slot[0:32]
-		return
 	default:
 		return nil, MerkMapError.UnrecognizedType
 	}
+	return
 }
 
-func NewMerkMap(dbDir string, rootHash trie.Hash, slot interface{}) (mp *MerkMap, err error) {
+func NewMerkMap(dbDir string, rootHash interface{}, slot interface{}) (mp *MerkMap, err error) {
 	var db *leveldb.DB
 	db, err = leveldb.OpenFile(dbDir, nil)
 	if err != nil {
@@ -69,6 +80,14 @@ func NewMerkMap(dbDir string, rootHash trie.Hash, slot interface{}) (mp *MerkMap
 	return NewMerkMapFromDB(db, rootHash, slot)
 }
 
+
+func (mp *MerkMap) ArrangeSlot(newSlot []byte) *MerkMap {
+	return &MerkMap{
+		merk: mp.merk,
+		db: mp.db,
+		slot: newSlot,
+	}
+}
 
 func (mp *MerkMap) location(key []byte) []byte {
 	return trie.Keccak256(mp.slot, key)
@@ -86,10 +105,13 @@ func (mp *MerkMap) TryDelete(key []byte) error {
 	return mp.merk.TryDelete(mp.location(key))
 }
 
-func (mp *MerkMap) Commit(cb trie.LeafCallback) (root trie.Hash, err error) {
-	return mp.merk.Commit(cb)
+func (mp *MerkMap) Commit(cb trie.LeafCallback) (root []byte, err error) {
+	var rt trie.Hash
+	rt, err = mp.merk.Commit(cb)
+	return rt.Bytes(), err
 }
 
+// dont use this function if its db handler comes from outside
 func (mp *MerkMap) Close() error {
 	return mp.db.Close()
 }
