@@ -2,6 +2,7 @@ package util
 
 
 import (
+    "fmt"
     "encoding/binary"
     "bytes"
 )
@@ -24,6 +25,10 @@ func Uint64ToBytes(i uint64) []byte {
 
 func BytesToUint64(buf []byte) uint64 {
     return uint64(binary.BigEndian.Uint64(buf))
+}
+
+func ErrorToString(err error) string {
+    return fmt.Sprintf("%v", err)
 }
 
 func ConcatBytes(dat ...[]byte) []byte {

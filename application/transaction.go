@@ -1,32 +1,52 @@
 package nsb
 
 import (
+	"fmt"
+	"encoding/json"
+	"github.com/Myriad-Dreamin/NSB/crypto"
 	"github.com/Myriad-Dreamin/NSB/account"
+	"github.com/Myriad-Dreamin/NSB/localstorage"
 )
 
 type TransactionHeader struct {
-	From account.Account  `json:"from"`
-	ContractAddress  `json:"to"`
+	From []byte  `json:"from"`
+	ContractAddress []byte  `json:"to"`
 	JsonParas []byte `json:"data"`
+	Value []byte `json:"value"`
+	Nonce []byte `json:"nonce"`
+	Signature []byte `json:"signature"`
 }
 
+
 type ContractEnvironment struct {
-	LocalStorage 
+	Storage *localstorage.LocalStorage
+	From []byte
+	Value []byte
 }
+
 
 func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+		return invalidTxInputFormatWrongx18
 	}
-	return nsb.foundContracts(bytesTx[0], bytesTx[1])
+	
+	var txHeader TransactionHeader
+	err := json.Unmarshal(bytesTx[1], &txHeader)
+	if err != nil {
+		return DecodeTxHeaderError(err)
+	}
+
+
+
+	return nsb.foundContracts(bytesTx[0], txHeader.JsonParas)
 }
 
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+		return invalidTxInputFormatWrongx18
 	}
 	return nsb.createContracts(bytesTx[0], bytesTx[1])
 }

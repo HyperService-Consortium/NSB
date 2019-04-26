@@ -21,6 +21,7 @@ type NSBApplication struct {
 	types.BaseApplication
 	state *NSBState
 	stateMap *merkmap.MerkMap
+	txMap *merkmap.MerkMap
 	statedb *leveldb.DB
 	ValUpdates []types.ValidatorUpdate
 	logger log.Logger
@@ -51,7 +52,8 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		state: state,
 		logger: log.NewNopLogger(),
 		stateMap: stmp,
-		statedb: statedb
+		txMap: stmp.ArrangeSlot([]byte("tx:"))
+		statedb: statedb,
 	}, nil
 }
 
