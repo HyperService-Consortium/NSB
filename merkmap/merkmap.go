@@ -1,7 +1,6 @@
 package merkmap
 
 import (
-	_ "fmt"
 	"encoding/hex"
 	"bytes"
 	"github.com/Myriad-Dreamin/go-mpt"

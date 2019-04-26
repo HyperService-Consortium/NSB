@@ -65,12 +65,12 @@ func TestCreateLocalStorage(t *testing.T) {
 	}
 	var expVal = []byte("value")
 	var getVal []byte
-	err = storage.TryUpdate("myMap", []byte("key"), expVal)
+	err = storage.tryUpdate("myMap", []byte("key"), expVal)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	getVal, err = storage.TryGet("myMap", []byte("key"))
+	getVal, err = storage.tryGet("myMap", []byte("key"))
 	if err != nil {
 		t.Error(err)
 		return
@@ -91,7 +91,7 @@ func TestCreateLocalStorage(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	getVal, err = storage.TryGet("myMap", []byte("key"))
+	getVal, err = storage.tryGet("myMap", []byte("key"))
 	if err != nil {
 		t.Error(err)
 		return
@@ -110,39 +110,39 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	err = storage.TryUpdate(map1, key1, acc1_map1value1_history1)
+	err = storage.tryUpdate(map1, key1, acc1_map1value1_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key2, acc1_map1value2_history1)
+	err = storage.tryUpdate(map1, key2, acc1_map1value2_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key3, acc1_map1value3_history1)
+	err = storage.tryUpdate(map1, key3, acc1_map1value3_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key1, acc1_map2value1_history1)
+	err = storage.tryUpdate(map2, key1, acc1_map2value1_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key2, acc1_map2value2_history1)
+	err = storage.tryUpdate(map2, key2, acc1_map2value2_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key3, acc1_map2value3_history1)
+	err = storage.tryUpdate(map2, key3, acc1_map2value3_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -152,7 +152,7 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -162,7 +162,7 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -172,7 +172,7 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -182,7 +182,7 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -192,7 +192,7 @@ func TestAcc1History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -218,7 +218,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -228,7 +228,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -238,7 +238,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -248,7 +248,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -258,7 +258,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -268,7 +268,7 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -294,39 +294,39 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	err = storage.TryUpdate(map1, key1, acc2_map1value1_history1)
+	err = storage.tryUpdate(map1, key1, acc2_map1value1_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key2, acc2_map1value2_history1)
+	err = storage.tryUpdate(map1, key2, acc2_map1value2_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key3, acc2_map1value3_history1)
+	err = storage.tryUpdate(map1, key3, acc2_map1value3_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key1, acc2_map2value1_history1)
+	err = storage.tryUpdate(map2, key1, acc2_map2value1_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key2, acc2_map2value2_history1)
+	err = storage.tryUpdate(map2, key2, acc2_map2value2_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key3, acc2_map2value3_history1)
+	err = storage.tryUpdate(map2, key3, acc2_map2value3_history1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -336,7 +336,7 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -346,7 +346,7 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -356,7 +356,7 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -366,7 +366,7 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -376,7 +376,7 @@ func TestAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -402,7 +402,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -412,7 +412,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -422,7 +422,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -432,7 +432,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -442,7 +442,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -452,7 +452,7 @@ func TestAcc1History1FromDBAfterAcc2History1(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -478,7 +478,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -488,7 +488,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -498,7 +498,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -508,7 +508,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -518,7 +518,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -528,7 +528,7 @@ func TestAcc2History1FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -547,39 +547,39 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	err = storage.TryUpdate(map1, key1, acc1_map1value1_history2)
+	err = storage.tryUpdate(map1, key1, acc1_map1value1_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key2, acc1_map1value2_history2)
+	err = storage.tryUpdate(map1, key2, acc1_map1value2_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key3, acc1_map1value3_history2)
+	err = storage.tryUpdate(map1, key3, acc1_map1value3_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key1, acc1_map2value1_history2)
+	err = storage.tryUpdate(map2, key1, acc1_map2value1_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key2, acc1_map2value2_history2)
+	err = storage.tryUpdate(map2, key2, acc1_map2value2_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key3, acc1_map2value3_history2)
+	err = storage.tryUpdate(map2, key3, acc1_map2value3_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -589,7 +589,7 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -599,7 +599,7 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -609,7 +609,7 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -619,7 +619,7 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -629,7 +629,7 @@ func TestAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -655,7 +655,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -665,7 +665,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -675,7 +675,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -685,7 +685,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -695,7 +695,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -705,7 +705,7 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -731,39 +731,39 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	err = storage.TryUpdate(map1, key1, acc2_map1value1_history2)
+	err = storage.tryUpdate(map1, key1, acc2_map1value1_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key2, acc2_map1value2_history2)
+	err = storage.tryUpdate(map1, key2, acc2_map1value2_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map1, key3, acc2_map1value3_history2)
+	err = storage.tryUpdate(map1, key3, acc2_map1value3_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key1, acc2_map2value1_history2)
+	err = storage.tryUpdate(map2, key1, acc2_map2value1_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key2, acc2_map2value2_history2)
+	err = storage.tryUpdate(map2, key2, acc2_map2value2_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map2, key3, acc2_map2value3_history2)
+	err = storage.tryUpdate(map2, key3, acc2_map2value3_history2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -773,7 +773,7 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -783,7 +783,7 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -793,7 +793,7 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -803,7 +803,7 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -813,7 +813,7 @@ func TestAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -839,7 +839,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -849,7 +849,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -859,7 +859,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -869,7 +869,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -879,7 +879,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -889,7 +889,7 @@ func TestAcc1History2FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -915,7 +915,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -925,7 +925,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -935,7 +935,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -945,7 +945,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -955,7 +955,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -965,7 +965,7 @@ func TestAcc2History2FromDB(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -985,7 +985,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -995,7 +995,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1005,7 +1005,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1015,7 +1015,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1025,7 +1025,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1035,7 +1035,7 @@ func TestAcc1History1FromDBAfterAcc1History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1061,7 +1061,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 	}
 
 	var getVal []byte
-	getVal, err = storage.TryGet(map1, key1)
+	getVal, err = storage.tryGet(map1, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1071,7 +1071,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key2)
+	getVal, err = storage.tryGet(map1, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1081,7 +1081,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map1, key3)
+	getVal, err = storage.tryGet(map1, key3)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1091,7 +1091,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key1)
+	getVal, err = storage.tryGet(map2, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1101,7 +1101,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key2)
+	getVal, err = storage.tryGet(map2, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1111,7 +1111,7 @@ func TestAcc2History1FromDBAfterAcc2History2(t *testing.T) {
 		return
 	}
 
-	getVal, err = storage.TryGet(map2, key3)
+	getVal, err = storage.tryGet(map2, key3)
 	if err != nil {
 		t.Error(err)
 		return

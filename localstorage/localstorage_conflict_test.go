@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"github.com/syndtr/goleveldb/leveldb"
 )
+
 /*
 acc1   history1   history2   history3   histr0y4
 key1     value1     value2         []         []
@@ -15,6 +16,7 @@ acc2   history1   history2   history3   history4
 key1         []     value1         []         []
 key2     value1     value2     value2         []
 */
+
 var (
 	map0 = "map"
 	acc1_key1_history = [][]byte{
@@ -59,7 +61,7 @@ func CheckAcc1History1(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -67,7 +69,7 @@ func CheckAcc1History1(t *testing.T) {
 	if !bytes.Equal(getVal, acc1_key1_history[0]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -85,7 +87,7 @@ func CheckAcc1History2(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -93,7 +95,7 @@ func CheckAcc1History2(t *testing.T) {
 	if !bytes.Equal(getVal, acc1_key1_history[1]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -111,7 +113,7 @@ func CheckAcc1History3(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -119,7 +121,7 @@ func CheckAcc1History3(t *testing.T) {
 	if !bytes.Equal(getVal, acc1_key1_history[2]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -137,7 +139,7 @@ func CheckAcc1History4(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -145,7 +147,7 @@ func CheckAcc1History4(t *testing.T) {
 	if !bytes.Equal(getVal, acc1_key1_history[3]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -163,7 +165,7 @@ func CheckAcc2History1(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -171,7 +173,7 @@ func CheckAcc2History1(t *testing.T) {
 	if !bytes.Equal(getVal, acc2_key1_history[0]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -189,7 +191,7 @@ func CheckAcc2History2(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -197,7 +199,7 @@ func CheckAcc2History2(t *testing.T) {
 	if !bytes.Equal(getVal, acc2_key1_history[1]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -215,7 +217,7 @@ func CheckAcc2History3(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -223,7 +225,7 @@ func CheckAcc2History3(t *testing.T) {
 	if !bytes.Equal(getVal, acc2_key1_history[2]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -241,7 +243,7 @@ func CheckAcc2History4(t *testing.T) {
 		return
 	}
 	var getVal []byte
-	getVal, err = storage.TryGet(map0, key1)
+	getVal, err = storage.tryGet(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -249,7 +251,7 @@ func CheckAcc2History4(t *testing.T) {
 	if !bytes.Equal(getVal, acc2_key1_history[3]) {
 		t.Error("no equal")
 	}
-	getVal, err = storage.TryGet(map0, key2)
+	getVal, err = storage.tryGet(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -286,7 +288,7 @@ func TestAcc1MakeHistory1(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryUpdate(map0, key1, acc1_key1_history[0])
+	err = storage.tryUpdate(map0, key1, acc1_key1_history[0])
 	if err != nil {
 		t.Error(err)
 		return
@@ -320,7 +322,7 @@ func TestAcc2MakeHistory1(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryUpdate(map0, key2, acc2_key2_history[0])
+	err = storage.tryUpdate(map0, key2, acc2_key2_history[0])
 	if err != nil {
 		t.Error(err)
 		return
@@ -356,12 +358,12 @@ func TestAcc2MakeHistory2(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryUpdate(map0, key1, acc2_key1_history[1])
+	err = storage.tryUpdate(map0, key1, acc2_key1_history[1])
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map0, key2, acc2_key2_history[1])
+	err = storage.tryUpdate(map0, key2, acc2_key2_history[1])
 	if err != nil {
 		t.Error(err)
 		return
@@ -398,12 +400,12 @@ func TestAcc1MakeHistory2(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryUpdate(map0, key1, acc1_key1_history[1])
+	err = storage.tryUpdate(map0, key1, acc1_key1_history[1])
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map0, key2, acc1_key2_history[1])
+	err = storage.tryUpdate(map0, key2, acc1_key2_history[1])
 	if err != nil {
 		t.Error(err)
 		return
@@ -441,12 +443,12 @@ func TestAcc1MakeHistory3(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryDelete(map0, key1)
+	err = storage.tryDelete(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map0, key2, acc1_key2_history[2])
+	err = storage.tryUpdate(map0, key2, acc1_key2_history[2])
 	if err != nil {
 		t.Error(err)
 		return
@@ -485,12 +487,12 @@ func TestAcc2MakeHistory3(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryDelete(map0, key1)
+	err = storage.tryDelete(map0, key1)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	err = storage.TryUpdate(map0, key2, acc2_key2_history[2])
+	err = storage.tryUpdate(map0, key2, acc2_key2_history[2])
 	if err != nil {
 		t.Error(err)
 		return
@@ -530,7 +532,7 @@ func TestAcc2MakeHistory4(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryDelete(map0, key2)
+	err = storage.tryDelete(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -571,7 +573,7 @@ func TestAcc1MakeHistory4(t *testing.T) {
 		return
 	}
 	
-	err = storage.TryDelete(map0, key2)
+	err = storage.tryDelete(map0, key2)
 	if err != nil {
 		t.Error(err)
 		return
