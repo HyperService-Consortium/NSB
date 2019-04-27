@@ -74,7 +74,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 	contractEnv.Storage, err = localstorage.NewLocalStorage(
 		txHeader.ContractAddress,
 		contractInfo.StorageRoot,
-		nsb.statedb
+		nsb.statedb,
 	)
 
 	// internal error
