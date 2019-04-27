@@ -2,7 +2,6 @@ package nsb
 
 import (
 	"errors"
-	"github.com/Myriad-Dreamin/go-mpt"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
 )
