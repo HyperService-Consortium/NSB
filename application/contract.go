@@ -7,7 +7,7 @@ import (
 )
 
 
-func (nsb *NSBApplication) execContractFuncs(contractName []byte, contractEnv ContractEnvironment) *ContractCallBackInfo {
+func (nsb *NSBApplication) execContractFuncs(contractName []byte, contractEnv *ContractEnvironment) *ContractCallBackInfo {
 	switch string(contractName) {
 	case "isc":
 		fmt.Println(contractEnv)
@@ -26,7 +26,7 @@ func (nsb *NSBApplication) execContractFuncs(contractName []byte, contractEnv Co
 }
 
 
-func (nsb *NSBApplication) createContracts(contractName []byte, contractEnv ContractEnvironment) *ContractCallBackInfo {
+func (nsb *NSBApplication) createContracts(contractName []byte, contractEnv *ContractEnvironment) *ContractCallBackInfo {
 	switch string(contractName) {
 	case "isc":
 		fmt.Println(contractEnv)
