@@ -1,5 +1,5 @@
 package sdeam
 
-Type SdeamState struct {
-	
+type SdeamState struct {
+	Cash []byte
 }
