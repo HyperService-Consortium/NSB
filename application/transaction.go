@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
 	"github.com/Myriad-Dreamin/NSB/application/response"
@@ -21,10 +22,10 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 	if byteInfo != nil {
 		return response.DuplicateTxError
 	}
-	err = nsb.txMap.TryUpdate()
+	err = nsb.txMap.TryUpdate(bytesTx[1], []byte{1})
 	// internal error
 	if err != nil {
-		return response.UpdateTxTreeError(err)
+		return response.UpdateTxTrieError(err)
 	}
 
 	var txHeader TransactionHeader
