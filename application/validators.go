@@ -8,6 +8,7 @@ import (
 	"strings"
 	"strconv"
 	"github.com/tendermint/tendermint/abci/example/code"
+	"github.com/Myriad-Dreamin/NSB/application/response"
 )
 
 func (nsb *NSBApplication) Validators() (validators []types.ValidatorUpdate) {
@@ -35,7 +36,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	pubKeyAndPower := strings.Split(string(tx), "/")
 	if len(pubKeyAndPower) != 2 {
 		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
+			Code: response.CodeDecodeBytesError,
 			Log:  fmt.Sprintf("Expected 'pubkey/power'. Got %v", pubKeyAndPower)}
 	}
 	pubkeyS, powerS := pubKeyAndPower[0], pubKeyAndPower[1]
@@ -44,7 +45,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	pubkey, err := hex.DecodeString(pubkeyS)
 	if err != nil {
 		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
+			Code: response.CodeDecodeBytesError,
 			Log:  fmt.Sprintf("Pubkey (%s) is invalid hex", pubkeyS)}
 	}
 
@@ -52,7 +53,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	power, err := strconv.ParseInt(powerS, 10, 64)
 	if err != nil {
 		return types.ResponseDeliverTx{
-			Code: code.CodeTypeEncodingError,
+			Code: response.CodeDecodeBytesError,
 			Log:  fmt.Sprintf("Power (%s) is not an int", powerS)}
 	}
 
@@ -83,5 +84,5 @@ func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.Respon
 
 	// // we only update the changes array if we successfully updated the tree
 	// nsb.ValUpdates = append(nsb.ValUpdates, v)
-	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
+	return types.ResponseDeliverTx{Code: uint32(response.CodeOK)}
 }

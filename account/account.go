@@ -58,3 +58,5 @@ func (acc *Account) VerifyByRaw(signature []byte, msg ...[]byte) bool {
 func (acc *Account) VerifyByHash(signature []byte, msgHash []byte) bool {
 	return eddsa.Verify(acc.PublicKey, msgHash, signature)
 }
+
+// func VerifyTransaction()

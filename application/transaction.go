@@ -6,51 +6,103 @@ import (
 	"github.com/Myriad-Dreamin/NSB/crypto"
 	"github.com/Myriad-Dreamin/NSB/account"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
+	"github.com/Myriad-Dreamin/NSB/application/response"
 )
-
-type TransactionHeader struct {
-	From []byte  `json:"from"`
-	ContractAddress []byte  `json:"to"`
-	JsonParas []byte `json:"data"`
-	Value []byte `json:"value"`
-	Nonce []byte `json:"nonce"`
-	Signature []byte `json:"signature"`
-}
-
-
-type ContractEnvironment struct {
-	Storage *localstorage.LocalStorage
-	From []byte
-	Value []byte
-}
 
 
 func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
-		return invalidTxInputFormatWrongx18
+		return response.InvalidTxInputFormatWrongx18
 	}
-	
-	var txHeader TransactionHeader
-	err := json.Unmarshal(bytesTx[1], &txHeader)
+	byteInfo, err := nsb.txMap.TryGet(bytesTx[1])
+	// internal error
 	if err != nil {
-		return DecodeTxHeaderError(err)
+		return response.ReTrieveTxError(err)
+	}
+	if byteInfo != nil {
+		return response.DuplicateTxError
+	}
+	err = nsb.txMap.TryUpdate()
+	// internal error
+	if err != nil {
+		return response.UpdateTxTreeError(err)
 	}
 
+	var txHeader TransactionHeader
+	err = json.Unmarshal(bytesTx[1], &txHeader)
+	if err != nil {
+		return response.DecodeTxHeaderError(err)
+	}
 
+	// TODO: verify signature 
 
-	return nsb.foundContracts(bytesTx[0], txHeader.JsonParas)
+	byteInfo, err = nsb.accMap.TryGet(txHeader.From)
+	if err != nil {
+		return response.ReTrieveTxError(err)
+	}
+
+	var accInfo AccountInfo
+	err = json.Unmarshal(byteInfo, &accInfo)
+	if err != nil {
+		return response.DecodeAccountInfoError(err)
+	}
+
+	byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
+	if err != nil {
+		return response.ReTrieveTxError(err)
+	}
+	if byteInfo == nil {
+		return response.MissingContract
+	}
+
+	var contractInfo AccountInfo
+	err = json.Unmarshal(byteInfo, &contractInfo)
+	if err != nil {
+		return response.DecodeAccountInfoError(err)
+	}
+	// TODO: Check CodeHash
+
+	var contractEnv = ContractEnvironment{
+		From: txHeader.From,
+		fromInfo: accInfo,
+		ContractAddress: txHeader.ContractAddress,
+		toInfo: contractInfo,
+		Data: txHeader.JsonParas,
+		Value: txHeader.Value,
+	}
+	contractEnv.Storage, err = localstorage.NewLocalStorage(
+		txHeader.ContractAddress,
+		contractInfo.StorageRoot,
+		nsb.statedb
+	)
+
+	// internal error
+	if err != nil {
+		return response.RequestStorageError(err)
+	}
+
+	return nsb.endFuncTransaction(nsb.execContractFuncs(bytesTx[0], contractEnv))
 }
 
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
-		return invalidTxInputFormatWrongx18
+		return response.InvalidTxInputFormatWrongx18
 	}
 	return nsb.createContracts(bytesTx[0], bytesTx[1])
 }
 
+
+func (nsb *NSBApplication) endFuncTransaction(cbInfo ContractCallBackInfo) types.ResponseDeliverTx {
+	return types.ResponseDeliverTx{
+		Code: cbInfo.CodeResponse,
+		Log: cbInfo.Log,
+		// Tags:
+		Info: cbInfo.Info,
+	}
+}
 
 
 // function addTransactionProposal(address isc_addr, uint tx_count)

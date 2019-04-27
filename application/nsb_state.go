@@ -6,13 +6,6 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
 )
-
-type NSBState struct {
-	db dbm.DB
-	StateRoot trie.Hash `json:"action_root"`
-	Height  int64  `json:"height"`
-}
-
 func (st *NSBState) String() string {
 	return "StateRoot: " + string(st.StateRoot.Bytes()) + "\nHeight: " + string(st.Height) + "\n"
 }

@@ -13,19 +13,8 @@ import (
 	"github.com/tendermint/tendermint/version"
 	"github.com/Myriad-Dreamin/NSB/merkmap"
 	"github.com/Myriad-Dreamin/NSB/application/isc"
+	"github.com/Myriad-Dreamin/NSB/application/response"
 )
-
-
-
-type NSBApplication struct {
-	types.BaseApplication
-	state *NSBState
-	stateMap *merkmap.MerkMap
-	txMap *merkmap.MerkMap
-	statedb *leveldb.DB
-	ValUpdates []types.ValidatorUpdate
-	logger log.Logger
-}
 
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
@@ -49,11 +38,12 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	}
 
 	return &NSBApplication{
-		state: state,
-		logger: log.NewNopLogger(),
+		state:    state,
+		logger:   log.NewNopLogger(),
 		stateMap: stmp,
-		txMap: stmp.ArrangeSlot([]byte("tx:"))
-		statedb: statedb,
+		accMap:   stmp.ArrangeSlot([]byte("acc:")),
+		txMap:    stmp.ArrangeSlot([]byte("tx:")),
+		statedb:  statedb,
 	}, nil
 }
 
@@ -100,18 +90,13 @@ func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEnd
 }
 
 func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
-	return types.ResponseCheckTx{Code: uint32(CodeOK), GasWanted: 1}
+	return types.ResponseCheckTx{Code: uint32(response.CodeOK), GasWanted: 1}
 }
-
-func (nsb *NSBApplication) deliverTx(tx []byte) types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{Code: uint32(CodeOK)}
-}
-
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	if len(bytesTx) != 2 {
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxInputFormat)}
+		return response.InvalidTxInputFormatWrongx19
 	}
 	switch string(bytesTx[0]) {
 
@@ -122,13 +107,13 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		return nsb.parseFuncTransaction(bytesTx[1])
 
 	case "transact": // send token
-		return types.ResponseDeliverTx{Code: uint32(CodeTODO)}
+		return types.ResponseDeliverTx{Code: uint32(response.CodeTODO)}
 
 	case "createContract": // create on-chain contracts
 		return nsb.parseCreateTransaction(bytesTx[1])
 
 	default:
-		return types.ResponseDeliverTx{Code: uint32(CodeInvalidTxType)}
+		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType)}
 	}
 }
 
@@ -137,13 +122,15 @@ func (nsb *NSBApplication) Commit() types.ResponseCommit {
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
 	var err error
+
+	// accMap, txMap is the sub-Map of stateMap
 	nsb.state.StateRoot, err = nsb.stateMap.Commit(nil)
 	if err != nil {
 		panic(err)
 	}
 	nsb.state.Height += 1
 	saveState(nsb.state)
-	return types.ResponseCommit{Data: nsb.state.StateRoot.Bytes()}
+	return types.ResponseCommit{Data: nsb.state.StateRoot}
 }
 
 /*
@@ -171,7 +158,7 @@ type Proof struct {
 */
 func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuery) {
 	if req.Prove {
-		ret.Code = uint32(CodeOK)
+		ret.Code = uint32(response.CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
 		ret.Log = fmt.Sprintf("asking Prove key: %v, value %v", req.Data, req.Path);
@@ -185,7 +172,7 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 		
 		// 
 
-		ret.Code = uint32(CodeOK)
+		ret.Code = uint32(response.CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
 		ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path);
