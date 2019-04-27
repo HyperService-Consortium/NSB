@@ -1,3 +1,5 @@
+package nsb
+
 import (
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
