@@ -104,13 +104,13 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		return nsb.execValidatorTx(bytesTx[1])
 
 	case "sendTransaction": // transact contract methods
-		return nsb.parseFuncTransaction(bytesTx[1])
+		return *nsb.parseFuncTransaction(bytesTx[1])
 
 	case "transact": // send token
 		return types.ResponseDeliverTx{Code: uint32(response.CodeTODO)}
 
 	case "createContract": // create on-chain contracts
-		return nsb.parseCreateTransaction(bytesTx[1])
+		return *nsb.parseCreateTransaction(bytesTx[1])
 
 	default:
 		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType)}

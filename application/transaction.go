@@ -9,7 +9,7 @@ import (
 )
 
 
-func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*ContractEnvironment, types.ResponseDeliverTx) {
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*ContractEnvironment, *types.ResponseDeliverTx) {
 	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
 	if err != nil {
@@ -77,18 +77,18 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*Con
 		return nil, response.RequestStorageError(err)
 	}
 
-	return &contractEnv, response.ExecOK
+	return &contractEnv, nil
 }
 
 
-func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
+func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
 		return response.InvalidTxInputFormatWrongx18
 	}
 
 	env, err := nsb.prepareContractEnvironment(bytesTx[1])
-	if err.Code != 0 {
+	if err != nil {
 		return err
 	}
 
@@ -96,7 +96,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 }
 
 
-func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
+func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
 		return response.InvalidTxInputFormatWrongx18
@@ -111,8 +111,8 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliv
 }
 
 
-func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
 		Code: cbInfo.CodeResponse,
 		Log: cbInfo.Log,
 		// Tags:
@@ -120,8 +120,8 @@ func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) type
 	}
 }
 
-func (nsb *NSBApplication) endConstructTransaction(cbInfo *ContractCallBackInfo) types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+func (nsb *NSBApplication) endConstructTransaction(cbInfo *ContractCallBackInfo) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
 		Code: cbInfo.CodeResponse,
 		Log: cbInfo.Log,
 		// Tags:
