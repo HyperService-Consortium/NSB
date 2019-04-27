@@ -1,14 +1,13 @@
 package nsb
 
 import (
-	"github.com/tendermint/tendermint/abci/types"
-	sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
+	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 )
 
 
-func (nsb *NSBApplication) execContractFuncs(contractName string, byteJson []byte) *ContractCallBackInfo {
-	switch contractName {
+func (nsb *NSBApplication) execContractFuncs(contractName []byte, byteJson []byte) *ContractCallBackInfo {
+	switch string(contractName) {
 	case "sdeam":
 		return &ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO),
