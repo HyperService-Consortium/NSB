@@ -9,12 +9,8 @@ import (
 )
 
 
-func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
-	bytesTx := bytes.Split(tx, []byte("\x18"))
-	if len(bytesTx) != 2 {
-		return response.InvalidTxInputFormatWrongx18
-	}
-	byteInfo, err := nsb.txMap.TryGet(bytesTx[1])
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) *ContractEnvironment {
+	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
 	if err != nil {
 		return response.ReTrieveTxError(err)
@@ -22,14 +18,14 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 	if byteInfo != nil {
 		return response.DuplicateTxError
 	}
-	err = nsb.txMap.TryUpdate(bytesTx[1], []byte{1})
+	err = nsb.txMap.TryUpdate(txHeaderJson, []byte{1})
 	// internal error
 	if err != nil {
 		return response.UpdateTxTrieError(err)
 	}
 
 	var txHeader TransactionHeader
-	err = json.Unmarshal(bytesTx[1], &txHeader)
+	err = json.Unmarshal(txHeaderJson, &txHeader)
 	if err != nil {
 		return response.DecodeTxHeaderError(err)
 	}
@@ -81,8 +77,19 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 		return response.RequestStorageError(err)
 	}
 
-	return nsb.endFuncTransaction(nsb.execContractFuncs(bytesTx[0], contractEnv))
+	return &contractEnv
 }
+
+
+func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliverTx {
+	bytesTx := bytes.Split(tx, []byte("\x18"))
+	if len(bytesTx) != 2 {
+		return response.InvalidTxInputFormatWrongx18
+	}
+
+	return nsb.endFuncTransaction(nsb.execContractFuncs(bytesTx[0], prepareContractEnvironment(bytesTx[1])))
+}
+func (nsb *NSBApplication) createContracts( []byte)
 
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
@@ -90,7 +97,8 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliv
 	if len(bytesTx) != 2 {
 		return response.InvalidTxInputFormatWrongx18
 	}
-	return nsb.createContracts(bytesTx[0], bytesTx[1])
+
+	return nsb.endConstructTransaction(nsb.createContracts(bytesTx[0], prepareContractEnvironment(bytesTx[1])))
 }
 
 
@@ -103,7 +111,14 @@ func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) type
 	}
 }
 
-
+func (nsb *NSBApplication) endConstructTransaction(cbInfo *ContractCallBackInfo) types.ResponseDeliverTx {
+	return types.ResponseDeliverTx{
+		Code: cbInfo.CodeResponse,
+		Log: cbInfo.Log,
+		// Tags:
+		Info: cbInfo.Info,
+	}
+}
 // function addTransactionProposal(address isc_addr, uint tx_count)
 // 	public
 // 	returns (bool addingSuccess)
