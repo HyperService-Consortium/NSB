@@ -98,7 +98,7 @@ func (ui256 *Uint256) Div(y *Uint256) bool {
 }
 
 func (ui256 *Uint256) Comp(y *Uint256) int {
-	return new(big.Int).Sub(ui256, y).Sign()
+	return new(big.Int).Sub(ui256.b, y.b).Sign()
 }
 
 func (ui256 *Uint256) BitLen() int {
