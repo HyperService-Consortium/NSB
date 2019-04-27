@@ -30,7 +30,7 @@ const ( // Transaction
 	CodeInvalidTxType
 	CodeReTrieveTxError
 	CodeDuplicateTxError
-	CodeUpdateTxTreeError
+	CodeUpdateTxTrieError
 )
 
 const ( // ISC
@@ -55,9 +55,9 @@ var (
 		Code: uint32(CodeMissingContract),
 		Log: "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
 	}
-	UpdateTxTreeError = types.ResponseDeliverTx{
-		Code: uint32(CodeUpdateTxTreeError),
-		Log: "UpdateTxTreeError: can't update Transaction Trie",
+	UpdateTxTrieError = types.ResponseDeliverTx{
+		Code: uint32(CodeUpdateTxTrieError),
+		Log: "UpdateTxTrieError: can't update Transaction Trie",
 	}
 )
 
