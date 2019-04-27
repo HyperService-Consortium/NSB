@@ -12,7 +12,6 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
 	"github.com/Myriad-Dreamin/NSB/merkmap"
-	"github.com/Myriad-Dreamin/NSB/application/isc"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 )
 
