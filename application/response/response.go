@@ -61,34 +61,34 @@ var (
 )
 
 func DecodeTxHeaderError(err error) *types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+	return &types.ResponseDeliverTx{
 		Code: uint32(CodeDecodeTxHeaderError),
 		Log: fmt.Sprintf("DecodeTxHeaderError: %v", err),
 	}
 }
 
 func DecodeAccountInfoError(err error) *types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+	return &types.ResponseDeliverTx{
 		Code: uint32(CodeDecodeAccountInfoError),
 		Log: fmt.Sprintf("DecodeAccountInfoError: %v", err),
 	}
 }
 
 func ReTrieveTxError(err error) *types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+	return &types.ResponseDeliverTx{
 		Code: uint32(CodeReTrieveTxError),
 		Log: fmt.Sprintf("ReTrieveTxError: %v", err),
 	}
 }
 
 func RequestStorageError(err error) *types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+	return &types.ResponseDeliverTx{
 		Code: uint32(CodeRequestStorageError),
 		Log: fmt.Sprintf("RequestStorageError: %v", err),
 	}
 }
 func UpdateTxTrieError(err error) *types.ResponseDeliverTx {
-	return types.ResponseDeliverTx{
+	return &types.ResponseDeliverTx{
 		Code: uint32(CodeUpdateTxTrieError),
 		Log: fmt.Sprintf("UpdateTxTrieError: can't update Transaction Trie, %v", err),
 	}
