@@ -96,7 +96,7 @@ func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	if len(bytesTx) != 2 {
-		return response.InvalidTxInputFormatWrongx19
+		return *response.InvalidTxInputFormatWrongx19
 	}
 	switch string(bytesTx[0]) {
 
