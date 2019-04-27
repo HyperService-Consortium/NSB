@@ -55,9 +55,9 @@ type ContractEnvironment struct {
 
 type KVPair interface {
 	// must be bytes
-	Key interface{}
+	Key() []byte
 	// must be bytes
-	Value interface{}
+	Value() []byte
 }
 
 type ContractCallBackInfo struct {
