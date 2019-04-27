@@ -1,6 +1,11 @@
 package response
 
 
+import (
+	"github.com/tendermint/tendermint/abci/types"
+)
+
+
 type ResponseCode uint32
 const ( // base
 	CodeOK ResponseCode = 0 + iota
