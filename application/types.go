@@ -3,6 +3,7 @@ package nsb
 import (
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
+	"github.com/tendermint/tendermint/abci/types"
 )
 
 
@@ -53,8 +54,10 @@ type ContractEnvironment struct {
 }
 
 type KVPair interface {
-	Key []byte
-	Value []byte
+	// must be bytes
+	Key interface{}
+	// must be bytes
+	Value interface{}
 }
 
 type ContractCallBackInfo struct {
