@@ -27,7 +27,7 @@ const ( // Transaction
 	CodeUpdateTxTreeError
 )
 
-cosnt ( // ISC
+const ( // ISC
 	codeISCExecFail ResponseCode = 300 + iota
 )
 
@@ -45,7 +45,7 @@ var (
 		Code: uint32(CodeInvalidTxInputFormat),
 		Log: "InvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
 	}
-	MissingContract = type.ResponseDeliverTx{
+	MissingContract = types.ResponseDeliverTx{
 		Code: uint32(CodeMissingContract),
 		Log: "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
 	}
