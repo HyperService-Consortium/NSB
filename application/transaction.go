@@ -94,7 +94,6 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 
 	return nsb.endFuncTransaction(nsb.execContractFuncs(bytesTx[0], env))
 }
-func (nsb *NSBApplication) createContracts( []byte)
 
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliverTx {
