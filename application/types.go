@@ -3,6 +3,7 @@ package nsb
 import (
 	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/Myriad-Dreamin/NSB/localstorage"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
