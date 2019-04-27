@@ -77,7 +77,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*Con
 		return nil, response.RequestStorageError(err)
 	}
 
-	return &contractEnv, ExecOK
+	return &contractEnv, response.ExecOK
 }
 
 
@@ -87,7 +87,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, err := prepareContractEnvironment(bytesTx[1])
+	env, err := nsb.prepareContractEnvironment(bytesTx[1])
 	if err.Code != 0 {
 		return err
 	}
@@ -102,7 +102,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliv
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, err := prepareContractEnvironment(bytesTx[1])
+	env, err := nsb.prepareContractEnvironment(bytesTx[1])
 	if err.Code != 0 {
 		return err
 	}
