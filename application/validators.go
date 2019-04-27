@@ -35,7 +35,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	pubKeyAndPower := strings.Split(string(tx), "/")
 	if len(pubKeyAndPower) != 2 {
 		return types.ResponseDeliverTx{
-			Code: response.CodeDecodeBytesError,
+			Code: uint32(response.CodeDecodeBytesError),
 			Log:  fmt.Sprintf("Expected 'pubkey/power'. Got %v", pubKeyAndPower)}
 	}
 	pubkeyS, powerS := pubKeyAndPower[0], pubKeyAndPower[1]
@@ -44,7 +44,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	pubkey, err := hex.DecodeString(pubkeyS)
 	if err != nil {
 		return types.ResponseDeliverTx{
-			Code: response.CodeDecodeBytesError,
+			Code: uint32(response.CodeDecodeBytesError),
 			Log:  fmt.Sprintf("Pubkey (%s) is invalid hex", pubkeyS)}
 	}
 
@@ -52,7 +52,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	power, err := strconv.ParseInt(powerS, 10, 64)
 	if err != nil {
 		return types.ResponseDeliverTx{
-			Code: response.CodeDecodeBytesError,
+			Code: uint32(response.CodeDecodeBytesError),
 			Log:  fmt.Sprintf("Power (%s) is not an int", powerS)}
 	}
 
