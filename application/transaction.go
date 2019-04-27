@@ -93,7 +93,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) types.ResponseDeliv
 }
 
 
-func (nsb *NSBApplication) endFuncTransaction(cbInfo ContractCallBackInfo) types.ResponseDeliverTx {
+func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{
 		Code: cbInfo.CodeResponse,
 		Log: cbInfo.Log,
