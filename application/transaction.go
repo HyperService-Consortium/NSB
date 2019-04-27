@@ -64,9 +64,9 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) types.ResponseDeliver
 
 	var contractEnv = ContractEnvironment{
 		From: txHeader.From,
-		fromInfo: accInfo,
+		fromInfo: &accInfo,
 		ContractAddress: txHeader.ContractAddress,
-		toInfo: contractInfo,
+		toInfo: &contractInfo,
 		Data: txHeader.JsonParas,
 		Value: txHeader.Value,
 	}
