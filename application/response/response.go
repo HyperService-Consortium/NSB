@@ -39,6 +39,9 @@ const ( // ISC
 
 
 var (
+	ExecOK = types.ResponseDeliverTx{
+		Code: uint32(CodeOK),
+	}
 	DuplicateTxError = types.ResponseDeliverTx{
 		Code: uint32(CodeDuplicateTxError),
 		Log: "DuplicateTxError: this transaction is already on the Transaction Trie",
