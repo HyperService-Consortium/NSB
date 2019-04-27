@@ -3,6 +3,7 @@ package localstorage
 
 import (
 	"github.com/Myriad-Dreamin/NSB/util"
+	"errors"
 )
 
 
@@ -51,7 +52,7 @@ func (sto *LocalStorage) GetUint64(variName string) (uint64, error) {
 	return util.BytesToUint64(bt), err
 }
 
-func (sto *LocalStorage) GetString(variName string) (int64, error) {
+func (sto *LocalStorage) GetInt64(variName string) (int64, error) {
 	bt, err := sto.variSlotMap.TryGet([]byte(variName))
 	if err != nil {
 		return 0, err
