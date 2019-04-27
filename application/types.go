@@ -1,9 +1,9 @@
 package nsb
 
 import (
-	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
+	dbm "github.com/tendermint/tendermint/libs/db"
 )
 
 
@@ -21,7 +21,7 @@ type NSBApplication struct {
 
 type NSBState struct {
 	db dbm.DB
-	StateRoot trie.Hash `json:"action_root"`
+	StateRoot []byte `json:"action_root"`
 	Height  int64  `json:"height"`
 }
 
