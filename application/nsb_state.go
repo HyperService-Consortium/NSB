@@ -4,9 +4,10 @@ import (
 	"errors"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
+	"encoding/hex"
 )
 func (st *NSBState) String() string {
-	return "StateRoot: " + string(st.StateRoot.Bytes()) + "\nHeight: " + string(st.Height) + "\n"
+	return "StateRoot: " + hex.EncodeToString(st.StateRoot) + "\nHeight: " + string(st.Height) + "\n"
 }
 
 func loadState(db dbm.DB) *NSBState {
