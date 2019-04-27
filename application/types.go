@@ -54,7 +54,7 @@ type ContractEnvironment struct {
 	ContractAddress []byte
 	toInfo *AccountInfo
 	Data []byte
-	Value []byte
+	Value *math.Uint256
 }
 
 type KVPair interface {
