@@ -1,13 +1,14 @@
 package nsb
 
 import (
+	"fmt"
 	"errors"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
 	"encoding/hex"
 )
 func (st *NSBState) String() string {
-	return "StateRoot: " + hex.EncodeToString(st.StateRoot) + "\nHeight: " + string(st.Height) + "\n"
+	return fmt.Sprintf("StateRoot: %v\nHeight: %d\n", hex.EncodeToString(st.StateRoot), st.Height)
 }
 
 func loadState(db dbm.DB) *NSBState {
