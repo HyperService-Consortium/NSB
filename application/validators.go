@@ -3,11 +3,10 @@ package nsb
 import (
 	"fmt"
 	_ "bytes"
-	"github.com/tendermint/tendermint/abci/types"
 	"encoding/hex"
 	"strings"
 	"strconv"
-	"github.com/tendermint/tendermint/abci/example/code"
+	"github.com/tendermint/tendermint/abci/types"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 )
 
