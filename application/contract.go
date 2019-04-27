@@ -10,11 +10,11 @@ import (
 func (nsb *NSBApplication) execContractFuncs(contractName string, byteJson []byte) *ContractCallBackInfo {
 	switch contractName {
 	case "sdeam":
-		return return ContractCallBackInfo{
+		return &ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO),
 		}// sdeam.RegistedMethod(byteJson)
 	default:
-		return ContractCallBackInfo{
+		return &ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType),
 		}
 	}
