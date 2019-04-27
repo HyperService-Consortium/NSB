@@ -27,11 +27,12 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	fmt.Println(state.String())
 
 	var stmp *merkmap.MerkMap
-	db, err = leveldb.OpenFile("./data/trienode.db", nil)
+	var statedb *leveldb.DB
+	statedb, err = leveldb.OpenFile("./data/trienode.db", nil)
 	if err != nil {
 		return nil, err
 	}
-	stmp, err = merkmap.NewMerkMapFromDB(db, state.StateRoot, "00")
+	stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +43,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		stateMap: stmp,
 		accMap:   stmp.ArrangeSlot([]byte("acc:")),
 		txMap:    stmp.ArrangeSlot([]byte("tx:")),
-		statedb:  db,
+		statedb:  statedb,
 	}, nil
 }
 
