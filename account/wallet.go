@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"encoding/hex"
 	"bytes"
+	eddsa "golang.org/x/crypto/ed25519"
+	"github.com/Myriad-Dreamin/NSB/crypto"
 )
 
 var (
