@@ -1,6 +1,7 @@
 package account
 
 import (
+	"fmt"
 	"time"
 	eddsa "golang.org/x/crypto/ed25519"
 	"github.com/Myriad-Dreamin/NSB/crypto"
@@ -21,6 +22,15 @@ type Account struct {
 
 
 func NewAccount(seed []byte) *Account {
+	if len(seed) == 0 {
+		var acc Account
+		var err error
+		acc.PublicKey, acc.PrivateKey, err = eddsa.GenerateKey(nil)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return &acc
+	}
 	pri := eddsa.NewKeyFromSeed(crypto.Sha256(seed_header, seed))
 	return &Account{
 		PrivateKey: pri,
