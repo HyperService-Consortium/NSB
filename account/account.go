@@ -15,8 +15,8 @@ var (
 )
 
 type Account struct {
-	PrivateKey eddsa.PrivateKey
-	PublicKey eddsa.PublicKey
+	PrivateKey eddsa.PrivateKey `json:"pri"`
+	PublicKey  eddsa.PublicKey  `json:"pub"`
 	// randSalt []byte
 }
 
