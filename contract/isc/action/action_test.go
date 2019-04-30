@@ -4,8 +4,8 @@ import (
 	"testing"
 	"fmt"
 	"encoding/json"
-	"github.com/Myriad-Dreamin/NSB/application/action/ActionType"
-	"github.com/Myriad-Dreamin/NSB/application/action/ActionError"
+	"github.com/Myriad-Dreamin/NSB/contract/isc/action/ActionType"
+	"github.com/Myriad-Dreamin/NSB/contract/isc/action/ActionError"
 )
 
 

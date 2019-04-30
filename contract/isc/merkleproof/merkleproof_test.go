@@ -4,8 +4,8 @@ import (
 	"testing"
 	"fmt"
 	"encoding/json"
-	"github.com/Myriad-Dreamin/NSB/application/merkleproof/MerkleProofType"
-	"github.com/Myriad-Dreamin/NSB/application/merkleproof/MerkleProofError"
+	"github.com/Myriad-Dreamin/NSB/contract/isc/merkleproof/MerkleProofType"
+	"github.com/Myriad-Dreamin/NSB/contract/isc/merkleproof/MerkleProofError"
 )
 
 
