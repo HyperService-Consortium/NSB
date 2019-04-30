@@ -45,7 +45,7 @@ func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp 
 	if err != nil {
 		return nil, err
 	}
-	mp.lastRoot = rootHash
+	mp.lastRoot = rootHash.Bytes()
 
 	switch ori_slot := slot.(type) {
 	case string:
