@@ -6,13 +6,13 @@ import (
 )
 
 
-func (nsb *NSBApplication) addAction() (types.ResponseDeliverTx) {
+func addAction() (types.ResponseDeliverTx) {
 	return types.ResponseDeliverTx{
 		Code: uint32(CodeOK),
 	}
 }
 
-func (nsb *NSBApplication) getAction() (types.ResponseDeliverTx) {
+func getAction() (types.ResponseDeliverTx) {
 	return types.ResponseDeliverTx{
 		Code: uint32(CodeOK),
 	}
