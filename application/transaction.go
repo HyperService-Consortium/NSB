@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
@@ -114,25 +115,19 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, err := nsb.prepareContractEnvironment(bytesTx[1])
-	if err.Code != 0 {
+	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1])
+	if err != nil {
 		return err
 	}
 
-	return nsb.endConstructTransaction(nsb.createContracts(string(bytesTx[0]), env))
-}
+	cb := nsb.createContracts(string(bytesTx[0]), env)
+	fmt.Println(accInfo, conInfo)
 
-
-func (nsb *NSBApplication) endFuncTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
-	return 
-}
-
-func (nsb *NSBApplication) endConstructTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: cbInfo.CodeResponse,
-		Log: cbInfo.Log,
+		Code: cb.CodeResponse,
+		Log: cb.Log,
 		// Tags:
-		Info: cbInfo.Info,
+		Info: cb.Info,
 	}
 }
 
