@@ -17,8 +17,12 @@ func SafeAdd(JsonParas []byte) *cmn.ContractCallBackInfo {
 		return DecodeJsonError(err)
 	}
 	// -------------
-	overflowCheck := A.Add(B)
+	overflowCheck := args.A.Add(args.B)
 	if overflowCheck {
 		return overflowError("Arithmetic Overflow occurred while executing A+B")
+	}
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: CodeOK,
+		Info: A.String(),
 	}
 }
