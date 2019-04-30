@@ -133,6 +133,6 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 
 func (nsb *NSBApplication) transact(tx []byte) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		CodeResponse: uint32(response.CodeTODO),
+		Code: uint32(response.CodeTODO),
 	}
 }
