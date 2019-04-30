@@ -3,6 +3,7 @@ package isc
 import (
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
+	cmn "github.com/Myriad-Dreamin/NSB/common"
 )
 
 type ArgsSafeAdd struct {
@@ -19,7 +20,7 @@ func SafeAdd(JsonParas []byte) *cmn.ContractCallBackInfo {
 	// -------------
 	overflowCheck := args.A.Add(args.B)
 	if overflowCheck {
-		return overflowError("Arithmetic Overflow occurred while executing A+B")
+		return OverFlowError("Arithmetic Overflow occurred while executing A+B")
 	}
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: CodeOK,
