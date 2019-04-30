@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"bytes"
 	"encoding/json"
+	"github.com/Myriad-Dreamin/NSB/account"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
@@ -11,7 +12,7 @@ import (
 )
 
 
-func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, createFlag bool) (
 	*cmn.ContractEnvironment,
 	*AccountInfo,
 	*AccountInfo,
@@ -50,12 +51,18 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (
 		return nil, nil, nil, response.DecodeAccountInfoError(err)
 	}
 
-	byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
-	if err != nil {
-		return nil, nil, nil, response.ReTrieveTxError(err)
-	}
-	if byteInfo == nil {
-		return nil, nil, nil, response.MissingContract
+	if createFlag {
+		txHeader.ContractAddress = account.NewAccount([]byte{})
+		byteInfo = make([]byte, 0)
+		// TODO: set CodeHash
+	} else {
+		byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
+		if err != nil {
+			return nil, nil, nil, response.ReTrieveTxError(err)
+		}
+		if byteInfo == nil {
+			return nil, nil, nil, response.MissingContract
+		}
 	}
 
 	var contractInfo AccountInfo
@@ -92,7 +99,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1])
+	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1], false)
 	if err != nil {
 		return err
 	}
@@ -115,7 +122,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1])
+	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1], true)
 	if err != nil {
 		return err
 	}
