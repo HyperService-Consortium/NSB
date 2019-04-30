@@ -107,7 +107,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		return *nsb.parseFuncTransaction(bytesTx[1])
 
 	case "transact": // send token
-		return types.ResponseDeliverTx{Code: uint32(response.CodeTODO)}
+		return *nsb.transact(bytesTx[1])
 
 	case "createContract": // create on-chain contracts
 		return *nsb.parseCreateTransaction(bytesTx[1])

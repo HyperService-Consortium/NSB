@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
+	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
 
-func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*ContractEnvironment, *types.ResponseDeliverTx) {
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*cmn.ContractEnvironment, *types.ResponseDeliverTx) {
 	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
 	if err != nil {
@@ -24,7 +25,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*Con
 		return nil, response.UpdateTxTrieError(err)
 	}
 
-	var txHeader TransactionHeader
+	var txHeader cmn.TransactionHeader
 	err = json.Unmarshal(txHeaderJson, &txHeader)
 	if err != nil {
 		return nil, response.DecodeTxHeaderError(err)
@@ -37,7 +38,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*Con
 		return nil, response.ReTrieveTxError(err)
 	}
 
-	var accInfo AccountInfo
+	var accInfo cmn.AccountInfo
 	err = json.Unmarshal(byteInfo, &accInfo)
 	if err != nil {
 		return nil, response.DecodeAccountInfoError(err)
@@ -51,14 +52,14 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*Con
 		return nil, response.MissingContract
 	}
 
-	var contractInfo AccountInfo
+	var contractInfo cmn.AccountInfo
 	err = json.Unmarshal(byteInfo, &contractInfo)
 	if err != nil {
 		return nil, response.DecodeAccountInfoError(err)
 	}
 	// TODO: Check CodeHash
 
-	var contractEnv = ContractEnvironment{
+	var contractEnv = cmn.ContractEnvironment{
 		From: txHeader.From,
 		fromInfo: &accInfo,
 		ContractAddress: txHeader.ContractAddress,
@@ -92,7 +93,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		return err
 	}
 
-	return nsb.endFuncTransaction(nsb.execContractFuncs(bytesTx[0], env))
+	return nsb.endFuncTransaction(nsb.execContractFuncs(string(bytesTx[0]), env))
 }
 
 
@@ -107,11 +108,11 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		return err
 	}
 
-	return nsb.endConstructTransaction(nsb.createContracts(bytesTx[0], env))
+	return nsb.endConstructTransaction(nsb.createContracts(string(bytesTx[0]), env))
 }
 
 
-func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) *types.ResponseDeliverTx {
+func (nsb *NSBApplication) endFuncTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: cbInfo.CodeResponse,
 		Log: cbInfo.Log,
@@ -120,7 +121,7 @@ func (nsb *NSBApplication) endFuncTransaction(cbInfo *ContractCallBackInfo) *typ
 	}
 }
 
-func (nsb *NSBApplication) endConstructTransaction(cbInfo *ContractCallBackInfo) *types.ResponseDeliverTx {
+func (nsb *NSBApplication) endConstructTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: cbInfo.CodeResponse,
 		Log: cbInfo.Log,

@@ -33,10 +33,6 @@ const ( // Transaction
 	CodeUpdateTxTrieError
 )
 
-const ( // ISC
-	codeISCExecFail ResponseCode = 300 + iota
-)
-
 
 var (
 	ExecOK = &types.ResponseDeliverTx{

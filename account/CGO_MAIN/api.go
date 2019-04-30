@@ -49,4 +49,6 @@ func CDLL_WalletVerifyByRaw(wltptr C.int, idx C.int, signature unsafe.Pointer, m
 func CDLL_WalletVerifyByHash(wltptr C.int, idx C.int, signature unsafe.Pointer, msgHash unsafe.Pointer) C.int {
 	return C.int(wallet.WalletVerifyByHash((wallet.Export_C_Int)(wltptr), (wallet.Export_C_Int)(idx), signature, msgHash))
 }
+
+
 func main() {}
