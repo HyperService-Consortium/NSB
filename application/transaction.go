@@ -10,60 +10,64 @@ import (
 )
 
 
-func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*cmn.ContractEnvironment, *types.ResponseDeliverTx) {
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte)
+(
+	*cmn.ContractEnvironment,
+	*AccountInfo,
+	*AccountInfo,
+	*types.ResponseDeliverTx,
+) {
 	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
 	if err != nil {
-		return nil, response.ReTrieveTxError(err)
+		return nil, nil, nil, response.ReTrieveTxError(err)
 	}
 	if byteInfo != nil {
-		return nil, response.DuplicateTxError
+		return nil, nil, nil, response.DuplicateTxError
 	}
 	err = nsb.txMap.TryUpdate(txHeaderJson, []byte{1})
 	// internal error
 	if err != nil {
-		return nil, response.UpdateTxTrieError(err)
+		return nil, nil, nil, response.UpdateTxTrieError(err)
 	}
 
 	var txHeader cmn.TransactionHeader
 	err = json.Unmarshal(txHeaderJson, &txHeader)
 	if err != nil {
-		return nil, response.DecodeTxHeaderError(err)
+		return nil, nil, nil, response.DecodeTxHeaderError(err)
 	}
 
 	// TODO: verify signature 
 
 	byteInfo, err = nsb.accMap.TryGet(txHeader.From)
 	if err != nil {
-		return nil, response.ReTrieveTxError(err)
+		return nil, nil, nil, response.ReTrieveTxError(err)
 	}
 
-	var accInfo cmn.AccountInfo
+	var accInfo AccountInfo
 	err = json.Unmarshal(byteInfo, &accInfo)
 	if err != nil {
-		return nil, response.DecodeAccountInfoError(err)
+		return nil, nil, nil, response.DecodeAccountInfoError(err)
 	}
 
 	byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
 	if err != nil {
-		return nil, response.ReTrieveTxError(err)
+		return nil, nil, nil, response.ReTrieveTxError(err)
 	}
 	if byteInfo == nil {
-		return nil, response.MissingContract
+		return nil, nil, nil, response.MissingContract
 	}
 
-	var contractInfo cmn.AccountInfo
+	var contractInfo AccountInfo
 	err = json.Unmarshal(byteInfo, &contractInfo)
 	if err != nil {
-		return nil, response.DecodeAccountInfoError(err)
+		return nil, nil, nil, response.DecodeAccountInfoError(err)
 	}
 	// TODO: Check CodeHash
 
 	var contractEnv = cmn.ContractEnvironment{
 		From: txHeader.From,
-		fromInfo: &accInfo,
 		ContractAddress: txHeader.ContractAddress,
-		toInfo: &contractInfo,
 		Data: txHeader.JsonParas,
 		Value: txHeader.Value,
 	}
@@ -75,10 +79,10 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (*cmn
 
 	// internal error
 	if err != nil {
-		return nil, response.RequestStorageError(err)
+		return nil, nil, nil, response.RequestStorageError(err)
 	}
 
-	return &contractEnv, nil
+	return &contractEnv, &accInfo, &contractInfo, nil
 }
 
 
@@ -88,12 +92,20 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, err := nsb.prepareContractEnvironment(bytesTx[1])
+	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1])
 	if err != nil {
 		return err
 	}
 
-	return nsb.endFuncTransaction(nsb.execContractFuncs(string(bytesTx[0]), env))
+	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
+	fmt.Println(accInfo, conInfo)
+
+	return &types.ResponseDeliverTx{
+		Code: cb.CodeResponse,
+		Log: cb.Log,
+		// Tags:
+		Info: cb.Info,
+	}
 }
 
 
@@ -113,12 +125,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 
 
 func (nsb *NSBApplication) endFuncTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
-	return &types.ResponseDeliverTx{
-		Code: cbInfo.CodeResponse,
-		Log: cbInfo.Log,
-		// Tags:
-		Info: cbInfo.Info,
-	}
+	return 
 }
 
 func (nsb *NSBApplication) endConstructTransaction(cbInfo *cmn.ContractCallBackInfo) *types.ResponseDeliverTx {
@@ -127,5 +134,11 @@ func (nsb *NSBApplication) endConstructTransaction(cbInfo *cmn.ContractCallBackI
 		Log: cbInfo.Log,
 		// Tags:
 		Info: cbInfo.Info,
+	}
+}
+
+func (nsb *NSBApplication) transact(tx []byte) *types.ResponseDeliverTx {
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: uint32(response.CodeTODO),
 	}
 }
