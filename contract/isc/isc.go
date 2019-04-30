@@ -2,6 +2,7 @@ package isc
 
 import (
 	"fmt"
+	"encoding/hex"
 	"encoding/json"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/contract/isc/transaction"
@@ -43,16 +44,15 @@ type ArgsCreateNewContract struct {
 
 
 func CreateNewContract(env *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
-	fmt.Println("getting ", env)
 	var args ArgsCreateNewContract
 	err := json.Unmarshal(env.Data, &args)
 	if err != nil {
 		return DecodeJsonError(err)
 	}
 
-	fmt.Print(args)
+	fmt.Print(string(env.Data))
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(CodeOK),
-		Info: fmt.Sprintf("%v", args),
+		Info: fmt.Sprintf("create Success , this contract is deploy at %v", env.ContractAddress),
 	}
 }

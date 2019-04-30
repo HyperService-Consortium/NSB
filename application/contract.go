@@ -12,7 +12,6 @@ import (
 func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	switch contractName {
 	case "isc":
-		fmt.Println(contractEnv)
 		return isc.RigisteredMethod(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo{
