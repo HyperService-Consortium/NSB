@@ -51,7 +51,7 @@ func (nsb *NSBApplication) CreateNewContract(byteJson []byte) (*cmn.ContractCall
 
 	fmt.Print(args)
 	return &cmn.ContractCallBackInfo{
-		Code: uint32(CodeOK),
-		Log: fmt.Sprintf("%v", args),
+		CodeResponse: uint32(CodeOK),
+		Info: fmt.Sprintf("%v", args),
 	}
 }
