@@ -14,7 +14,12 @@ const ( // base
 	CodeUnknown
 	CodeMissingTxMethod
 	CodeMissingContract
+	CodeCommitTxTrieError
+	CodeCommitAccTrieError
+	CodeUpdateTxTrieError
+	CodeUpdateAccTrieError
 	CodeRequestStorageError
+	CodeEncodeAccountInfoError
 	CodeTODO = 99
 )
 
@@ -30,7 +35,6 @@ const ( // Transaction
 	CodeInvalidTxType
 	CodeReTrieveTxError
 	CodeDuplicateTxError
-	CodeUpdateTxTrieError
 )
 
 
@@ -83,9 +87,38 @@ func RequestStorageError(err error) *types.ResponseDeliverTx {
 		Log: fmt.Sprintf("RequestStorageError: %v", err),
 	}
 }
+
 func UpdateTxTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(CodeUpdateTxTrieError),
 		Log: fmt.Sprintf("UpdateTxTrieError: can't update Transaction Trie, %v", err),
+	}
+}
+
+func UpdateAccTrieError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(CodeUpdateAccTrieError),
+		Log: fmt.Sprintf("UpdateAccTrieError: can't update Account Trie, %v", err),
+	}
+}
+
+func CommitTxTrieError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(CodeCommitTxTrieError),
+		Log: fmt.Sprintf("CommitTxTrieError: can't Commit Transaction Trie, %v", err),
+	}
+}
+
+func CommitAccTrieError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(CodeCommitAccTrieError),
+		Log: fmt.Sprintf("CommitAccTrieError: can't Commit Account Trie, %v", err),
+	}
+}
+
+func EncodeAccountInfoError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(CodeEncodeAccountInfoError),
+		Log: fmt.Sprintf("EncodeAccountInfoError: %v", err),
 	}
 }
