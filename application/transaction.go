@@ -19,7 +19,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	fmt.Println("prepare to create", txHeaderJson, createFlag)
+	// fmt.Println("prepare to create", txHeaderJson, createFlag)
 
 	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
@@ -35,7 +35,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		return nil, nil, nil, response.UpdateTxTrieError(err)
 	}
 
-	fmt.Println("Check TxTrie OK")
+	// fmt.Println("Check TxTrie OK")
 
 	var txHeader cmn.TransactionHeader
 	err = json.Unmarshal(txHeaderJson, &txHeader)
@@ -43,7 +43,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		return nil, nil, nil, response.DecodeTxHeaderError(err)
 	}
 
-	fmt.Println("decoded TxHeader", txHeader)
+	// fmt.Println("decoded TxHeader", txHeader)
 
 	// TODO: verify signature 
 
@@ -62,7 +62,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		accInfo.Balance = math.NewUint256FromBytes([]byte{0})
 	}
 	
-	fmt.Println("decoded accInfo", accInfo)
+	// fmt.Println("decoded accInfo", accInfo)
 
 	var contractInfo AccountInfo
 	if createFlag {
@@ -87,7 +87,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 
 	// TODO: Check CodeHash
 	
-	fmt.Println("decoded contractInfo", contractInfo)
+	// fmt.Println("decoded contractInfo", contractInfo)
 
 	var contractEnv = cmn.ContractEnvironment{
 		From: txHeader.From,
