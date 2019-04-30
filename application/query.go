@@ -2,7 +2,7 @@ package nsb
 
 import (
 	"github.com/tendermint/tendermint/abci/types"
-	"encoding/hex"
+	// "encoding/hex"
 	"encoding/json"
 )
 
@@ -11,6 +11,8 @@ func (nsb *NSBApplication) QueryIndex(req *types.RequestQuery) string {
 	switch req.Path {
 	case "acc_getAccInfo":
 		return nsb.getAccInfo(req.Data, req.Height)
+	default:
+		return "unknown query type"
 	}
 }
 
