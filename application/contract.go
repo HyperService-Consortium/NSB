@@ -1,7 +1,6 @@
 package nsb
 
 import (
-	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
 	"fmt"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
