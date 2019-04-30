@@ -52,7 +52,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 	}
 
 	if createFlag {
-		txHeader.ContractAddress = account.NewAccount([]byte{})
+		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
 		byteInfo = make([]byte, 0)
 		// TODO: set CodeHash
 	} else {
