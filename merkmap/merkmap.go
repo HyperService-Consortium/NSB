@@ -107,7 +107,7 @@ func (mp *MerkMap) TryDelete(key []byte) error {
 }
 
 func (mp *MerkMap) Revert() (err error) {
-	mp.merk, err = trie.NewTrie(mp.lastRoot, mp.db)
+	mp.merk, err = trie.NewTrie(trie.BytesToHash(mp.lastRoot), mp.db)
 	return
 }
 
