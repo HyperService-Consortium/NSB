@@ -10,8 +10,7 @@ import (
 )
 
 
-func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte)
-(
+func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte) (
 	*cmn.ContractEnvironment,
 	*AccountInfo,
 	*AccountInfo,
