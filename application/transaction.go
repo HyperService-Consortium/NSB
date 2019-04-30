@@ -116,14 +116,15 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, accInfo, conInfo, err := nsb.prepareContractEnvironment(bytesTx[1], false)
-	if err != nil {
-		return err
+	env, accInfo, conInfo, errResponse := nsb.prepareContractEnvironment(bytesTx[1], false)
+	if errResponse != nil {
+		return errResponse
 	}
 
 	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
 
 	if cb.CodeResponse == uint32(response.CodeOK) {
+		var err error
 		conInfo.StorageRoot, err = env.Storage.Commit()
 		if err != nil {
 			return response.CommitAccTrieError(err)
@@ -173,6 +174,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 	cb := nsb.createContracts(string(bytesTx[0]), env)
 
 	if cb.CodeResponse == uint32(response.CodeOK) {
+		var err error
 		conInfo.StorageRoot, err = env.Storage.Commit()
 		if err != nil {
 			return response.CommitAccTrieError(err)
