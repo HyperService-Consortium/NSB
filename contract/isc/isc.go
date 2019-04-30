@@ -1,8 +1,8 @@
 package isc
 
 import (
-	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"encoding/json"
+	cmn "github.com/Myriad-Dreamin/NSB/common"
 )
 
 type RequestCallISC struct {
@@ -19,7 +19,9 @@ func RigisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	}
 	switch req.FuncName {
 	case "a+b":
-		return SafeAdd(Args)
+		return SafeAdd(req.Args)
+	default:
+		return InvalidFunctionType(req.FuncName)
 	}
 }
 
