@@ -123,28 +123,28 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 
 	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
 
-	if cb.CodeResponse == uint(response.CodeOK) {
+	if cb.CodeResponse == uint32(response.CodeOK) {
 		conInfo.StorageRoot, err = env.Storage.Commit()
 		if err != nil {
-			return CommitAccTrieError(err)
+			return response.CommitAccTrieError(err)
 		}
 		var bt []byte
 		bt, err = json.Marshal(accInfo)
 		if err != nil {
-			return EncodeAccountInfoError(err)
+			return response.EncodeAccountInfoError(err)
 		}
 		err = nsb.accMap.TryUpdate(env.From, bt)
 		if err != nil {
-			return UpdateAccTrieError(err)
+			return response.UpdateAccTrieError(err)
 		}
 
 		bt, err = json.Marshal(conInfo)
 		if err != nil {
-			return EncodeAccountInfoError(err)
+			return response.EncodeAccountInfoError(err)
 		}
 		err = nsb.accMap.TryUpdate(env.ContractAddress, bt)
 		if err != nil {
-			return UpdateAccTrieError(err)
+			return response.UpdateAccTrieError(err)
 		}
 	}
 
@@ -172,28 +172,28 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 
 	cb := nsb.createContracts(string(bytesTx[0]), env)
 
-	if cb.CodeResponse == uint(response.CodeOK) {
+	if cb.CodeResponse == uint32(response.CodeOK) {
 		conInfo.StorageRoot, err = env.Storage.Commit()
 		if err != nil {
-			return CommitAccTrieError(err)
+			return response.CommitAccTrieError(err)
 		}
 		var bt []byte
 		bt, err = json.Marshal(accInfo)
 		if err != nil {
-			return EncodeAccountInfoError(err)
+			return response.EncodeAccountInfoError(err)
 		}
 		err = nsb.accMap.TryUpdate(env.From, bt)
 		if err != nil {
-			return UpdateAccTrieError(err)
+			return response.UpdateAccTrieError(err)
 		}
 
 		bt, err = json.Marshal(conInfo)
 		if err != nil {
-			return EncodeAccountInfoError(err)
+			return response.EncodeAccountInfoError(err)
 		}
 		err = nsb.accMap.TryUpdate(env.ContractAddress, bt)
 		if err != nil {
-			return UpdateAccTrieError(err)
+			return response.UpdateAccTrieError(err)
 		}
 	}
 
