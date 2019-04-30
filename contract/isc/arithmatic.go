@@ -24,6 +24,6 @@ func SafeAdd(JsonParas []byte) *cmn.ContractCallBackInfo {
 	}
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: CodeOK,
-		Info: A.String(),
+		Info: args.A.String(),
 	}
 }
