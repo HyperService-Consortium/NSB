@@ -101,7 +101,7 @@ func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEnd
 }
 
 func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
-	return types.ResponseCheckTx{Code: uint32(response.CodeOK), GasWanted: 1}
+	return nsb.DeliverTx(tx)
 }
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
