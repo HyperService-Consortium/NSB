@@ -23,7 +23,7 @@ func (nsb *NSBApplication) getAccInfo(paras []byte, height int64) string {
 		return "the account is not on this AccTrie"
 	}
 	var accInfo AccountInfo
-	err = json.Unmarshal(bytesInfo, accInfo)
+	err = json.Unmarshal(bytesInfo, &accInfo)
 	if err != nil {
 		return err.Error()
 	}
