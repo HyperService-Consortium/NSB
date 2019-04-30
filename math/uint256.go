@@ -61,6 +61,10 @@ func (ui256 *Uint256) String() string {
 	return ui256.b.String()
 }
 
+func (ui256 *Uint256) Bytes() []byte {
+	return ui256.b.Bytes()
+}
+
 func (ui256 *Uint256) Add(y *Uint256) bool {
 	ui256.b.Add(ui256.b, y.b)
 	if ui256.b.Bit(256) == 1 {

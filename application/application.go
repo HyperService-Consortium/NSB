@@ -53,6 +53,17 @@ func (nsb *NSBApplication) SetLogger(l log.Logger) {
 }
 
 
+func (nsb *NSBApplication) Revert() error {
+	err := nsb.stateMap.Revert()
+	if err != nil {
+		return err
+	}
+	nsb.accMap = nsb.stateMap.ArrangeSlot([]byte("acc:"))
+	nsb.txMap = nsb.stateMap.ArrangeSlot([]byte("tx:"))
+	return nil
+}
+
+
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
 		Data:       fmt.Sprintf(
@@ -95,26 +106,34 @@ func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x19"))
+	var ret types.ResponseDeliverTx
 	if len(bytesTx) != 2 {
 		return *response.InvalidTxInputFormatWrongx19
 	}
 	switch string(bytesTx[0]) {
 
 	case "validators": // nsb validators
-		return nsb.execValidatorTx(bytesTx[1])
+		ret = nsb.execValidatorTx(bytesTx[1])
 
 	case "sendTransaction": // transact contract methods
-		return *nsb.parseFuncTransaction(bytesTx[1])
+		ret = *nsb.parseFuncTransaction(bytesTx[1])
 
 	case "transact": // send token
-		return *nsb.transact(bytesTx[1])
+		ret = *nsb.transact(bytesTx[1])
 
 	case "createContract": // create on-chain contracts
-		return *nsb.parseCreateTransaction(bytesTx[1])
+		ret = *nsb.parseCreateTransaction(bytesTx[1])
 
 	default:
 		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType)}
 	}
+	if ret.Code != response.CodeOK {
+		err = nsb.Revert()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	return ret
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {

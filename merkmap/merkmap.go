@@ -12,6 +12,7 @@ type MerkMap struct {
 	merk *trie.Trie
 	db *trie.NodeBase
 	slot []byte
+	lastRoot []byte
 }
 
 func concatBytes(dat ...[]byte) []byte {
@@ -44,7 +45,8 @@ func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp 
 	if err != nil {
 		return nil, err
 	}
-	
+	mp.lastRoot = rootHash
+
 	switch ori_slot := slot.(type) {
 	case string:
 		//hexstring
@@ -104,10 +106,16 @@ func (mp *MerkMap) TryDelete(key []byte) error {
 	return mp.merk.TryDelete(mp.location(key))
 }
 
+func (mp *MerkMap) Revert() (err error) {
+	mp.merk, err = trie.NewTrie(mp.lastRoot, mp.db)
+	return
+}
+
 func (mp *MerkMap) Commit(cb trie.LeafCallback) (root []byte, err error) {
 	var rt trie.Hash
 	rt, err = mp.merk.Commit(cb)
-	return rt.Bytes(), err
+	mp.lastRoot = rt.Bytes()
+	return mp.lastRoot, err
 }
 
 // dont use this function if its db handler comes from outside

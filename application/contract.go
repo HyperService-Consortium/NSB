@@ -30,9 +30,7 @@ func (nsb *NSBApplication) createContracts(contractName string, contractEnv *cmn
 	switch contractName {
 	case "isc":
 		fmt.Println(contractEnv)
-		return &cmn.ContractCallBackInfo{
-			CodeResponse: uint32(response.CodeTODO),
-		}
+		return isc.CreateNewContract()
 	case "sdeam":
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO),
