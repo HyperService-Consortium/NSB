@@ -1,3 +1,3 @@
 set curdir=%cd%
-$env:path=$env:path;%curdir%
+set path=%path%;%curdir%
 py -3
