@@ -132,7 +132,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	default:
 		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType)}
 	}
-	if ret.Code != response.CodeOK {
+	if ret.Code != uint32(response.CodeOK) {
 		err = nsb.Revert()
 		if err != nil {
 			fmt.Println(err)
