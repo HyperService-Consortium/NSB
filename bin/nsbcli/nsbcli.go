@@ -59,7 +59,7 @@ func (cli *NSBCli) SetInfo() {
 
 func (cli *NSBCli) Init() {
 	cli.SetInfo()
-	
+
 	cli.handler.Before = cli.Before
 	cli.handler.Action = nil
 	cli.handler.After = cli.After
@@ -115,8 +115,15 @@ func (cli *NSBCli) Run() {
 	}
 }
 
+func (cli *NSBCli) CliExit (status int) {
+	fmt.Println("nsbcli exit with", status)
+	cli.Stop()
+	os.Exit(status)
+}
+
 func main() {
 	var cli = NewNSBCli()
+	urcli.OsExiter = cli.CliExit
 	cli.Init()
 	cli.Run()
 	cli.Stop()

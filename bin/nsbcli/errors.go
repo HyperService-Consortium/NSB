@@ -1,22 +1,55 @@
 package main
 
+
 const (
 	CodeOK int = iota
-	CodeDecodeError
+	CodeInternalError
+	CodeIOError
+	CodeLogicError
 )
 
-type DecodeErrorObj struct {
+type errObj struct {
 	err error
 }
 
-func (errobj *DecodeErrorObj) Error() string {
+func (errobj *errObj) Error() string {
 	return errobj.err.Error()
 }
 
-func (errobj *DecodeErrorObj) ExitCode() int {
-	return CodeDecodeError
+
+type InternalErrorObj struct {
+	errObj
 }
 
-func DecodeError(err error) *DecodeErrorObj {
-	return &DecodeErrorObj{err}
+func (errobj *InternalErrorObj) ExitCode() int {
+	return CodeInternalError
+}
+
+func InternalError(err error) *InternalErrorObj {
+	return &InternalErrorObj{errObj:errObj{err}}
+}
+
+
+type IOErrorObj struct {
+	errObj
+}
+
+func (errobj *IOErrorObj) ExitCode() int {
+	return CodeIOError
+}
+
+func IOError(err error) *IOErrorObj {
+	return &IOErrorObj{errObj:errObj{err}}
+}
+
+type LogicErrorObj struct {
+	errObj
+}
+
+func (errobj *LogicErrorObj) ExitCode() int {
+	return CodeLogicError
+}
+
+func LogicError(err error) *LogicErrorObj {
+	return &LogicErrorObj{errObj:errObj{err}}
 }
