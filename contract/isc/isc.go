@@ -45,7 +45,7 @@ type ArgsCreateNewContract struct {
 func CreateNewContract(env *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
 	fmt.Println("getting ", env)
 	var args ArgsCreateNewContract
-	err := json.Unmarshal(env.Data, args)
+	err := json.Unmarshal(env.Data, &args)
 	if err != nil {
 		return DecodeJsonError(err)
 	}
