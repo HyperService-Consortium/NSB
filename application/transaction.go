@@ -57,6 +57,8 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		if err != nil {
 			return nil, nil, nil, response.DecodeAccountInfoError(err)
 		}
+	} else {
+		accInfo.Balance = math.NewUint256FromBytes([]byte{0})
 	}
 	
 	fmt.Println("decoded accInfo", accInfo)
@@ -65,6 +67,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 	if createFlag {
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
 		byteInfo = make([]byte, 0)
+		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 		// TODO: set CodeHash
 	} else {
 		byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
@@ -83,7 +86,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 
 	// TODO: Check CodeHash
 	
-	fmt.Println("decoded accInfo", contractInfo)
+	fmt.Println("decoded contractInfo", contractInfo)
 
 	var contractEnv = cmn.ContractEnvironment{
 		From: txHeader.From,
