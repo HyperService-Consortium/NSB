@@ -35,26 +35,6 @@ const ( // Transaction
 
 
 var (
-	CheckExecOK = &types.ResponseCheckTx{
-		Code: uint32(CodeOK),
-	}
-	CheckDuplicateTxError = &types.ResponseCheckTx{
-		Code: uint32(CodeDuplicateTxError),
-		Log: "CheckDuplicateTxError: this transaction is already on the Transaction Trie",
-	}
-	CheckInvalidTxInputFormatWrongx18 = &types.ResponseCheckTx{
-		Code: uint32(CodeInvalidTxInputFormat),
-		Log: "CheckInvalidInputFormat: mismatch of format (TransactionHeader\\x18Transaction)",
-	}
-	CheckInvalidTxInputFormatWrongx19 = &types.ResponseCheckTx{
-		Code: uint32(CodeInvalidTxInputFormat),
-		Log: "CheckInvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
-	}
-	CheckMissingContract = &types.ResponseCheckTx{
-		Code: uint32(CodeMissingContract),
-		Log: "CheckMissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
-	}
-
 	ExecOK = &types.ResponseDeliverTx{
 		Code: uint32(CodeOK),
 	}
@@ -75,42 +55,6 @@ var (
 		Log: "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
 	}
 )
-
-func DecodeCheckTxHeaderError(err error) *types.ResponseCheckTx {
-	return &types.ResponseCheckTx{
-		Code: uint32(CodeDecodeTxHeaderError),
-		Log: fmt.Sprintf("DecodeCheckTxHeaderError: %v", err),
-	}
-}
-
-func DecodeCheckAccountInfoError(err error) *types.ResponseCheckTx {
-	return &types.ResponseCheckTx{
-		Code: uint32(CodeDecodeAccountInfoError),
-		Log: fmt.Sprintf("DecodeCheckAccountInfoError: %v", err),
-	}
-}
-
-func CheckReTrieveTxError(err error) *types.ResponseCheckTx {
-	return &types.ResponseCheckTx{
-		Code: uint32(CodeReTrieveTxError),
-		Log: fmt.Sprintf("CheckReTrieveTxError: %v", err),
-	}
-}
-
-func CheckRequestStorageError(err error) *types.ResponseCheckTx {
-	return &types.ResponseCheckTx{
-		Code: uint32(CodeRequestStorageError),
-		Log: fmt.Sprintf("CheckRequestStorageError: %v", err),
-	}
-}
-
-func CheckUpdateTxTrieError(err error) *types.ResponseCheckTx {
-	return &types.ResponseCheckTx{
-		Code: uint32(CodeUpdateTxTrieError),
-		Log: fmt.Sprintf("CheckUpdateTxTrieError: can't update Transaction Trie, %v", err),
-	}
-}
-
 
 func DecodeTxHeaderError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
@@ -139,7 +83,6 @@ func RequestStorageError(err error) *types.ResponseDeliverTx {
 		Log: fmt.Sprintf("RequestStorageError: %v", err),
 	}
 }
-
 func UpdateTxTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(CodeUpdateTxTrieError),
