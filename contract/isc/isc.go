@@ -53,6 +53,6 @@ func CreateNewContract(env *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo)
 	fmt.Print(string(env.Data))
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(CodeOK),
-		Info: fmt.Sprintf("create success , this contract is deploy at %v", env.ContractAddress),
+		Info: fmt.Sprintf("create success , this contract is deploy at %v", hex.EncodeToString(env.ContractAddress)),
 	}
 }
