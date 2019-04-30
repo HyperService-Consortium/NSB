@@ -34,7 +34,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		return nil, nil, nil, response.UpdateTxTrieError(err)
 	}
 
-	fmt.Prinln("Check TxTrie OK")
+	fmt.Println("Check TxTrie OK")
 
 	var txHeader cmn.TransactionHeader
 	err = json.Unmarshal(txHeaderJson, &txHeader)
@@ -42,7 +42,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(txHeaderJson []byte, creat
 		return nil, nil, nil, response.DecodeTxHeaderError(err)
 	}
 
-	fmt.Prinln("decoded TxHeader", txHeader)
+	fmt.Println("decoded TxHeader", txHeader)
 
 	// TODO: verify signature 
 
