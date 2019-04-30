@@ -1,6 +1,8 @@
 package nsb
 
 import (
+	"fmt"
+	"encoding/hex"
 	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/Myriad-Dreamin/NSB/merkmap"
 	"github.com/tendermint/tendermint/abci/types"
@@ -32,4 +34,13 @@ type AccountInfo struct {
 	Balance     *math.Uint256 `json:"balance"`
 	CodeHash    []byte        `json:"code_hash"`
 	StorageRoot []byte        `json:"storage_root"`
+}
+
+func (accInfo *AccountInfo) String() string {
+	return fmt.Sprintf(
+		"Balance: %v\nodeHash: %v\nStorageRoot: %v\n",
+		accInfo.Balance.String(),
+		hex.EncodeToString(accInfo.CodeHash),
+		hex.EncodeToString(accInfo.StorageRoot),
+	)
 }

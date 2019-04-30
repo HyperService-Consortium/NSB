@@ -141,7 +141,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
-	fmt.Println("DeliverTx")
+	fmt.Println("Commit")
 	// Using a memdb - just return the big endian size of the db
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
@@ -185,7 +185,7 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 		ret.Code = uint32(response.CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
-		ret.Log = fmt.Sprintf("asking Prove key: %v, value %v", req.Data, req.Path);
+		ret.Log = fmt.Sprintf("asking Prove key: %v, value %v", req.Data, req.Path)
 	} else {
 		// start new ISC
 		// add MerkleProof
@@ -194,12 +194,13 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 		// settle contract
 		// return/stake funds
 		
-		// 
+		// 2ecddf60bb43e12eb402949337a4a0795480f1409e76b7f9cf52ef783532da0a
 
 		ret.Code = uint32(response.CodeOK)
 		ret.Key = req.Data
 		ret.Value = []byte(req.Path)
-		ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path);
+		ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path)
+		ret.Info = nsb.QueryIndex(&req)
 	}
 	return 
 }
