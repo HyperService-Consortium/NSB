@@ -91,25 +91,24 @@ func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseI
 // Track the block hash and header information
 func (nsb *NSBApplication) BeginBlock(req types.RequestBeginBlock) types.ResponseBeginBlock {
 	// reset valset changes
+	fmt.Println("BeginBlock")
 	nsb.ValUpdates = make([]types.ValidatorUpdate, 0)
 	return types.ResponseBeginBlock{}
 }
 
 // Update the validator set
 func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEndBlock {
+	fmt.Println("EndBlock")
 	return types.ResponseEndBlock{ValidatorUpdates: nsb.ValUpdates}
 }
 
 func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
-	ret := nsb.DeliverTx(tx)
-	return types.ResponseCheckTx{
-		Code: ret.Code,
-		Log: ret.Log,
-		Info: ret.Info,
-	}
+	fmt.Println("CheckTx")
+	return types.ResponseCheckTx{Code: 0}
 }
 
 func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
+	fmt.Println("DeliverTx")
 	bytesTx := bytes.Split(tx, []byte("\x19"))
 	var ret types.ResponseDeliverTx
 	if len(bytesTx) != 2 {
@@ -142,6 +141,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
+	fmt.Println("DeliverTx")
 	// Using a memdb - just return the big endian size of the db
 	appHash := make([]byte, 32)
 	binary.PutVarint(appHash, nsb.state.Height)
