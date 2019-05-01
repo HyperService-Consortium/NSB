@@ -16,26 +16,26 @@ import (
 // txHeader
 
 type TransactionHeader struct {
-	From []byte  `json:"from"`
-	ContractAddress []byte  `json:"to"`
-	JsonParas []byte `json:"data"`
-	Value *math.Uint256 `json:"value"`
-	Nonce *math.Uint256 `json:"nonce"`
-	Signature []byte `json:"signature"`
+	From            []byte        `json:"from"`
+	ContractAddress []byte        `json:"to"`
+	JsonParas       []byte        `json:"data"`
+	Value           *math.Uint256 `json:"value"`
+	Nonce           *math.Uint256 `json:"nonce"`
+	Signature       []byte        `json:"signature"`
 }
 
 type TransactionIntent struct {
-	Fr          []byte              `json:"from"`
-	To          []byte              `json:"to"`
-	Seq         uint                `json:"seq"`
-	Amt         uint                `json:"amt"`
-	Meta        []byte              `json:"meta"`
+	Fr   []byte `json:"from"`
+	To   []byte `json:"to"`
+	Seq  uint   `json:"seq"`
+	Amt  uint   `json:"amt"`
+	Meta []byte `json:"meta"`
 }
 
 type ArgsCreateNewContract struct {
-	IscOwners          [][]byte                        `json:"isc_owners"`
-	Funds              []uint32                        `json:"required_funds"`
-	VesSig             []byte                          `json:"ves_signature"`
+	IscOwners          [][]byte            `json:"isc_owners"`
+	Funds              []uint32            `json:"required_funds"`
+	VesSig             []byte              `json:"ves_signature"`
 	TransactionIntents []TransactionIntent `json:"transactionIntents"`
 }
 
