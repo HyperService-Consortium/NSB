@@ -13,3 +13,11 @@ type ContractEnvironment struct {
 	Data []byte
 	Value *math.Uint256
 }
+
+type SystemContractEnvironment struct {
+	Storage *localstorage.LocalStorage
+	From []byte
+	To []byte
+	Data []byte
+	Value *math.Uint256
+}
