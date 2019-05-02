@@ -2,7 +2,7 @@ package isc
 
 import (
 	"fmt"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
+	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
 )
 
 
