@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/Myriad-Dreamin/NSB/merkmap"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
 	"github.com/Myriad-Dreamin/NSB/math"
 )
@@ -15,7 +16,7 @@ type ContractEnvironment struct {
 }
 
 type SystemContractEnvironment struct {
-	Storage *localstorage.LocalStorage
+	Storage *merkmap.MerkMap
 	From []byte
 	To []byte
 	Data []byte
