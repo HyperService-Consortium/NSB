@@ -22,7 +22,7 @@ func (jsonBytesMap *JsonBytesMap) Set(Map_offset []byte, value interface{}) {
 		panic(err)
 	}
 
-	err := jsonBytesMap.merk.TryUpdate(Map_offset, bt)
+	err = jsonBytesMap.merk.TryUpdate(Map_offset, bt)
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func (jsonBytesMap *JsonBytesMap) Get(Map_offset []byte, value interface{}) {
 		panic(err)
 	}
 
-	err := json.Unmarshal(bt, value)
+	err = json.Unmarshal(bt, value)
 	if err != nil {
 		panic(err)
 	}
