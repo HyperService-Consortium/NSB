@@ -55,7 +55,7 @@ func (nsb *NSBApplication) execContractFuncs(
 func (nsb *NSBApplication) createContracts(
 	contractName string,
 	contractEnv *cmn.ContractEnvironment,
-) *cmn.ContractCallBackInfo {
+) (cb *cmn.ContractCallBackInfo) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch r := r.(type) {
