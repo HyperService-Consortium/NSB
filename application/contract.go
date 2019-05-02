@@ -14,19 +14,19 @@ var recoverFromContractPanic = func() {
 		switch r := r.(type) {
 		case string:
 			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.codeContractPanic),
+				CodeResponse: uint32(response.CodeContractPanic()),
 				Log: r,
 			}
 		case *cmn.ContractCallBackInfo:
 			return r
 		case error:
 			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.codeContractPanic),
+				CodeResponse: uint32(response.CodeContractPanic()),
 				Log: r.Error(),
 			}
 		default:
 			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.codeContractPanic),
+				CodeResponse: uint32(response.CodeContractPanic()),
 				Log: "unknown panic interface...",
 			}
 		}
@@ -40,11 +40,11 @@ func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *c
 		return isc.RigisteredMethod(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo {
-			CodeResponse: uint32(response.CodeTODO),
+			CodeResponse: uint32(response.CodeTODO()),
 		}// sdeam.RegistedMethod(byteJson)
 	default:
 		return &cmn.ContractCallBackInfo {
-			CodeResponse: uint32(response.CodeInvalidTxType),
+			CodeResponse: uint32(response.CodeInvalidTxType()),
 		}
 	}
 }
@@ -58,11 +58,11 @@ func (nsb *NSBApplication) createContracts(contractName string, contractEnv *cmn
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo {
-			CodeResponse: uint32(response.CodeTODO),
+			CodeResponse: uint32(response.CodeTODO()),
 		}// sdeam.RegistedMethod(byteJson)
 	default:
 		return &cmn.ContractCallBackInfo {
-			CodeResponse: uint32(response.CodeInvalidTxType),
+			CodeResponse: uint32(response.CodeInvalidTxType()),
 		}
 	}
 }
