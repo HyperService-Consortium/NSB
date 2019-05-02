@@ -19,14 +19,26 @@ func (sto *LocalStorage) NewMap(mapName string) (*Map) {
 	}
 }
 
-func (udMap *Map) Set(Map_offset Bytable, value []byte) error {
-	return udMap.merk.TryUpdate(Map_offset.Bytes(), value)
+func (udMap *Map) Set(Map_offset Bytable, value []byte) {
+	err := udMap.merk.TryUpdate(Map_offset.Bytes(), value)
+	if err != nil {
+		panic(err)
+	}
+	return
 }
 
-func (udMap *Map) Get(Map_offset Bytable) ([]byte, error) {
-	return udMap.merk.TryGet(Map_offset.Bytes())
+func (udMap *Map) Get(Map_offset Bytable) []byte {
+	bt, err := udMap.merk.TryGet(Map_offset.Bytes())
+	if err != nil {
+		panic(err)
+	}
+	return bt
 }
 
-func (udMap *Map) Delete(Map_offset Bytable) error {
-	return udMap.merk.TryDelete(Map_offset.Bytes())
+func (udMap *Map) Delete(Map_offset Bytable) {
+	err := udMap.merk.TryDelete(Map_offset.Bytes())
+	if err != nil {
+		panic(err)
+	}
+	return
 }
