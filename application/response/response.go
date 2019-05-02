@@ -128,7 +128,7 @@ func EncodeAccountInfoError(err error) *types.ResponseDeliverTx {
 	}
 }
 
-
+func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
