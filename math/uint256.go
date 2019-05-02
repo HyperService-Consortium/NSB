@@ -11,12 +11,12 @@ type Uint256 struct {
 	b *big.Int
 }
 
+
 func NewUint256FromUint256(data *Uint256) *Uint256 {
 	return &Uint256{
 		b: new(big.Int).Set(data.b),
 	}
 }
-
 
 func NewUint256FromBigInt(data *big.Int) *Uint256 {
 	if data.BitLen() > 256 {
@@ -26,7 +26,6 @@ func NewUint256FromBigInt(data *big.Int) *Uint256 {
 		b: new(big.Int).Set(data),
 	}
 }
-
 
 func NewUint256FromBytes(data []byte) *Uint256 {
 	if len(data) > 32 {
@@ -57,6 +56,7 @@ func NewUint256FromHexString(data string) *Uint256 {
 	}
 }
 
+
 func (ui256 *Uint256) String() string {
 	return ui256.b.String()
 }
@@ -64,6 +64,7 @@ func (ui256 *Uint256) String() string {
 func (ui256 *Uint256) Bytes() []byte {
 	return ui256.b.Bytes()
 }
+
 
 func (ui256 *Uint256) Add(y *Uint256) bool {
 	ui256.b.Add(ui256.b, y.b)
@@ -74,6 +75,13 @@ func (ui256 *Uint256) Add(y *Uint256) bool {
 	return false
 }
 
+func AddUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
+	ret = NewUint256FromUint256(x)
+	check = ret.Add(y)
+	return
+}
+
+
 func (ui256 *Uint256) Sub(y *Uint256) bool {
 	ui256.b.Sub(ui256.b, y.b)
 	if ui256.b.Sign() == -1 {
@@ -82,6 +90,13 @@ func (ui256 *Uint256) Sub(y *Uint256) bool {
 	}
 	return false
 }
+
+func SubUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
+	ret = NewUint256FromUint256(x)
+	check = ret.Sub(y)
+	return
+}
+
 
 func (ui256 *Uint256) Mul(y *Uint256) bool {
 	ui256.b.Mul(ui256.b, y.b)
@@ -92,14 +107,29 @@ func (ui256 *Uint256) Mul(y *Uint256) bool {
 	return false
 }
 
+func MulUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
+	ret = NewUint256FromUint256(x)
+	check = ret.Mul(y)
+	return
+}
+
+
 func (ui256 *Uint256) Div(y *Uint256) bool {
 	var rem big.Int
+	// div0? ...
 	ui256.b.QuoRem(ui256.b, y.b, &rem)
 	if rem.BitLen() != 0 {
 		return true
 	}
 	return false
 }
+
+func DivUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
+	ret = NewUint256FromUint256(x)
+	check = ret.Div(y)
+	return
+}
+
 
 func (ui256 *Uint256) Comp(y *Uint256) int {
 	return new(big.Int).Sub(ui256.b, y.b).Sign()
