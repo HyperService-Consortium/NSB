@@ -8,3 +8,11 @@ type ContractCallBackInfo struct {
 	Info string
 	Tags []KVPair
 }
+
+func (cb *ContractCallBackInfo) IsErr() bool {
+	return cb.CodeResponse != 0
+}
+
+func (cb *ContractCallBackInfo) IsOK() bool {
+	return cb.CodeResponse == 0
+}
