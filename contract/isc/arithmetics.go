@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
+	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
 )
 
 type ArgsSafeAdd struct {

@@ -1,9 +1,5 @@
 package isc
 
-import (
-	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
-)
-
 
 const (
 	CodeOK = 0
