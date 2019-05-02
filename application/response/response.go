@@ -132,3 +132,4 @@ func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
+func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}
