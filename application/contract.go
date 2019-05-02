@@ -9,32 +9,34 @@ import (
 )
 
 
-var recoverFromContractPanic = func() {
-	if r := recover(); r != nil {
-		switch r := r.(type) {
-		case string:
-			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.CodeContractPanic()),
-				Log: r,
-			}
-		case *cmn.ContractCallBackInfo:
-			return r
-		case error:
-			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.CodeContractPanic()),
-				Log: r.Error(),
-			}
-		default:
-			return &cmn.ContractCallBackInfo {
-				CodeResponse: uint32(response.CodeContractPanic()),
-				Log: "unknown panic interface...",
+
+func (nsb *NSBApplication) execContractFuncs(
+	contractName string,
+	contractEnv *cmn.ContractEnvironment,
+) (cb *cmn.ContractCallBackInfo) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch r := r.(type) {
+			case string:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: r,
+				}
+			case *cmn.ContractCallBackInfo:
+				cb =  r
+			case error:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: r.Error(),
+				}
+			default:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: "unknown panic interface...",
+				}
 			}
 		}
-	}
-}
-
-func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
-	defer recoverFromContractPanic()
+	}()
 	switch contractName {
 	case "isc":
 		return isc.RigisteredMethod(contractEnv)
@@ -50,8 +52,33 @@ func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *c
 }
 
 
-func (nsb *NSBApplication) createContracts(contractName string, contractEnv *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
-	defer recoverFromContractPanic()
+func (nsb *NSBApplication) createContracts(
+	contractName string,
+	contractEnv *cmn.ContractEnvironment,
+) *cmn.ContractCallBackInfo {
+	defer func() {
+		if r := recover(); r != nil {
+			switch r := r.(type) {
+			case string:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: r,
+				}
+			case *cmn.ContractCallBackInfo:
+				cb =  r
+			case error:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: r.Error(),
+				}
+			default:
+				cb = &cmn.ContractCallBackInfo {
+					CodeResponse: uint32(response.CodeContractPanic()),
+					Log: "unknown panic interface...",
+				}
+			}
+		}
+	}()
 	switch contractName {
 	case "isc":
 		fmt.Println(contractEnv)

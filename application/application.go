@@ -123,8 +123,8 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		ret = *nsb.parseFuncTransaction(bytesTx[1])
 
 	case "systemCall": // transact system contract methods
-		ret = &cmn.ContractCallBackInfo {
-			CodeResponse: uint32(response.CodeTODO()),
+		ret = cmn.ResponseDeliverTx {
+			Code: uint32(response.CodeTODO()),
 		}//*nsb.parseSystemFuncTransaction(bytesTx[1])
 
 	case "createContract": // create on-chain contracts
