@@ -209,8 +209,51 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 	}
 }
 
-func (nsb *NSBApplication) transact(tx []byte) *types.ResponseDeliverTx {
+func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte)  *types.ResponseDeliverTx {
+	bytesTx := bytes.Split(tx, []byte("\x18"))
+	if len(bytesTx) != 2 {
+		return response.InvalidTxInputFormatWrongx18
+	}
+
+	env, fromInfo, toInfo, err := nsb.prepareSystemContractEnvironment(bytesTx[1], true)
+	if err != nil {
+		return err
+	}
+
+	cb := nsb.systemCall(string(bytesTx[0]), env)
+
+	if cb.CodeResponse == uint32(response.CodeOK) {
+		var err error
+		toInfo.StorageRoot, err = env.Storage.Commit()
+		if err != nil {
+			return response.CommitAccTrieError(err)
+		}
+		var bt []byte
+		bt, err = json.Marshal(accInfo)
+		if err != nil {
+			return response.EncodeAccountInfoError(err)
+		}
+		err = nsb.accMap.TryUpdate(env.From, bt)
+		if err != nil {
+			return response.UpdateAccTrieError(err)
+		}
+
+		bt, err = json.Marshal(toInfo)
+		if err != nil {
+			return response.EncodeAccountInfoError(err)
+		}
+		err = nsb.accMap.TryUpdate(env.ContractAddress, bt)
+		if err != nil {
+			return response.UpdateAccTrieError(err)
+		}
+	}
+
+	fmt.Println(accInfo, toInfo)
+
 	return &types.ResponseDeliverTx{
-		Code: uint32(response.CodeTODO),
+		Code: cb.CodeResponse,
+		Log: cb.Log,
+		// Tags:
+		Info: cb.Info,
 	}
 }
