@@ -3,63 +3,89 @@ package localstorage
 
 import (
 	"github.com/Myriad-Dreamin/NSB/util"
-	"errors"
 )
 
 
-func (sto *LocalStorage) SetBytes(variName string, value []byte) error {
-	return sto.variSlotMap.TryUpdate([]byte(variName), value)
+func (sto *LocalStorage) SetBytes(variName string, value []byte) {
+	err := sto.variSlotMap.TryUpdate([]byte(variName), value)
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
 
-func (sto *LocalStorage) SetString(variName string, value string) error {
-	return sto.variSlotMap.TryUpdate([]byte(variName), []byte(value))
+func (sto *LocalStorage) SetString(variName string, value string) {
+	err := sto.variSlotMap.TryUpdate([]byte(variName), []byte(value))
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
 
-func (sto *LocalStorage) SetUint64(variName string, value uint64) error {
-	return sto.variSlotMap.TryUpdate([]byte(variName), util.Uint64ToBytes(value))
+func (sto *LocalStorage) SetUint64(variName string, value uint64) {
+	err := sto.variSlotMap.TryUpdate([]byte(variName), util.Uint64ToBytes(value))
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
 
-func (sto *LocalStorage) SetInt64(variName string, value int64) error {
-	return sto.variSlotMap.TryUpdate([]byte(variName), util.Int64ToBytes(value))
+func (sto *LocalStorage) SetInt64(variName string, value int64) {
+	err := sto.variSlotMap.TryUpdate([]byte(variName), util.Int64ToBytes(value))
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
 
-func (sto *LocalStorage) SetAny(variName string, value Bytable) error {
-	return sto.variSlotMap.TryUpdate([]byte(variName), value.Bytes())
+func (sto *LocalStorage) SetAny(variName string, value Bytable) {
+	err := sto.variSlotMap.TryUpdate([]byte(variName), value.Bytes())
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
 
-func (sto *LocalStorage) GetBytes(variName string) ([]byte, error) {
-	return sto.variSlotMap.TryGet([]byte(variName))
-}
-
-func (sto *LocalStorage) GetString(variName string) (string, error) {
-	bt, err := sto.variSlotMap.TryGet([]byte(variName))
-	return string(bt), err
-}
-
-func (sto *LocalStorage) GetUint64(variName string) (uint64, error) {
+func (sto *LocalStorage) GetBytes(variName string) []byte {
 	bt, err := sto.variSlotMap.TryGet([]byte(variName))
 	if err != nil {
-		return 0, err
+		panic(err)
 	}
-	if len(bt) != 8 {
-		return 0, errors.New("Decode Error: the length of getting value is not 8")
-	}
-	return util.BytesToUint64(bt), err
+	return bt
 }
 
-func (sto *LocalStorage) GetInt64(variName string) (int64, error) {
+func (sto *LocalStorage) GetString(variName string) string {
 	bt, err := sto.variSlotMap.TryGet([]byte(variName))
 	if err != nil {
-		return 0, err
+		panic(err)
+	}
+	return string(bt)
+}
+
+func (sto *LocalStorage) GetUint64(variName string) uint64 {
+	bt, err := sto.variSlotMap.TryGet([]byte(variName))
+	if err != nil {
+		panic(err)
 	}
 	if len(bt) != 8 {
-		return 0, errors.New("Decode Error: the length of getting value is not 8")
+		panic("Decode Error: the length of getting value is not 8")
 	}
-	return util.BytesToInt64(bt), err
+	return util.BytesToUint64(bt)
+}
+
+func (sto *LocalStorage) GetInt64(variName string) int64 {
+	bt, err := sto.variSlotMap.TryGet([]byte(variName))
+	if err != nil {
+		panic(err)
+	}
+	if len(bt) != 8 {
+		panic("Decode Error: the length of getting value is not 8")
+	}
+	return util.BytesToInt64(bt)
 }
 
