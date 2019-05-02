@@ -129,9 +129,9 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		ret = *nsb.parseCreateTransaction(bytesTx[1])
 
 	default:
-		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType)}
+		return types.ResponseDeliverTx{Code: uint32(response.codeInvalidTxType)}
 	}
-	if ret.Code != uint32(response.CodeOK) {
+	if ret.Code != uint32(response.codeOK) {
 		err := nsb.Revert()
 		if err != nil {
 			fmt.Println(err)
@@ -181,7 +181,7 @@ type Proof struct {
 }
 */
 func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuery) {
-	ret.Code = uint32(response.CodeOK)
+	ret.Code = uint32(response.codeOK)
 	ret.Key = req.Data
 	ret.Value = []byte(req.Path)
 	ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path)

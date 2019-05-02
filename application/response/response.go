@@ -64,6 +64,7 @@ var (
 	}
 )
 
+
 func DecodeTxHeaderError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeTxHeaderError),
@@ -126,3 +127,8 @@ func EncodeAccountInfoError(err error) *types.ResponseDeliverTx {
 		Log: fmt.Sprintf("EncodeAccountInfoError: %v", err),
 	}
 }
+
+
+func CodeContractPanic() ResponseCode {return codeContractPanic}
+func CodeTODO() ResponseCode {return codeTODO}
+func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
