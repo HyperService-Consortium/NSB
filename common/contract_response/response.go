@@ -74,21 +74,21 @@ func AssertFalse(assertValue bool, AssertInfo interface{}) {
 }
 
 func AssertNil(assertObj interface{}, AssertInfo interface{}) {
-	if assertValue != nil {
+	if assertObj != nil {
 		panic(AssertInfo)
 	}
 	return
 }
 
 func AssertNotNil(assertObj interface{}, AssertInfo interface{}) {
-	if assertValue == nil {
+	if assertObj == nil {
 		panic(AssertInfo)
 	}
 	return
 }
 
-func AssertNoErr(assertObj interface{}, AssertInfo interface{}) {
-	if assertValue == nil {
+func AssertNoErr(assertErr error, AssertInfo interface{}) {
+	if assertErr != nil {
 		panic(AssertInfo)
 	}
 	return
