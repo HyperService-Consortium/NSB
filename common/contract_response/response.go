@@ -15,7 +15,7 @@ const (
 const (
 	codeDecodeJsonError = 1000 + iota
 	codeOverFlowError
-	codeArithmaticError
+	codeArithmeticError
 	codeInvalidFunctionType
 )
 
@@ -51,22 +51,12 @@ func InvalidFunctionType(info string) *cmn.ContractCallBackInfo {
 }
 
 
-func ArithmaticError(info string) *cmn.ContractCallBackInfo {
+func ArithmeticError(info string) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo {
-		CodeResponse: uint32(codeArithmaticError),
-		Log: "ArithmaticError",
+		CodeResponse: uint32(codeArithmeticError),
+		Log: "ArithmeticError",
 		Info: info,
 	}
-}
-
-
-func Assert(assertValue ...bool, AssertInfo interface{}) {
-	for _, checkOK := range assertValue {
-		if checkOK == false {
-			panic(AssertInfo)
-		}
-	}
-	return
 }
 
 func AssertTrue(assertValue bool, AssertInfo interface{}) {
