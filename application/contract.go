@@ -9,16 +9,41 @@ import (
 )
 
 
+var recoverFromContractPanic = func() {
+	if r := recover(); r != nil {
+		switch r := r.(type) {
+		case string:
+			return &cmn.ContractCallBackInfo {
+				CodeResponse: uint32(response.codeContractPanic),
+				Log: r,
+			}
+		case *cmn.ContractCallBackInfo:
+			return r
+		case error:
+			return &cmn.ContractCallBackInfo {
+				CodeResponse: uint32(response.codeContractPanic),
+				Log: r.Error(),
+			}
+		default:
+			return &cmn.ContractCallBackInfo {
+				CodeResponse: uint32(response.codeContractPanic),
+				Log: "unknown panic interface...",
+			}
+		}
+	}
+}
+
 func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
+	defer recoverFromContractPanic()
 	switch contractName {
 	case "isc":
 		return isc.RigisteredMethod(contractEnv)
 	case "sdeam":
-		return &cmn.ContractCallBackInfo{
+		return &cmn.ContractCallBackInfo {
 			CodeResponse: uint32(response.CodeTODO),
 		}// sdeam.RegistedMethod(byteJson)
 	default:
-		return &cmn.ContractCallBackInfo{
+		return &cmn.ContractCallBackInfo {
 			CodeResponse: uint32(response.CodeInvalidTxType),
 		}
 	}
@@ -26,16 +51,17 @@ func (nsb *NSBApplication) execContractFuncs(contractName string, contractEnv *c
 
 
 func (nsb *NSBApplication) createContracts(contractName string, contractEnv *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
+	defer recoverFromContractPanic()
 	switch contractName {
 	case "isc":
 		fmt.Println(contractEnv)
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":
-		return &cmn.ContractCallBackInfo{
+		return &cmn.ContractCallBackInfo {
 			CodeResponse: uint32(response.CodeTODO),
 		}// sdeam.RegistedMethod(byteJson)
 	default:
-		return &cmn.ContractCallBackInfo{
+		return &cmn.ContractCallBackInfo {
 			CodeResponse: uint32(response.CodeInvalidTxType),
 		}
 	}
