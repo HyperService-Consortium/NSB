@@ -84,6 +84,20 @@ func ReadWallet(db *leveldb.DB, name string) (*Wallet, error) {
 	// }
 }
 
+func WalletExist(db *leveldb.DB, name string) (bool, error) {
+	if db == nil {
+		return false, errors.New("nil database pointer")
+	}
+	
+	bt, err := db.Get([]byte(name), nil)
+	if err != nil {
+		return false, err
+	}
+	return len(bt) != 0, nil
+
+}
+
+
 
 func (wlt *Wallet) AppendAccount(acc *Account) {
 	wlt.Acc = append(wlt.Acc, acc)

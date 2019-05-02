@@ -1,34 +1,33 @@
 package main
 
 import (
-	"os"
-	"io"
 	"fmt"
-	"log"
 	urcli "github.com/urfave/cli"
+	"io"
+	"log"
+	"os"
 )
 
 const (
-	CliName = "go-cli-client"
-	Usage = "interactive with cli"
+	CliName   = "go-cli-client"
+	Usage     = "interactive with cli"
 	UsageText = "go-tendermint implementation of Network Status Blockchain"
-	Version = "0.1.0"
+	Version   = "0.2.0"
 )
-
 
 type NSBCli struct {
 	handler *urcli.App
-	
+
 	// submodules
 	acc *AccCmd
+	wlt *WltCmd
 
 	logfiledir string
-	logfile *os.File
-	logger *log.Logger
-	
+	logfile    *os.File
+	logger     *log.Logger
+
 	port int
 }
-
 
 func (cli *NSBCli) SetLog(rd io.Writer) {
 	cli.logger = log.New(rd, "", log.LstdFlags|log.Lshortfile)
@@ -64,30 +63,32 @@ func (cli *NSBCli) Init() {
 	cli.handler.Action = nil
 	cli.handler.After = cli.After
 
-	cli.handler.Flags = []urcli.Flag {
-		urcli.IntFlag {
-			Name: "port, p",
-			Value: 23766,
-			Usage: "listening port",
+	cli.handler.Flags = []urcli.Flag{
+		urcli.IntFlag{
+			Name:        "port, p",
+			Value:       23766,
+			Usage:       "listening port",
 			Destination: &cli.port,
 		},
-		urcli.StringFlag {
-			Name: "logdir, ld",
-			Value: "nsbcli.log",
-			Usage: "logger address",
+		urcli.StringFlag{
+			Name:        "logdir, ld",
+			Value:       "nsbcli.log",
+			Usage:       "logger address",
 			Destination: &cli.logfiledir,
 		},
 	}
-	urcli.HelpFlag = urcli.BoolFlag {
-		Name: "help, h",
+	urcli.HelpFlag = urcli.BoolFlag{
+		Name:  "help, h",
 		Usage: "show manual",
 	}
 
 	cli.acc = NewAccCmd(cli)
-	cli.handler.Commands = []urcli.Command {
+	cli.wlt = NewWltCmd(cli)
+	cli.handler.Commands = []urcli.Command{
 		*cli.acc.cmd,
+		*cli.wlt.cmd,
 	}
-	
+
 }
 
 func (cli *NSBCli) CommandNotFound(c *urcli.Context, cmdString string) {
@@ -115,7 +116,7 @@ func (cli *NSBCli) Run() {
 	}
 }
 
-func (cli *NSBCli) CliExit (status int) {
+func (cli *NSBCli) CliExit(status int) {
 	fmt.Println("nsbcli exit with", status)
 	cli.Stop()
 	os.Exit(status)

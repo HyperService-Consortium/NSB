@@ -15,7 +15,6 @@ func (env *Environment) fc(ck interface{}) {
 		*env.cb = 2
 	}
 }
-
 func test4() {
 	panic("err")
 }
