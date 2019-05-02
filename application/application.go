@@ -122,8 +122,8 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	case "sendTransaction": // transact contract methods
 		ret = *nsb.parseFuncTransaction(bytesTx[1])
 
-	case "transact": // send token
-		ret = *nsb.transact(bytesTx[1])
+	case "systemCall": // transact system contract methods
+		ret = *nsb.parseSystemFuncTransaction(bytesTx[1])
 
 	case "createContract": // create on-chain contracts
 		ret = *nsb.parseCreateTransaction(bytesTx[1])
