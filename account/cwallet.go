@@ -57,14 +57,14 @@ func CloseDB(dbptr Export_C_Int) {
 }
 
 func getDB(dbptr int) *leveldb.DB {
-	if dbptr >= dbpi {
+	if dbptr >= dbpi || dbptr < 0 {
 		return nil
 	}
 	return dbPacket[dbptr]
 }
 
 func getWallet(wltptr int) *Wallet {
-	if wltptr >= len(wltPacket) {
+	if wltptr >= len(wltPacket) || wltptr < 0 {
 		return nil
 	}
 	return wltPacket[wltptr]
@@ -72,7 +72,7 @@ func getWallet(wltptr int) *Wallet {
 
 //export PreCheckWallet
 func PreCheckWallet(wltptr Export_C_Int) C.int {
-	if int(wltptr) >= len(wltPacket) {
+	if int(wltptr) >= len(wltPacket) || wltptr < 0 {
 		return 0
 	}
 	if wltPacket[wltptr] != nil {
@@ -115,7 +115,7 @@ func WalletSign(wltptr Export_C_Int, idx Export_C_Int, msg unsafe.Pointer, msgSi
 	}
 	msgHash := crypto.Sha512(sign_header, C.GoBytes(msg, C.int(msgSize)))
 	signature := eddsa.Sign(wlt.Acc[idx].PrivateKey, msgHash)
-	return unsafe.Pointer(&signature[0])
+	return C.CBytes(signature)
 }
 
 //export WalletSignHash
@@ -125,7 +125,7 @@ func WalletSignHash(wltptr Export_C_Int, idx Export_C_Int, msgHash unsafe.Pointe
 		return unsafe.Pointer(nil)
 	}
 	signature := eddsa.Sign(wlt.Acc[idx].PrivateKey, C.GoBytes(msgHash, 64))
-	return unsafe.Pointer(&signature[0])
+	return C.CBytes(signature)
 }
 
 //export WalletVerifyByRaw

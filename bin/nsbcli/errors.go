@@ -1,11 +1,11 @@
 package main
 
-
 const (
 	CodeOK int = iota
 	CodeInternalError
 	CodeIOError
 	CodeLogicError
+	CodeConflictError
 )
 
 type errObj struct {
@@ -16,7 +16,6 @@ func (errobj *errObj) Error() string {
 	return errobj.err.Error()
 }
 
-
 type InternalErrorObj struct {
 	errObj
 }
@@ -26,9 +25,8 @@ func (errobj *InternalErrorObj) ExitCode() int {
 }
 
 func InternalError(err error) *InternalErrorObj {
-	return &InternalErrorObj{errObj:errObj{err}}
+	return &InternalErrorObj{errObj: errObj{err}}
 }
-
 
 type IOErrorObj struct {
 	errObj
@@ -39,7 +37,7 @@ func (errobj *IOErrorObj) ExitCode() int {
 }
 
 func IOError(err error) *IOErrorObj {
-	return &IOErrorObj{errObj:errObj{err}}
+	return &IOErrorObj{errObj: errObj{err}}
 }
 
 type LogicErrorObj struct {
@@ -51,5 +49,17 @@ func (errobj *LogicErrorObj) ExitCode() int {
 }
 
 func LogicError(err error) *LogicErrorObj {
-	return &LogicErrorObj{errObj:errObj{err}}
+	return &LogicErrorObj{errObj: errObj{err}}
+}
+
+type ConflictErrorObj struct {
+	errObj
+}
+
+func (errobj *ConflictErrorObj) ExitCode() int {
+	return CodeConflictError
+}
+
+func ConflictError(err error) *ConflictErrorObj {
+	return &ConflictErrorObj{errObj: errObj{err}}
 }

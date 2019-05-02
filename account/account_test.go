@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 	"bytes"
+	"encoding/hex"
 )
 
 
@@ -29,4 +30,18 @@ func TestAccount(t *testing.T) {
 		t.Error("signature error")
 		return
 	}
+}
+
+func TestCWallet(t *testing.T) {
+	bt, err := hex.DecodeString("68f865764d2705554ff95a356433580474e88eef19b5886304cf3491522562bd9a701b3ed117634371dad81cdcaeba61e3e2074f4e47a70294ae5fe1b2d8ded4")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	acc := ReadAccount(bt)
+	if "9a701b3ed117634371dad81cdcaeba61e3e2074f4e47a70294ae5fe1b2d8ded4" != hex.EncodeToString(acc.PublicKey) {
+		t.Error("public err")
+		return
+	}
+	fmt.Println(hex.EncodeToString(acc.Sign([]byte("\x10\x00"))))
 }

@@ -27,8 +27,12 @@ class GoBytes(object):
     Type = ctypes.c_void_p
 
     @staticmethod
-    def frombytes(bytesarr):
-        return ctypes.c_void_p(bytesarr)
+    def frombytes(bytesarr: bytes):
+        return ctypes.cast(ctypes.create_string_buffer(bytesarr, len(bytesarr)), ctypes.c_char_p)
+
+    @staticmethod
+    def convert(bytes_pointer, bytes_len=-1) -> bytes:
+        return ctypes.string_at(bytes_pointer, bytes_len)
 
 
 class GoString(object):
@@ -45,7 +49,7 @@ class GoString(object):
         return ctypes.c_char_p(pystr)
 
     @staticmethod
-    def trans(pystr, enc):
+    def trans(pystr, enc='utf-8'):
         if isinstance(pystr, str):
             return GoString.fromstr(pystr, enc)
         elif isinstance(pystr, bytes):

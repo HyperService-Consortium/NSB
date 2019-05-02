@@ -1,0 +1,6 @@
+2019/05/02 19:16:19 nsbcli.go:114: flag needs an argument: -seed
+2019/05/02 20:04:54 nsbcli.go:115: flag provided but not defined: -s
+2019/05/02 20:05:19 nsbcli.go:115: flag provided but not defined: -s
+2019/05/02 20:06:22 nsbcli.go:115: flag provided but not defined: -db
+2019/05/02 20:06:27 nsbcli.go:115: flag provided but not defined: -s
+2019/05/02 20:06:37 nsbcli.go:115: flag provided but not defined: -show
