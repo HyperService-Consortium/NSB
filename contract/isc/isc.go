@@ -9,23 +9,13 @@ import (
 	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
 )
 
-type RequestCallISC struct {
-	FuncName string `json:"function_name"`
-	Args     []byte `json:"args"`
-}
-
 
 func RigisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
-	var req RequestCallISC
-	err := json.Unmarshal(env.Data, &req)
-	if err != nil {
-		return DecodeJsonError(err)
-	}
-	switch req.FuncName {
+	switch env.FuncName {
 	case "a+b":
-		return SafeAdd(req.Args)
+		return SafeAdd(env.Args)
 	default:
-		return InvalidFunctionType(req.FuncName)
+		return InvalidFunctionType(env.FuncName)
 	}
 }
 
@@ -46,7 +36,7 @@ type ArgsCreateNewContract struct {
 
 func CreateNewContract(env *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
 	var args ArgsCreateNewContract
-	err := json.Unmarshal(env.Data, &args)
+	err := json.Unmarshal(env.Args, &args)
 	if err != nil {
 		return DecodeJsonError(err)
 	}
