@@ -4,6 +4,7 @@ package util
 import (
     "fmt"
     "encoding/binary"
+    "encoding/json"
     "bytes"
 )
 
@@ -39,4 +40,11 @@ func ConcatBytes(dat ...[]byte) []byte {
 		totlen += len(btdat)
 	}
 	return buff.Next(totlen)
+}
+
+func MustUnmarshal(data []byte, load interface{}) {
+	err := json.Unmarshal(data, &load)
+	if err != nil {
+		panic(DecodeJsonError(err))
+	}
 }
