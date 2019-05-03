@@ -1,4 +1,4 @@
-package merkstore
+package nsb
 
 // function addTransactionProposal(address isc_addr, uint tx_count)
 // 	public
