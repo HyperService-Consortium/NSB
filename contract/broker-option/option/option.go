@@ -20,11 +20,6 @@ type ValidBuyer struct {
 	Executed bool `json:"executed"`
 }
 
-type RequestCallISC struct {
-	FuncName string `json:"function_name"`
-	Args     []byte `json:"args"`
-}
-
 func MustUnmarshal(data []byte, load interface{}) {
 	err := json.Unmarshal(data, &load)
 	if err != nil {
@@ -35,18 +30,16 @@ func MustUnmarshal(data []byte, load interface{}) {
 
 
 func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
-	var req RequestCallISC
-	MustUnmarshal(contractEnvironment.Data, &req)
 	env = contractEnvironment
-	switch req.FuncName {
+	switch env.FuncName {
 	case "updateStake":
-		return updateStake(req.Args)
+		return updateStake(env.Args)
 	case "stakeFund":
-		return stakeFund(req.Args)
+		return stakeFund(env.Args)
 	case "buyOption":
-		return buyOption(req.Args)
+		return buyOption(env.Args)
 	default:
-		return InvalidFunctionType(req.FuncName)
+		return InvalidFunctionType(env.FuncName)
 	}
 }
 
@@ -65,7 +58,7 @@ type ArgsCreateNewContract struct {
 
 func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
 	var args ArgsCreateNewContract
-	MustUnmarshal(contractEnvironment.Data, &args)
+	MustUnmarshal(contractEnvironment.Args, &args)
 
 	contractEnvironment.Storage.SetBytes("remainingFund", contractEnvironment.Value.Bytes())
 	contractEnvironment.Storage.SetBytes("strikePrice", args.StrikePrice.Bytes())

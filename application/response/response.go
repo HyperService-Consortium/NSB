@@ -38,7 +38,9 @@ const ( // Transaction
 )
 
 const ( // Contract
-	codeContractPanic ResponseCode = 200 + iota
+	codeContractPanic ResponseCode = 300 + iota
+	codeInvalidFuncType
+	codeContractExecError
 )
 
 
@@ -127,6 +129,22 @@ func EncodeAccountInfoError(err error) *types.ResponseDeliverTx {
 		Log: fmt.Sprintf("EncodeAccountInfoError: %v", err),
 	}
 }
+
+func InvalidFuncTypeError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeInvalidFuncType),
+		Log: fmt.Sprintf("InvalidFunctionType: %v", err),
+	}
+}
+
+func ContractExecError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeContractExecError),
+		Log: fmt.Sprintf("ContractExecError: %v", err),
+	}
+}
+
+
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}

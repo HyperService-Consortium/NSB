@@ -43,6 +43,9 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		stateMap: stmp,
 		accMap:   stmp.ArrangeSlot([]byte("acc:")),
 		txMap:    stmp.ArrangeSlot([]byte("tx:")),
+		actionMap: stmp.ArrangeSlot([]byte("act:")),
+		validMerkleProofMap: stmp.ArrangeSlot([]byte("vlm:")),
+		validOnchainMerkleProofMap: stmp.ArrangeSlot([]byte("vom:")),
 		statedb:  statedb,
 	}, nil
 }
@@ -123,9 +126,7 @@ func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 		ret = *nsb.parseFuncTransaction(bytesTx[1])
 
 	case "systemCall": // transact system contract methods
-		ret = types.ResponseDeliverTx {
-			Code: uint32(response.CodeTODO()),
-		}//*nsb.parseSystemFuncTransaction(bytesTx[1])
+		ret = *nsb.parseSystemFuncTransaction(bytesTx[1])
 
 	case "createContract": // create on-chain contracts
 		ret = *nsb.parseCreateTransaction(bytesTx[1])

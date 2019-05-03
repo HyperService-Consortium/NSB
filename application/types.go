@@ -18,6 +18,8 @@ type NSBApplication struct {
 	stateMap    *merkmap.MerkMap
 	accMap      *merkmap.MerkMap
 	txMap       *merkmap.MerkMap
+	actionMap   *merkmap.MerkMap
+	merkleMap   *merkmap.MerkMap
 	statedb     *leveldb.DB
 	ValUpdates  []types.ValidatorUpdate
 	logger      log.Logger
@@ -34,6 +36,12 @@ type AccountInfo struct {
 	Balance     *math.Uint256 `json:"balance"`
 	CodeHash    []byte        `json:"code_hash"`
 	StorageRoot []byte        `json:"storage_root"`
+	Name        []byte `json:"name"`
+}
+
+type FAPair struct {
+	FuncName string `json:"function_name"`
+	Args     []byte `json:"args"`
 }
 
 func (accInfo *AccountInfo) String() string {
