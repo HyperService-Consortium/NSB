@@ -75,6 +75,7 @@ class LevelDB:
     def close_db(handler_num):
         funcs.CDLL_CloseDB(handler_num)
 
+
 class Wallet:
     def __init__(self, db_handler, name):
         self._handler_num = -1
@@ -122,12 +123,6 @@ class Wallet:
             return
         return GoBytes.convert(ptr, 64)
 
-    #
-    # funcs.CDLL_WalletVerifyByRaw.argtype = (GoWalletptr, GoInt32, GoBytes.Type, GoBytes.Type, GoInt32)
-    # funcs.CDLL_WalletVerifyByRaw.restype = GoInt32
-    #
-    # funcs.CDLL_WalletVerifyByHash.argtype = (GoWalletptr, GoInt32, GoBytes.Type, GoBytes.Type)
-    # funcs.CDLL_WalletVerifyByHash.restype = GoInt32
     def verify_by_raw(self, msg: bytes, signature: bytes) -> int:
         if len(signature) != 64:
             raise ValueError("the length of signature(Bytes) must be 64")
