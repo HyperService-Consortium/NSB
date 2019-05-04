@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"encoding/json"
 	"github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
@@ -57,7 +58,7 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	// TODO: check valid isc/tid/aid
 	err := nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
-		util.ConcatBytes([]byte{Type}, Content, Signature),
+		util.ConcatBytes([]byte{args.Type}, args.Content, args.Signature),
 	)
 	if err != nil {
 		return response.ContractExecError(err)
@@ -80,10 +81,7 @@ func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	var args ArgsGetAction
 	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
-	bt, err := nsb.actionMap.TryGet(
-		actionKey(args.ISCAddress, args.Tid, args.Aid),
-		util.ConcatBytes(Content, Signature),
-	)
+	bt, err := nsb.actionMap.TryGet(actionKey(args.ISCAddress, args.Tid, args.Aid))
 	if err != nil {
 		return response.ContractExecError(err)
 	}
