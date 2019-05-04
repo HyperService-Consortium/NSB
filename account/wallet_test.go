@@ -41,5 +41,5 @@ func AbortedTestWallet(t *testing.T) {
 }
 
 func TestWallet(t *testing.T) {
-	
+
 }

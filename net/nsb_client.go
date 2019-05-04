@@ -2,26 +2,26 @@ package nsbnet
 
 import (
 	"fmt"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	abcinsb "github.com/Myriad-Dreamin/NSB/application"
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
-	abcinsb "github.com/Myriad-Dreamin/NSB/application"
 	"github.com/tendermint/tendermint/abci/types"
+	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
 const (
-	nsb_port = ":27667"
-	nsb_tcp = "tcp://0.0.0.0:27667"
-	nsb_net_type = "socket"
-	nsb_db_dir = "./data/"
+	nsb_port           = ":27667"
+	nsb_tcp            = "tcp://0.0.0.0:27667"
+	nsb_net_type       = "socket"
+	nsb_db_dir         = "./data/"
 	nsb_must_connected = false
 )
 
 type NSB struct {
-	app types.Application
-	srv cmn.Service
-	cli abcicli.Client
+	app    types.Application
+	srv    cmn.Service
+	cli    abcicli.Client
 	logger log.Logger
 }
 
@@ -32,7 +32,7 @@ func NewNSBClient() (cli abcicli.Client, err error) {
 
 func NewNSBServer(app types.Application) (srv cmn.Service, err error) {
 	srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, app)
-	return 
+	return
 }
 
 func NewNSB() (nsb NSB, err error) {
@@ -40,18 +40,18 @@ func NewNSB() (nsb NSB, err error) {
 	nsb.logger = log.NewNopLogger()
 
 	fmt.Println("create app...")
-	nsb.app, err =  abcinsb.NewNSBApplication(nsb_db_dir)
+	nsb.app, err = abcinsb.NewNSBApplication(nsb_db_dir)
 	if err != nil {
-		return 
+		return
 	}
 
 	fmt.Println("create server...")
 	nsb.srv, err = NewNSBServer(nsb.app)
 	if err != nil {
-		return 
+		return
 	}
 	nsb.srv.SetLogger(log.NewNopLogger())
-	
+
 	fmt.Println("create client...")
 	nsb.cli, err = NewNSBClient()
 	if err != nil {
@@ -67,7 +67,7 @@ func (nsb *NSB) Start() (err error) {
 	if err = nsb.srv.Start(); err != nil {
 		return
 	}
-	
+
 	fmt.Println("start client...")
 	if err = nsb.cli.Start(); err != nil {
 		nsb.srv.Stop()
@@ -80,20 +80,20 @@ func (nsb *NSB) Start() (err error) {
 
 func (nsb *NSB) LoopUntilStop() {
 	go func() {
-		
+
 	ForeverLoop:
 		fmt.Println("looping")
 		cmn.TrapSignal(
 			nsb.logger, func() {
-			// Cleanup
-			nsb.app.(*abcinsb.NSBApplication).Stop()
-			nsb.srv.Stop()
-			nsb.cli.Stop()
-			fmt.Println("stopped")
-		})
-		select{}
+				// Cleanup
+				nsb.app.(*abcinsb.NSBApplication).Stop()
+				nsb.srv.Stop()
+				nsb.cli.Stop()
+				fmt.Println("stopped")
+			})
+		select {}
 		goto ForeverLoop
 	}()
 
-	select{}
+	select {}
 }

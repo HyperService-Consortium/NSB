@@ -1,16 +1,15 @@
 package localstorage
 
 import (
-	"github.com/Myriad-Dreamin/NSB/merkmap"
 	"encoding/json"
+	"github.com/Myriad-Dreamin/NSB/merkmap"
 )
-
 
 type JsonBytesMap struct {
 	merk *merkmap.MerkMap
 }
 
-func (sto *LocalStorage) NewJsonBytesMap(mapName string) (*JsonBytesMap) {
+func (sto *LocalStorage) NewJsonBytesMap(mapName string) *JsonBytesMap {
 	return &JsonBytesMap{
 		merk: sto.makeStorageSlot(mapName),
 	}

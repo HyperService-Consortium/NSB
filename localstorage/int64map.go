@@ -5,12 +5,11 @@ import (
 	"github.com/Myriad-Dreamin/NSB/util"
 )
 
-
 type Int64Map struct {
 	merk *merkmap.MerkMap
 }
 
-func (sto *LocalStorage) NewInt64Map(mapName string) (*Int64Map) {
+func (sto *LocalStorage) NewInt64Map(mapName string) *Int64Map {
 	return &Int64Map{
 		merk: sto.makeStorageSlot(mapName),
 	}

@@ -1,20 +1,19 @@
 package nsb
 
 import (
-	"fmt"
-	"encoding/hex"
-	"encoding/binary"
 	"bytes"
+	"encoding/binary"
+	"encoding/hex"
 	"errors"
+	"fmt"
+	"github.com/Myriad-Dreamin/NSB/application/response"
+	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"
-	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
-	"github.com/Myriad-Dreamin/NSB/application/response"
 )
-
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	name := "nsbstate"
@@ -38,23 +37,21 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	}
 
 	return &NSBApplication{
-		state:    state,
-		logger:   log.NewNopLogger(),
-		stateMap: stmp,
-		accMap:   stmp.ArrangeSlot([]byte("acc:")),
-		txMap:    stmp.ArrangeSlot([]byte("tx:")),
-		actionMap: stmp.ArrangeSlot([]byte("act:")),
-		validMerkleProofMap: stmp.ArrangeSlot([]byte("vlm:")),
+		state:                      state,
+		logger:                     log.NewNopLogger(),
+		stateMap:                   stmp,
+		accMap:                     stmp.ArrangeSlot([]byte("acc:")),
+		txMap:                      stmp.ArrangeSlot([]byte("tx:")),
+		actionMap:                  stmp.ArrangeSlot([]byte("act:")),
+		validMerkleProofMap:        stmp.ArrangeSlot([]byte("vlm:")),
 		validOnchainMerkleProofMap: stmp.ArrangeSlot([]byte("vom:")),
-		statedb:  statedb,
+		statedb:                    statedb,
 	}, nil
 }
-
 
 func (nsb *NSBApplication) SetLogger(l log.Logger) {
 	nsb.logger = l
 }
-
 
 func (nsb *NSBApplication) Revert() error {
 	err := nsb.stateMap.Revert()
@@ -66,10 +63,9 @@ func (nsb *NSBApplication) Revert() error {
 	return nil
 }
 
-
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
-		Data:       fmt.Sprintf(
+		Data: fmt.Sprintf(
 			"{\"state_root\":%v, \"height\":%v, }",
 			hex.EncodeToString(nsb.state.StateRoot),
 			nsb.state.Height),
@@ -77,7 +73,6 @@ func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 		AppVersion: NSBVersion.Uint64(),
 	}
 }
-
 
 // Save the validators in the merkle tree
 func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseInitChain {
@@ -89,7 +84,6 @@ func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseI
 	}
 	return types.ResponseInitChain{}
 }
-
 
 // Track the block hash and header information
 func (nsb *NSBApplication) BeginBlock(req types.RequestBeginBlock) types.ResponseBeginBlock {
@@ -189,7 +183,7 @@ func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuer
 	ret.Value = []byte(req.Path)
 	ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path)
 	ret.Info = nsb.QueryIndex(&req)
-	return 
+	return
 }
 
 func (nsb *NSBApplication) Stop() (err1 error, err2 error) {

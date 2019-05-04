@@ -1,9 +1,9 @@
 package localstorage
 
 import (
-	"testing"
-	"github.com/syndtr/goleveldb/leveldb"
 	"bytes"
+	"github.com/syndtr/goleveldb/leveldb"
+	"testing"
 )
 
 type MyString string
@@ -36,11 +36,10 @@ func TestCreateMap(t *testing.T) {
 
 	udmap := storage.NewMap("myMap")
 
-
 	var mykey = MyString("www")
 	var mykey2 = MyBytes("wwwww")
 	var expVal = []byte("exp")
-	
+
 	err = udmap.Set(mykey, expVal)
 	if err != nil {
 		t.Error(err)

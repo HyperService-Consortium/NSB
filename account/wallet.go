@@ -1,31 +1,30 @@
 package account
 
-
 import (
-	"errors"
-	"github.com/syndtr/goleveldb/leveldb"
-	"encoding/json"
-	"encoding/hex"
 	"bytes"
-	eddsa "golang.org/x/crypto/ed25519"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"github.com/Myriad-Dreamin/NSB/crypto"
+	"github.com/syndtr/goleveldb/leveldb"
+	eddsa "golang.org/x/crypto/ed25519"
 )
 
 var (
 	prikeyHeader = []byte("Private Key: ")
 	pubkeyHeader = []byte("Public Key: ")
-	newlineByte = byte('\n')
+	newlineByte  = byte('\n')
 )
 
 type Wallet struct {
-	db *leveldb.DB
+	db   *leveldb.DB
 	name string
-	Acc []*Account `json:"accs"`
+	Acc  []*Account `json:"accs"`
 }
 
 func NewWallet(db *leveldb.DB, name string) *Wallet {
 	return &Wallet{
-		db: db,
+		db:   db,
 		name: name,
 	}
 }
@@ -34,7 +33,7 @@ func ReadWallet(db *leveldb.DB, name string) (*Wallet, error) {
 	if db == nil {
 		return nil, errors.New("nil database pointer")
 	}
-	
+
 	bt, err := db.Get([]byte(name), nil)
 	if err != nil {
 		return nil, err
@@ -88,7 +87,7 @@ func WalletExist(db *leveldb.DB, name string) (bool, error) {
 	if db == nil {
 		return false, errors.New("nil database pointer")
 	}
-	
+
 	bt, err := db.Get([]byte(name), nil)
 	if err != nil {
 		return false, err
@@ -97,12 +96,9 @@ func WalletExist(db *leveldb.DB, name string) (bool, error) {
 
 }
 
-
-
 func (wlt *Wallet) AppendAccount(acc *Account) {
 	wlt.Acc = append(wlt.Acc, acc)
 }
-
 
 func (wlt *Wallet) String() string {
 	if len(wlt.Acc) == 0 {
@@ -111,7 +107,7 @@ func (wlt *Wallet) String() string {
 	var ret bytes.Buffer
 	var str string
 	for _, acc := range wlt.Acc {
-		
+
 		ret.Write(prikeyHeader)
 		str = hex.EncodeToString(acc.PrivateKey)
 		ret.WriteString(str)
@@ -133,7 +129,6 @@ func (wlt *Wallet) Sign(idx int, msg ...[]byte) []byte {
 func (wlt *Wallet) SignHash(idx int, msgHash []byte) []byte {
 	return eddsa.Sign(wlt.Acc[idx].PrivateKey, msgHash)
 }
-
 
 func (wlt *Wallet) VerifyByRaw(idx int, signature []byte, msg ...[]byte) bool {
 	msgHash := crypto.Sha512(append(sign_header_arr, msg...)...)

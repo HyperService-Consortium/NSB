@@ -2,13 +2,13 @@ package nsb
 
 import (
 	"bytes"
-	"errors"
 	"encoding/json"
-	"github.com/Myriad-Dreamin/NSB/math"
+	"errors"
 	"github.com/Myriad-Dreamin/NSB/account"
-	"github.com/Myriad-Dreamin/NSB/localstorage"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
+	cmn "github.com/Myriad-Dreamin/NSB/common"
+	"github.com/Myriad-Dreamin/NSB/localstorage"
+	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -42,7 +42,6 @@ func (nsb *NSBApplication) parseTxHeader(txHeaderJson []byte) (
 	return &txHeader, nil
 }
 
-
 func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 	*AccountInfo,
 	*types.ResponseDeliverTx,
@@ -65,7 +64,6 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 	return &accInfo, nil
 }
 
-
 func (nsb *NSBApplication) parseContractInfo(
 	txHeader *cmn.TransactionHeader,
 	contractName []byte,
@@ -77,7 +75,7 @@ func (nsb *NSBApplication) parseContractInfo(
 	var contractInfo AccountInfo
 	if createFlag {
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
-		
+
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 		contractInfo.Name = contractName
 		// TODO: set CodeHash
@@ -124,7 +122,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
-	
+
 	var fap *FAPair
 	fap, errInfo = nsb.parseFAPair(txHeader.Data, createFlag)
 	if errInfo != nil {
@@ -147,17 +145,17 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if !bytes.Equal(contractName, conInfo.Name) {
 		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
 	}
-	
-	// TODO: verify signature 
+
+	// TODO: verify signature
 
 	// TODO: Check CodeHash
 	var err error
 	var contractEnv = cmn.ContractEnvironment{
-		From: txHeader.From,
+		From:            txHeader.From,
 		ContractAddress: txHeader.ContractAddress,
-		FuncName: fap.FuncName,
-		Args: fap.Args,
-		Value: txHeader.Value,
+		FuncName:        fap.FuncName,
+		Args:            fap.Args,
+		Value:           txHeader.Value,
 	}
 	contractEnv.Storage, err = localstorage.NewLocalStorage(
 		txHeader.ContractAddress,
@@ -173,7 +171,6 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	return &contractEnv, accInfo, conInfo, nil
 }
 
-
 func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte) (
 	*cmn.TransactionHeader,
 	*AccountInfo,
@@ -183,7 +180,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 	if errInfo != nil {
 		return nil, nil, errInfo
 	}
-	
+
 	var accInfo *AccountInfo
 	accInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
@@ -192,7 +189,6 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 
 	return txHeader, accInfo, nil
 }
-
 
 func (nsb *NSBApplication) storeState(
 	env *cmn.ContractEnvironment,
@@ -229,7 +225,6 @@ func (nsb *NSBApplication) storeState(
 	return nil
 }
 
-
 func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
 	if len(bytesTx) != 2 {
@@ -253,12 +248,11 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 
 	return &types.ResponseDeliverTx{
 		Code: cb.CodeResponse,
-		Log: cb.Log,
+		Log:  cb.Log,
 		// Tags:
 		Info: cb.Info,
 	}
 }
-
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeliverTx {
 	bytesTx := bytes.Split(tx, []byte("\x18"))
@@ -283,7 +277,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 
 	return &types.ResponseDeliverTx{
 		Code: cb.CodeResponse,
-		Log: cb.Log,
+		Log:  cb.Log,
 		// Tags:
 		Info: cb.Info,
 	}

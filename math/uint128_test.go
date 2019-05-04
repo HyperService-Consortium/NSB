@@ -6,7 +6,7 @@ import (
 )
 
 func TestUint128_A(t *testing.T) {
-	var x = NewUint128FromBytes([]byte{1,0,0,0,0,0,0,0,0})
+	var x = NewUint128FromBytes([]byte{1, 0, 0, 0, 0, 0, 0, 0, 0})
 	c := x.Mul(x)
 	fmt.Println(c, x.String())
 }

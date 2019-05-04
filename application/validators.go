@@ -1,13 +1,13 @@
 package nsb
 
 import (
-	"fmt"
 	_ "bytes"
 	"encoding/hex"
-	"strings"
-	"strconv"
-	"github.com/tendermint/tendermint/abci/types"
+	"fmt"
 	"github.com/Myriad-Dreamin/NSB/application/response"
+	"github.com/tendermint/tendermint/abci/types"
+	"strconv"
+	"strings"
 )
 
 func (nsb *NSBApplication) Validators() (validators []types.ValidatorUpdate) {
@@ -30,7 +30,7 @@ func MakeValSetChangeTx(pubkey types.PubKey, power int64) []byte {
 }
 
 func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
-	
+
 	// get the pubkey and power
 	pubKeyAndPower := strings.Split(string(tx), "/")
 	if len(pubKeyAndPower) != 2 {

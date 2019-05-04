@@ -3,12 +3,11 @@ package account
 import (
 	"C"
 	"fmt"
-	"github.com/syndtr/goleveldb/leveldb"
-	"unsafe"
-	eddsa "golang.org/x/crypto/ed25519"
 	"github.com/Myriad-Dreamin/NSB/crypto"
+	"github.com/syndtr/goleveldb/leveldb"
+	eddsa "golang.org/x/crypto/ed25519"
+	"unsafe"
 )
-
 
 const (
 	// max number of onload-dbs
@@ -21,7 +20,6 @@ const (
 	CodeIOError
 )
 
-
 var (
 	//onload-db array
 	dbPacket = make([]*leveldb.DB, 0, MXONLOADDB)
@@ -31,28 +29,27 @@ var (
 	wltPacket = make([]*Wallet, 0)
 )
 
-
 type Export_C_Char C.char
 type Export_C_Int C.int
 
 //export NewLevelDBHandler
 func NewLevelDBHandler(dbpath *Export_C_Char) C.int {
 	db, err := leveldb.OpenFile(C.GoString((*C.char)(dbpath)), nil)
-    if err != nil {
+	if err != nil {
 		fmt.Println("link error")
-        fmt.Println(err)
-        return C.int(CodeInvalidDBPtr)
-	}else {
-        dbPacket = append(dbPacket, db)
-        dbpi++
-		return C.int(dbpi - 1);
+		fmt.Println(err)
+		return C.int(CodeInvalidDBPtr)
+	} else {
+		dbPacket = append(dbPacket, db)
+		dbpi++
+		return C.int(dbpi - 1)
 	}
 }
 
 //export CloseDB
 func CloseDB(dbptr Export_C_Int) {
-    db := dbPacket[dbptr]
-	db.Close();
+	db := dbPacket[dbptr]
+	db.Close()
 	dbPacket[dbptr] = nil
 }
 

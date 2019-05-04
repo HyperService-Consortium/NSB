@@ -1,12 +1,12 @@
 package account
 
 import (
-	"fmt"
-	"testing"
 	"bytes"
-	"github.com/Myriad-Dreamin/NSB/math"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
+	"github.com/Myriad-Dreamin/NSB/math"
+	"testing"
 )
 
 // createContract
@@ -41,13 +41,13 @@ type ArgsCreateNewContract struct {
 
 func TestGenerateTransaction(t *testing.T) {
 	acc := NewAccount([]byte("1234"))
-	
+
 	TxIntents := []TransactionIntent{
 		TransactionIntent{
-			Fr:[]byte(acc.PublicKey),
-			To:[]byte(acc.PublicKey),
-			Seq: 0,
-			Amt: 0,
+			Fr:   []byte(acc.PublicKey),
+			To:   []byte(acc.PublicKey),
+			Seq:  0,
+			Amt:  0,
 			Meta: []byte(""),
 		},
 	}
@@ -59,10 +59,10 @@ func TestGenerateTransaction(t *testing.T) {
 		return
 	}
 
-	paras := &ArgsCreateNewContract {
-		IscOwners: [][]byte{[]byte(acc.PublicKey)},
-		Funds: []uint32{0},
-		VesSig: acc.Sign(bt),
+	paras := &ArgsCreateNewContract{
+		IscOwners:          [][]byte{[]byte(acc.PublicKey)},
+		Funds:              []uint32{0},
+		VesSig:             acc.Sign(bt),
 		TransactionIntents: TxIntents,
 	}
 
@@ -73,11 +73,11 @@ func TestGenerateTransaction(t *testing.T) {
 		return
 	}
 
-	txHeader := &TransactionHeader {
-		From: acc.PublicKey,
+	txHeader := &TransactionHeader{
+		From:      acc.PublicKey,
 		JsonParas: bt,
-		Value: math.NewUint256FromBytes([]byte{0}),
-		Nonce: math.NewUint256FromBytes([]byte{233, 233}),
+		Value:     math.NewUint256FromBytes([]byte{0}),
+		Nonce:     math.NewUint256FromBytes([]byte{233, 233}),
 	}
 	bt, err = json.Marshal(txHeader)
 	fmt.Println(string(bt))

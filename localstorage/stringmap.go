@@ -8,7 +8,7 @@ type StringMap struct {
 	merk *merkmap.MerkMap
 }
 
-func (sto *LocalStorage) NewStringMap(mapName string) (*StringMap) {
+func (sto *LocalStorage) NewStringMap(mapName string) *StringMap {
 	return &StringMap{
 		merk: sto.makeStorageSlot(mapName),
 	}
