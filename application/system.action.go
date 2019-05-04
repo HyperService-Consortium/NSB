@@ -22,7 +22,7 @@ func MustUnmarshal(data []byte, load interface{}) {
 
 func (nsb *NSBApplication) ActionRigisteredMethod(
 	env *cmn.TransactionHeader,
-	accInfo AccountInfo,
+	accInfo *AccountInfo,
 	funcName string,
 	args []byte,
 ) *types.ResponseDeliverTx {
