@@ -147,11 +147,11 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if !bytes.Equal(contractName, conInfo.Name) {
 		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
 	}
-
+	
 	// TODO: verify signature 
 
 	// TODO: Check CodeHash
-
+	var err error
 	var contractEnv = cmn.ContractEnvironment{
 		From: txHeader.From,
 		ContractAddress: txHeader.ContractAddress,
@@ -295,11 +295,16 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, accInfo, errInfo := nsb.prepareSystemContractEnvironment(bytesTx)
+	env, accInfo, errInfo := nsb.prepareSystemContractEnvironment(bytesTx[1])
 	if errInfo != nil {
 		return errInfo
 	}
-	fap := nsb.parseFAPair(env.Data)
+
+	var fap *FAPair
+	fap, errInfo = nsb.parseFAPair(env.Data, createFlag)
+	if errInfo != nil {
+		return errInfo
+	}
 
 	cb := nsb.systemCall(string(bytesTx[0]), env, accInfo, fap.FuncName, fap.Args)
 
