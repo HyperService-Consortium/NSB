@@ -3,7 +3,6 @@ package nsb
 import (
 	"github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	"github.com/Myriad-Dreamin/NSB/util"
 	"github.com/Myriad-Dreamin/NSB/crypto"
