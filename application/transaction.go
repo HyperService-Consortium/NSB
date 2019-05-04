@@ -77,12 +77,12 @@ func (nsb *NSBApplication) parseContractInfo(
 	var contractInfo AccountInfo
 	if createFlag {
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
-		byteInfo = make([]byte, 0)
+		var byteInfo = make([]byte, 0)
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 		contractInfo.Name = contractName
 		// TODO: set CodeHash
 	} else {
-		byteInfo, err = nsb.accMap.TryGet(txHeader.ContractAddress)
+		byteInfo, err := nsb.accMap.TryGet(txHeader.ContractAddress)
 		if err != nil {
 			return nil, response.ReTrieveTxError(err)
 		}
