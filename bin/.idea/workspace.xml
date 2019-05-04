@@ -2,39 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cb1e79bf-63c8-4b77-89b0-f4f267a24fc8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/py_nsbcli/transaction_header.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/py_nsbcli/transaction_intent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/py_nsbcli/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../account/CGO_MAIN/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/../account/CGO_MAIN/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../account/cwallet.go" beforeDir="false" afterPath="$PROJECT_DIR$/../account/cwallet.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../account/transaction_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/../account/transaction_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/cwallet.dll" beforeDir="false" afterPath="$PROJECT_DIR$/include/cwallet.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/cwallet.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/cwallet.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/000099.ldb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/000218.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/CURRENT" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/CURRENT.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/LOCK" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/LOG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/kvstore/MANIFEST-000219" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nsbcli/nsbcli.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/py-nsbcli.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/py_nsbcli/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/gotypes.py" beforeDir="false" afterPath="$PROJECT_DIR$/py_nsbcli/gotypes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/run.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/run.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/transaction.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/py-nsbcli/wallet.py" beforeDir="false" afterPath="$PROJECT_DIR$/py_nsbcli/wallet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/000334.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/CURRENT" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/CURRENT" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/CURRENT.bak" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/CURRENT.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/LOG" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/LOG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/MANIFEST-000335" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_isc.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test_isc.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
