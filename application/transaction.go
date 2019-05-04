@@ -47,7 +47,7 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	byteInfo, err = nsb.accMap.TryGet(addr)
+	byteInfo, err := nsb.accMap.TryGet(addr)
 	if err != nil {
 		return nil, response.ReTrieveTxError(err)
 	}
