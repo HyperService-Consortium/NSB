@@ -51,6 +51,37 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	// TODO: check valid isc/tid/aid
 	err := nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
+		util.ConcatBytes([]{Type}, Content, Signature),
+	)
+	if err != nil {
+		return response.ContractExecError(err)
+	}
+	return &types.ResponseDeliverTx {
+		Code: uint32(response.CodeOK()),
+		Info: "updateSuccess",
+	}
+}
+
+type ArgsGetAction struct {
+	ISCAddress []byte `json:"1"`
+	// hexbytes
+	Tid uint64 `json:"2"`
+	// hexbytes
+	Aid uint64 `json:"3"`
+}
+
+type RetsGetAction struct {
+	Type uint8 `json:"4"`
+	Content []byte `json:"5"`
+	Signature []byte `json:"6"`
+}
+
+func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx {
+	var args ArgsGetAction
+	util.MustUnmarshal(bytesArgs, &args)
+	// TODO: check valid isc/tid/aid
+	bt := err := nsb.actionMap.TryGet(
+		actionKey(args.ISCAddress, args.Tid, args.Aid),
 		util.ConcatBytes(Content, Signature),
 	)
 	if err != nil {
