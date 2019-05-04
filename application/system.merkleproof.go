@@ -164,9 +164,18 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 	Proof []byte,
 	Key []byte,
 	Value []byte
+	hfType uint8,
 ) *types.ResponseDeliverTx {
 	var jsonProof MPTMerkleProof
 	MustUnmarshal(Proof, &jsonProof)
+
+	var hf crypto.HashFunc
+	switch hfType{
+	case merklePatriciaTrieUsingKeccak256:
+		hf = crypto.Keccak256
+	default:
+		return response.ContractExecError(unrecognizedHashFuncType)
+	}
 
 	keybuf := bytes.NewReader(Key)
 	
@@ -221,7 +230,7 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 						if Value != nil {
 							return response.ContractExecError(wrongValue)
 						} else {
-							CheckKeyValueOK;
+							goto CheckKeyValueOK;
 						}
 					} else {
 						if len(hashChain) != 0 {
