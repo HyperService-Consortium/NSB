@@ -1,7 +1,6 @@
 package nsb
 
 import (
-	"fmt"
 	"bytes"
 	"errors"
 	"encoding/json"
@@ -67,7 +66,11 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 }
 
 
-func (nsb *NSBApplication) parseContractInfo(txHeader *TransactionHeader, contractName []byte, createFlag bool) (
+func (nsb *NSBApplication) parseContractInfo(
+	txHeader *cmn.TransactionHeader,
+	contractName []byte,
+	createFlag bool,
+) (
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
@@ -129,14 +132,14 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	}
 
 	var accInfo, conInfo *AccountInfo
-	accInfo, errInfo := nsb.parseAccInfo(txHeader.From)
+	accInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
 
 	contractName := bytesTx[0]
 
-	conInfo, errInfo := nsb.parseContractInfo(txHeader, contractName, createFlag)
+	conInfo, errInfo = nsb.parseContractInfo(txHeader, contractName, createFlag)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
@@ -182,7 +185,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 	}
 	
 	var accInfo *AccountInfo
-	accInfo, errInfo := nsb.parseAccInfo(txHeader.From)
+	accInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
 		return nil, nil, errInfo
 	}

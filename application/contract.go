@@ -117,7 +117,7 @@ func (nsb *NSBApplication) systemCall(
 				cb =  r
 			case error:
 				cb = &types.ResponseDeliverTx {
-					CodeResponse: uint32(response.CodeContractPanic()),
+					Code: uint32(response.CodeContractPanic()),
 					Log: r.Error(),
 				}
 			default:
