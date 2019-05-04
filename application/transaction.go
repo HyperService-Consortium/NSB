@@ -77,7 +77,7 @@ func (nsb *NSBApplication) parseContractInfo(
 	var contractInfo AccountInfo
 	if createFlag {
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
-		var byteInfo = make([]byte, 0)
+		
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 		contractInfo.Name = contractName
 		// TODO: set CodeHash
