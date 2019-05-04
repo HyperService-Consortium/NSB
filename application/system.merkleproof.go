@@ -1,7 +1,13 @@
 package nsb
 
 import (
+	"io"
+	"fmt"
+	"errors"
+	"bytes"
 	"encoding/json"
+	"unicode/utf8"
+	"github.com/Myriad-Dreamin/go-mpt"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/crypto"
@@ -42,21 +48,38 @@ func (nsb *NSBApplication) MerkleProofRigisteredMethod(
 const (
 	simpleMerkleTreeUsingSha256 uint8 = 0 + iota
 	simpleMerkleTreeUsingSha512
-	MerklePatriciaTrieUsingKeccak256
+	merklePatriciaTrieUsingKeccak256
 )
 
 var (
+	bytesOne = []byte{1}
 	unrecognizedMerkleProofType = errors.New("unknown merkle proof type")
 	evenlenSimpleMerkleProofError = errors.New(
 		"MerkleProofError: simple merkle proof must have an odd number of hash nodes",
 	)
-	wrongSimpleMerkleTreeHash = errors.New(
+	wrongMerkleTreeHash = errors.New(
 		"MerkleProofError: fail to match the given hash value"
+	)
+	mptNodesConsumed = errors.New(
+		"MerkleProofError: the hash chain is too short to match the key"
+	)
+	keyConsumed = errors.New(
+		"MerkleProofError: the key is too short to match the hash chain"
+	)
+	wrongValue = errors.New(
+		"MerkleProofError: the key does not match the value"
+	)
+	runeDecodeError = errors.New(
+		"MerkleProofError: can not decode rune from key buffer"
 	)
 	unrecognizedHashFuncType = errors.New(
 		"unknown hash function type"
 	)
 )
+
+func errithNode(int i) err {
+	return errors.New(fmt.Sprintf("Wrong proof on %v-th node", i))
+}
 
 
 type ArgsValidateMerkleProof struct {
@@ -76,7 +99,7 @@ func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.Response
 	switch args.Type {
 	case simpleMerkleTreeUsingSha256, simpleMerkleTreeUsingSha512:
 		return nsb.validateSimpleMerkleTree(args.Proof, args.Key, args.Type)
-	case MerklePatriciaTrieUsingKeccak256:
+	case merklePatriciaTrieUsingKeccak256:
 		return nsb.validateMerklePatriciaTrie(args.Proof, args.Key, args.Value, args.Type)
 	default:
 		return response.ContractExecError(unrecognizedMerkleProofType)
@@ -84,6 +107,11 @@ func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.Response
 }
 
 type SimpleMerkleProof struct {
+	HashChain [][]byte `json:"h"`
+}
+
+type MPTMerkleProof struct {
+	RootHash []byte `json:"r"`
 	HashChain [][]byte `json:"h"`
 }
 
@@ -113,13 +141,14 @@ func (nsb *NSBApplication) validateSimpleMerkleTree(
 	for idx := len(hashChain) - 2; idx >= 0; idx -= 2 {
 		checkHash = hf(hashChain[idx], hashChain[idx + 1])
 		if checkHash != hashChain[idx - 1] {
-			return response.ContractExecError(wrongSimpleMerkleTreeHash)
+			return response.ContractExecError(wrongMerkleTreeHash)
 		}
 	}
 
+	// existence
 	err := nsb.validMerkleProofMap.TryUpdate(
-		merkleProofKey(hfType, HashChain[0]),
-		Key,
+		merkleProofKey(hfType, HashChain[0], Key),
+		bytesOne,
 	)
 	if err != nil {
 		return response.ContractExecError(err)
@@ -136,8 +165,91 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 	Key []byte,
 	Value []byte
 ) *types.ResponseDeliverTx {
+	var jsonProof MPTMerkleProof
+	MustUnmarshal(Proof, &jsonProof)
 
-	getEthKey
+	keybuf := bytes.NewReader(Key)
+	
+	var keyrune rune
+	var keybyte byte
+	var rsize int
+	var err error
+	var hashChain = jsonProof.HashChain
+	var curNode trie.node
+	var curHash []byte = jsonProof.RootHash
+	// TODO: export node decoder
+	for {
+		
+		if len(hashChain) == 0 {
+			return response.ContractExecError(mptNodesConsumed)
+		}
+		if !bytes.Equal(curHash, hf(hashChain[0])) {
+			return response.ContractExecError(wrongMerkleTreeHash)
+		}
+
+		curNode, err = trie.DecodeNode(curHash, hashChain[0])
+		if err != nil {
+			return response.ContractExecError(err)
+		}
+		hashChain = hashChain[1:]
+
+		switch n := curNode.(type) {
+		case *trie.FullNode:
+			keyrune, rsize, err = keybuf.ReadRune()
+			if err == io.EOF {
+				if len(hashChain) != 0 {
+					return response.ContractExecError(keyConsumed)
+				}
+				if !bytes.Equal(n[16], Value) {
+					return response.ContractExecError(wrongValue)
+				}
+				// else:
+				goto CheckKeyValueOK;
+			} else if err != nil {
+				return require.ContractExecError(err)
+			}
+			if keyrune == utf8.RuneError {
+				return response.ContractExecError(runeDecodeError)
+			}
+
+			curHash = []byte(curNode[int(keyrune)])
+		case *trie.ShortNode:
+			for idx := 0; idx < len(n.Key); idx++ {
+				keybyte, err = keybuf.ReadByte()
+				if err == io.EOF {
+					if idx != len(n.Key) - 1 {
+						if Value != nil {
+							return response.ContractExecError(wrongValue)
+						} else {
+							CheckKeyValueOK;
+						}
+					} else {
+						if len(hashChain) != 0 {
+							return response.ContractExecError(keyConsumed)
+						}
+						if !bytes.Equal([]byte(n.Val), Value) {
+							return response.ContractExecError(wrongValue)
+						}
+						// else:
+						goto CheckKeyValueOK;
+					}
+				} else if err != nil {
+					return require.ContractExecError(err)
+				}
+			}
+
+			curHash = []byte(n.Value)
+		}
+	}
+	CheckKeyValueOK:
+	// existence
+	err := nsb.validMerkleProofMap.TryUpdate(
+		merkleProofKey(hfType, jsonProof.RootHash, Key),
+		util.ConcatBytes(bytesOne, Value)
+	)
+	if err != nil {
+		return response.ContractExecError(err)
+	}
 
 	return &types.ResponseDeliverTx{
 		Code: uint32(response.CodeOK()),
@@ -172,6 +284,7 @@ func (nsb *NSBApplication) addMerkleProof(bytesArgs []byte) *types.ResponseDeliv
 	if err != nil {
 		return response.ContractExecError(err)
 	}
+	
 	return &types.ResponseDeliverTx{
 		Code: uint32(response.CodeOK()),
 		Info: "updateSuccess",
