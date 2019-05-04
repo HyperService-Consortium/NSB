@@ -101,7 +101,7 @@ func (nsb *NSBApplication) createContracts(
 func (nsb *NSBApplication) systemCall(
 	contractName string,
 	env *cmn.TransactionHeader,
-	accInfo AccountInfo,
+	accInfo *AccountInfo,
 	funcName string,
 	args []byte,
 ) (cb *types.ResponseDeliverTx) {
