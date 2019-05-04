@@ -113,7 +113,7 @@ func (nsb *NSBApplication) systemCall(
 					Code: uint32(response.CodeContractPanic()),
 					Log: r,
 				}
-			case *cmn.ContractCallBackInfo:
+			case *types.ResponseDeliverTx:
 				cb =  r
 			case error:
 				cb = &types.ResponseDeliverTx {
