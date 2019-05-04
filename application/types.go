@@ -19,7 +19,8 @@ type NSBApplication struct {
 	accMap      *merkmap.MerkMap
 	txMap       *merkmap.MerkMap
 	actionMap   *merkmap.MerkMap
-	merkleMap   *merkmap.MerkMap
+	validMerkleProofMap   *merkmap.MerkMap
+	validOnchainMerkleProofMap *merkmap.MerkMap
 	statedb     *leveldb.DB
 	ValUpdates  []types.ValidatorUpdate
 	logger      log.Logger
