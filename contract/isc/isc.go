@@ -41,7 +41,7 @@ func CreateNewContract(env *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo)
 		return DecodeJsonError(err)
 	}
 
-	fmt.Print(string(env.Data))
+	fmt.Print(string(env.Args))
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(CodeOK),
 		Info: fmt.Sprintf("create success , this contract is deploy at %v", hex.EncodeToString(env.ContractAddress)),
