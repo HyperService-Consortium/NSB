@@ -79,6 +79,8 @@ func TestGenerateTransaction(t *testing.T) {
 		Value:     math.NewUint256FromBytes([]byte{0}),
 		Nonce:     math.NewUint256FromBytes([]byte{233, 233}),
 	}
+	
+	// modified , concat them!
 	bt, err = json.Marshal(txHeader)
 	fmt.Println(string(bt))
 	if err != nil {

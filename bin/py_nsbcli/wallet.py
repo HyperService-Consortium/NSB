@@ -1,9 +1,15 @@
 
 from ctypes import CDLL
 
-from hexbytes import HexBytes
 
-from gotypes import (
+try:
+    from hexbytes import HexBytes
+except ImportError or ModuleNotFoundError as e:
+    print(e)
+    exit(1)
+
+
+from py_nsbcli.gotypes import (
     GoInt32,
     GoString,
     GoBytes,
@@ -11,7 +17,7 @@ from gotypes import (
     GoWalletptr
 )
 
-from config import INCLUDE_PATH
+from py_nsbcli.config import INCLUDE_PATH
 
 ENC = "utf-8"
 
@@ -31,6 +37,9 @@ funcs.CDLL_NewWalletHandlerFromDB.restype = GoWalletptr
 
 funcs.CDLL_NewWalletHandler.argtype = (GolevelDBptr, GoString.Type)
 funcs.CDLL_NewWalletHandler.restype = GoWalletptr
+
+funcs.CDLL_WalletAddress.argtype = (GoWalletptr, GoInt32)
+funcs.CDLL_WalletAddress.restype = GoBytes.Type
 
 funcs.CDLL_WalletSign.argtype = (GoWalletptr, GoInt32, GoBytes.Type, GoInt32)
 funcs.CDLL_WalletSign.restype = GoBytes.Type
@@ -98,13 +107,19 @@ class Wallet:
         else:
             self._handler_num = -1
 
+    def address(self, idx=0):
+        ptr = funcs.CDLL_WalletAddress(self._handler_num, idx)
+        if ptr is None:
+            return
+        return GoBytes.convert(ptr, 32)
+
     @staticmethod
     def create(db_handler, name):
         wlt = Wallet(None, name)
         if isinstance(db_handler, LevelDB):
-            wlt._handler_num = funcs.CDLL_NewWalletHandler(db_handler.handler_num, GoString.trans(name, ENC))
+            wlt._handler_num = funcs.CDLL_NewWalletHandlerFromDB(db_handler.handler_num, GoString.trans(name, ENC))
         elif isinstance(db_handler, int):
-            wlt._handler_num = funcs.CDLL_NewWalletHandler(db_handler, GoString.trans(name, ENC))
+            wlt._handler_num = funcs.CDLL_NewWalletHandlerFromDB(db_handler, GoString.trans(name, ENC))
         else:
             wlt._handler_num = -1
         return wlt
@@ -147,10 +162,10 @@ class Wallet:
 
 
 if __name__ == '__main__':
-    db = LevelDB("../nsbcli/kvstore")
+    db = LevelDB("../kvstore")
     print(db.handler_num)
     test_wlt = Wallet(db, 'Alice')
-    print(test_wlt.handler_num)
+    print(test_wlt.handler_num, test_wlt.address(0).hex())
     print(test_wlt.sign(b"\x10\x00").hex())
     aut = test_wlt.sign(b"\x10\x00")
     print(test_wlt.verify_by_raw(b"\x10\x00", aut))

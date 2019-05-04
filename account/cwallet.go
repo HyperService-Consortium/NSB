@@ -17,6 +17,7 @@ const (
 const (
 	CodeInvalidDBPtr = -1 - iota
 	CodeInvalidWalletPtr
+	CodeInvalidIndex
 	CodeIOError
 )
 
@@ -104,10 +105,26 @@ func NewWalletHandler(dbptr Export_C_Int, wltname *Export_C_Char) C.int {
 	return C.int(len(wltPacket) - 1)
 }
 
+//export WalletAddress
+func WalletAddress(wltptr Export_C_Int, idx Export_C_Int) unsafe.Pointer {
+	wlt := getWallet(int(wltptr))
+	if wlt == nil {
+		return unsafe.Pointer(nil)
+	}
+	if len(wlt.Acc) <= int(idx) || idx < 0 {
+		return unsafe.Pointer(nil)
+	}
+
+	return C.CBytes([]byte(wlt.Acc[idx].PublicKey))
+}
+
 //export WalletSign
 func WalletSign(wltptr Export_C_Int, idx Export_C_Int, msg unsafe.Pointer, msgSize Export_C_Int) unsafe.Pointer {
 	wlt := getWallet(int(wltptr))
 	if wlt == nil {
+		return unsafe.Pointer(nil)
+	}
+	if len(wlt.Acc) <= int(idx) || idx < 0 {
 		return unsafe.Pointer(nil)
 	}
 	msgHash := crypto.Sha512(sign_header, C.GoBytes(msg, C.int(msgSize)))
@@ -121,6 +138,9 @@ func WalletSignHash(wltptr Export_C_Int, idx Export_C_Int, msgHash unsafe.Pointe
 	if wlt == nil {
 		return unsafe.Pointer(nil)
 	}
+	if len(wlt.Acc) <= int(idx) || idx < 0 {
+		return unsafe.Pointer(nil)
+	}
 	signature := eddsa.Sign(wlt.Acc[idx].PrivateKey, C.GoBytes(msgHash, 64))
 	return C.CBytes(signature)
 }
@@ -130,6 +150,9 @@ func WalletVerifyByRaw(wltptr Export_C_Int, idx Export_C_Int, signature unsafe.P
 	wlt := getWallet(int(wltptr))
 	if wlt == nil {
 		return CodeInvalidWalletPtr
+	}
+	if len(wlt.Acc) <= int(idx) || idx < 0 {
+		return CodeInvalidIndex
 	}
 	msgHash := crypto.Sha512(sign_header, C.GoBytes(msg, C.int(msgSize)))
 	checkOK := eddsa.Verify(wlt.Acc[idx].PublicKey, msgHash, C.GoBytes(signature, 64))
@@ -145,6 +168,9 @@ func WalletVerifyByHash(wltptr Export_C_Int, idx Export_C_Int, signature unsafe.
 	wlt := getWallet(int(wltptr))
 	if wlt == nil {
 		return CodeInvalidWalletPtr
+	}
+	if len(wlt.Acc) <= int(idx) || idx < 0 {
+		return CodeInvalidIndex
 	}
 	checkOK := eddsa.Verify(wlt.Acc[idx].PublicKey, C.GoBytes(msgHash, 64), C.GoBytes(signature, 64))
 	if checkOK {

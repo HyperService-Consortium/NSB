@@ -29,6 +29,11 @@ func CDLL_NewWalletHandler(dbptr C.int, wltname *C.char) C.int {
 	return C.int(wallet.NewWalletHandler((wallet.Export_C_Int)(dbptr), (*wallet.Export_C_Char)(wltname)))
 }
 
+//export CDLL_WalletAddress
+func CDLL_WalletAddress(wltptr C.int, idx C.int) unsafe.Pointer {
+	return wallet.WalletAddress((wallet.Export_C_Int)(wltptr), (wallet.Export_C_Int)(idx))
+}
+
 //export CDLL_WalletSign
 func CDLL_WalletSign(wltptr C.int, idx C.int, msg unsafe.Pointer, msgSize C.int) unsafe.Pointer {
 	return wallet.WalletSign((wallet.Export_C_Int)(wltptr), (wallet.Export_C_Int)(idx), msg, (wallet.Export_C_Int)(msgSize))

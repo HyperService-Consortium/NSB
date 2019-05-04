@@ -75,6 +75,8 @@ extern int CDLL_NewWalletHandlerFromDB(int p0, char* p1);
 
 extern int CDLL_NewWalletHandler(int p0, char* p1);
 
+extern void* CDLL_WalletAddress(int p0, int p1);
+
 extern void* CDLL_WalletSign(int p0, int p1, void* p2, int p3);
 
 extern void* CDLL_WalletSignHash(int p0, int p1, void* p2);

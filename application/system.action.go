@@ -29,6 +29,8 @@ func (nsb *NSBApplication) ActionRigisteredMethod(
 	switch funcName {
 	case "addAction":
 		return nsb.addAction(args)
+	case "getAction":
+		return nsb.getAction(args)
 	default:
 		return response.InvalidFuncTypeError(MethodMissing)
 	}
