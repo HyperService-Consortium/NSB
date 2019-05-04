@@ -301,7 +301,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 	}
 
 	var fap *FAPair
-	fap, errInfo = nsb.parseFAPair(env.Data, createFlag)
+	fap, errInfo = nsb.parseFAPair(env.Data, false)
 	if errInfo != nil {
 		return errInfo
 	}
