@@ -246,6 +246,13 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 				} else if err != nil {
 					return require.ContractExecError(err)
 				}
+				if keybyte != n.Key[i] {
+					if Value != nil {
+						return response.ContractExecError(wrongValue)
+					} else {
+						goto CheckKeyValueOK;
+					}
+				}
 			}
 
 			curHash = []byte(n.Value)
