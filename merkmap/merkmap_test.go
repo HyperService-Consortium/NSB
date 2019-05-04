@@ -1,10 +1,10 @@
 package merkmap
 
 import (
-	"fmt"
-	"testing"
 	"encoding/hex"
+	"fmt"
 	"github.com/Myriad-Dreamin/go-mpt"
+	"testing"
 )
 
 func TestSlotfromString(t *testing.T) {

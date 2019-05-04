@@ -1,10 +1,10 @@
 package localstorage
 
 import (
-	"fmt"
-	"testing"
 	"bytes"
+	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
+	"testing"
 )
 
 /*
@@ -18,7 +18,7 @@ key2     value1     value2     value2         []
 */
 
 var (
-	map0 = "map"
+	map0              = "map"
 	acc1_key1_history = [][]byte{
 		[]byte("value1"),
 		[]byte("value2"),
@@ -261,7 +261,6 @@ func CheckAcc2History4(t *testing.T) {
 	}
 }
 
-
 func TestConflictOpenDB(t *testing.T) {
 	testdb, err = leveldb.OpenFile("./testdb", nil)
 	if err != nil {
@@ -287,7 +286,7 @@ func TestAcc1MakeHistory1(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryUpdate(map0, key1, acc1_key1_history[0])
 	if err != nil {
 		t.Error(err)
@@ -321,7 +320,7 @@ func TestAcc2MakeHistory1(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryUpdate(map0, key2, acc2_key2_history[0])
 	if err != nil {
 		t.Error(err)
@@ -357,7 +356,7 @@ func TestAcc2MakeHistory2(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryUpdate(map0, key1, acc2_key1_history[1])
 	if err != nil {
 		t.Error(err)
@@ -399,7 +398,7 @@ func TestAcc1MakeHistory2(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryUpdate(map0, key1, acc1_key1_history[1])
 	if err != nil {
 		t.Error(err)
@@ -442,7 +441,7 @@ func TestAcc1MakeHistory3(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryDelete(map0, key1)
 	if err != nil {
 		t.Error(err)
@@ -486,7 +485,7 @@ func TestAcc2MakeHistory3(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryDelete(map0, key1)
 	if err != nil {
 		t.Error(err)
@@ -531,7 +530,7 @@ func TestAcc2MakeHistory4(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryDelete(map0, key2)
 	if err != nil {
 		t.Error(err)
@@ -572,7 +571,7 @@ func TestAcc1MakeHistory4(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	
+
 	err = storage.tryDelete(map0, key2)
 	if err != nil {
 		t.Error(err)

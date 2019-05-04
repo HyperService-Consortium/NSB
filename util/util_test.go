@@ -5,8 +5,8 @@ import (
 )
 
 func TestUtil(t *testing.T) {
-	var uint1,uint2,uint3 uint64
-	var int1,int2,int3 int64
+	var uint1, uint2, uint3 uint64
+	var int1, int2, int3 int64
 	uint1 = 233
 	uint2 = 23333
 	uint3 = 233333333

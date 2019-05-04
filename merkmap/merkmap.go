@@ -1,17 +1,17 @@
 package merkmap
 
 import (
-	"encoding/hex"
 	"bytes"
+	"encoding/hex"
+	"github.com/Myriad-Dreamin/NSB/merkmap/MerkMapError"
 	"github.com/Myriad-Dreamin/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/Myriad-Dreamin/NSB/merkmap/MerkMapError"
 )
 
 type MerkMap struct {
-	merk *trie.Trie
-	db *trie.NodeBase
-	slot []byte
+	merk     *trie.Trie
+	db       *trie.NodeBase
+	slot     []byte
 	lastRoot []byte
 }
 
@@ -26,7 +26,7 @@ func concatBytes(dat ...[]byte) []byte {
 }
 
 func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp *MerkMap, err error) {
-	
+
 	var rootHash trie.Hash
 	switch rtHash.(type) {
 	case string:
@@ -38,7 +38,7 @@ func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp 
 	default:
 		return nil, MerkMapError.UnrecognizedType
 	}
-	
+
 	mp = new(MerkMap)
 	mp.db, _ = trie.NewNodeBasefromDB(db)
 	mp.merk, err = trie.NewTrie(rootHash, mp.db)
@@ -81,11 +81,10 @@ func NewMerkMap(dbDir string, rootHash interface{}, slot interface{}) (mp *MerkM
 	return NewMerkMapFromDB(db, rootHash, slot)
 }
 
-
 func (mp *MerkMap) ArrangeSlot(newSlot []byte) *MerkMap {
 	return &MerkMap{
 		merk: mp.merk,
-		db: mp.db,
+		db:   mp.db,
 		slot: newSlot,
 	}
 }

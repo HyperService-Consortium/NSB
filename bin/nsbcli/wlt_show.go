@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"github.com/Myriad-Dreamin/NSB/account"
 	"github.com/syndtr/goleveldb/leveldb"
 	urcli "github.com/urfave/cli"

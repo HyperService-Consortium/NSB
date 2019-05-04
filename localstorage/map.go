@@ -4,7 +4,6 @@ import (
 	"github.com/Myriad-Dreamin/NSB/merkmap"
 )
 
-
 type Bytable interface {
 	Bytes() []byte
 }
@@ -13,7 +12,7 @@ type Map struct {
 	merk *merkmap.MerkMap
 }
 
-func (sto *LocalStorage) NewMap(mapName string) (*Map) {
+func (sto *LocalStorage) NewMap(mapName string) *Map {
 	return &Map{
 		merk: sto.makeStorageSlot(mapName),
 	}

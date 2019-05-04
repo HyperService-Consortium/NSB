@@ -11,4 +11,3 @@ func Sha256(data ...[]byte) []byte {
 	}
 	return d.Sum(nil)
 }
-

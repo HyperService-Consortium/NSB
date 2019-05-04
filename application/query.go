@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 )
 
-
 func (nsb *NSBApplication) QueryIndex(req *types.RequestQuery) string {
 	switch req.Path {
 	case "acc_getAccInfo":

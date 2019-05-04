@@ -10,8 +10,7 @@ const (
 )
 
 var (
-	
-	stateKey = []byte("NSBStateKey")
+	stateKey     = []byte("NSBStateKey")
 	actionHeader = []byte("NACHD:")
 )
 

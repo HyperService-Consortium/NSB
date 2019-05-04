@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 )
 
-
 type Uint256 struct {
 	b *big.Int
 }
-
 
 func NewUint256FromUint256(data *Uint256) *Uint256 {
 	return &Uint256{
@@ -56,7 +54,6 @@ func NewUint256FromHexString(data string) *Uint256 {
 	}
 }
 
-
 func (ui256 *Uint256) String() string {
 	return ui256.b.String()
 }
@@ -64,7 +61,6 @@ func (ui256 *Uint256) String() string {
 func (ui256 *Uint256) Bytes() []byte {
 	return ui256.b.Bytes()
 }
-
 
 func (ui256 *Uint256) Add(y *Uint256) bool {
 	ui256.b.Add(ui256.b, y.b)
@@ -81,7 +77,6 @@ func AddUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
 	return
 }
 
-
 func (ui256 *Uint256) Sub(y *Uint256) bool {
 	ui256.b.Sub(ui256.b, y.b)
 	if ui256.b.Sign() == -1 {
@@ -97,7 +92,6 @@ func SubUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
 	return
 }
 
-
 func (ui256 *Uint256) Mul(y *Uint256) bool {
 	ui256.b.Mul(ui256.b, y.b)
 	if ui256.b.BitLen() > 256 {
@@ -112,7 +106,6 @@ func MulUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
 	check = ret.Mul(y)
 	return
 }
-
 
 func (ui256 *Uint256) Div(y *Uint256) bool {
 	var rem big.Int
@@ -130,7 +123,6 @@ func DivUint256(x *Uint256, y *Uint256) (ret *Uint256, check bool) {
 	return
 }
 
-
 func (ui256 *Uint256) Comp(y *Uint256) int {
 	return new(big.Int).Sub(ui256.b, y.b).Sign()
 }
@@ -139,11 +131,9 @@ func (ui256 *Uint256) BitLen() int {
 	return ui256.b.BitLen()
 }
 
-
 func (ui256 *Uint256) MarshalJSON() ([]byte, error) {
 	return json.Marshal(ui256.b.Bytes())
 }
-
 
 func (ui256 *Uint256) UnmarshalJSON(byteJson []byte) (err error) {
 	var bt []byte

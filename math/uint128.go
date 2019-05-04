@@ -61,8 +61,6 @@ import (
 // 	return
 // }
 
-
-
 type Uint128 struct {
 	b *big.Int
 }
@@ -73,7 +71,6 @@ func NewUint128FromUint128(data *Uint128) *Uint128 {
 	}
 }
 
-
 func NewUint128FromBigInt(data *big.Int) *Uint128 {
 	if data.BitLen() > 128 {
 		return nil
@@ -82,7 +79,6 @@ func NewUint128FromBigInt(data *big.Int) *Uint128 {
 		b: new(big.Int).Set(data),
 	}
 }
-
 
 func NewUint128FromBytes(data []byte) *Uint128 {
 	if len(data) > 16 {

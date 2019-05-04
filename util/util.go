@@ -1,34 +1,33 @@
 package util
 
-
 import (
-    "fmt"
-    "bytes"
-    "encoding/binary"
+	"bytes"
+	"encoding/binary"
+	"fmt"
 )
 
 func Int64ToBytes(i int64) []byte {
-    var buf = make([]byte, 8)
-    binary.BigEndian.PutUint64(buf, uint64(i))
-    return buf
+	var buf = make([]byte, 8)
+	binary.BigEndian.PutUint64(buf, uint64(i))
+	return buf
 }
 
 func BytesToInt64(buf []byte) int64 {
-    return int64(binary.BigEndian.Uint64(buf))
+	return int64(binary.BigEndian.Uint64(buf))
 }
 
 func Uint64ToBytes(i uint64) []byte {
-    var buf = make([]byte, 8)
-    binary.BigEndian.PutUint64(buf, uint64(i))
-    return buf
+	var buf = make([]byte, 8)
+	binary.BigEndian.PutUint64(buf, uint64(i))
+	return buf
 }
 
 func BytesToUint64(buf []byte) uint64 {
-    return uint64(binary.BigEndian.Uint64(buf))
+	return uint64(binary.BigEndian.Uint64(buf))
 }
 
 func ErrorToString(err error) string {
-    return fmt.Sprintf("%v", err)
+	return fmt.Sprintf("%v", err)
 }
 
 func ConcatBytes(dat ...[]byte) []byte {
@@ -40,4 +39,3 @@ func ConcatBytes(dat ...[]byte) []byte {
 	}
 	return buff.Next(totlen)
 }
-

@@ -16,7 +16,7 @@ package nsb
 // 	// {
 // 	//     txs.txInfo[idx].txhash = isc.getTxInfoHash(idx);
 // 	// }
-	
+
 // 	activeISC[isc_addr] = true;
 // 	addingSuccess = true;
 // 	emit addISCSuccess(isc_addr, tx_count);

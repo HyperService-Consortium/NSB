@@ -6,13 +6,13 @@ import (
 )
 
 func TestUint256_A(t *testing.T) {
-	var x = NewUint256FromBytes([]byte{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	var x = NewUint256FromBytes([]byte{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	c := x.Mul(x)
 	fmt.Println(c, x.String())
 }
 
 func TestUint256_B(t *testing.T) {
-	var x = NewUint256FromBytes([]byte{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	var x = NewUint256FromBytes([]byte{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 	var y = NewUint256FromUint256(x)
 	var z = NewUint256FromBigInt(BigOne)
 	x.Sub(z)

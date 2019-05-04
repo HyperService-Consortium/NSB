@@ -2,13 +2,12 @@ package nsb
 
 import (
 	"fmt"
+	"github.com/Myriad-Dreamin/NSB/application/response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/Myriad-Dreamin/NSB/application/response"
 	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
 	isc "github.com/Myriad-Dreamin/NSB/contract/isc"
 )
-
 
 func (nsb *NSBApplication) execContractFuncs(
 	contractName string,
@@ -18,21 +17,21 @@ func (nsb *NSBApplication) execContractFuncs(
 		if r := recover(); r != nil {
 			switch r := r.(type) {
 			case string:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: r,
+					Log:          r,
 				}
 			case *cmn.ContractCallBackInfo:
-				cb =  r
+				cb = r
 			case error:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: r.Error(),
+					Log:          r.Error(),
 				}
 			default:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: "unknown panic interface...",
+					Log:          "unknown panic interface...",
 				}
 			}
 		}
@@ -42,17 +41,16 @@ func (nsb *NSBApplication) execContractFuncs(
 	case "isc":
 		return isc.RigisteredMethod(contractEnv)
 	case "sdeam":
-		return &cmn.ContractCallBackInfo {
+		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO()),
-		}// sdeam.RegistedMethod(byteJson)
+		} // sdeam.RegistedMethod(byteJson)
 	default:
-		return &cmn.ContractCallBackInfo {
+		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
-			Log: "unknown contractName",
+			Log:          "unknown contractName",
 		}
 	}
 }
-
 
 func (nsb *NSBApplication) createContracts(
 	contractName string,
@@ -62,21 +60,21 @@ func (nsb *NSBApplication) createContracts(
 		if r := recover(); r != nil {
 			switch r := r.(type) {
 			case string:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: r,
+					Log:          r,
 				}
 			case *cmn.ContractCallBackInfo:
-				cb =  r
+				cb = r
 			case error:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: r.Error(),
+					Log:          r.Error(),
 				}
 			default:
-				cb = &cmn.ContractCallBackInfo {
+				cb = &cmn.ContractCallBackInfo{
 					CodeResponse: uint32(response.CodeContractPanic()),
-					Log: "unknown panic interface...",
+					Log:          "unknown panic interface...",
 				}
 			}
 		}
@@ -87,13 +85,13 @@ func (nsb *NSBApplication) createContracts(
 		fmt.Println(contractEnv)
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":
-		return &cmn.ContractCallBackInfo {
+		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO()),
-		}// sdeam.RegistedMethod(byteJson)
+		} // sdeam.RegistedMethod(byteJson)
 	default:
-		return &cmn.ContractCallBackInfo {
+		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
-			Log: "unknown contractName",
+			Log:          "unknown contractName",
 		}
 	}
 }
@@ -109,21 +107,21 @@ func (nsb *NSBApplication) systemCall(
 		if r := recover(); r != nil {
 			switch r := r.(type) {
 			case string:
-				cb = &types.ResponseDeliverTx {
+				cb = &types.ResponseDeliverTx{
 					Code: uint32(response.CodeContractPanic()),
-					Log: r,
+					Log:  r,
 				}
 			case *types.ResponseDeliverTx:
-				cb =  r
+				cb = r
 			case error:
-				cb = &types.ResponseDeliverTx {
+				cb = &types.ResponseDeliverTx{
 					Code: uint32(response.CodeContractPanic()),
-					Log: r.Error(),
+					Log:  r.Error(),
 				}
 			default:
-				cb = &types.ResponseDeliverTx {
+				cb = &types.ResponseDeliverTx{
 					Code: uint32(response.CodeContractPanic()),
-					Log: "unknown panic interface...",
+					Log:  "unknown panic interface...",
 				}
 			}
 		}
@@ -133,18 +131,17 @@ func (nsb *NSBApplication) systemCall(
 	case "system.action":
 		return nsb.ActionRigisteredMethod(env, accInfo, funcName, args)
 	case "system.merkleproof":
-		return &types.ResponseDeliverTx {
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeTODO()),
-		}// sdeam.RegistedMethod(byteJson)
+		} // sdeam.RegistedMethod(byteJson)
 	case "system.token":
-		return &types.ResponseDeliverTx {
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeTODO()),
-		}// sdeam.RegistedMethod(byteJson)
+		} // sdeam.RegistedMethod(byteJson)
 	default:
-		return &types.ResponseDeliverTx {
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeInvalidTxType()),
-			Log: "unknown contractName",
+			Log:  "unknown contractName",
 		}
 	}
 }
-

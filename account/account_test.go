@@ -1,19 +1,18 @@
 package account
 
 import (
-	"fmt"
-	"testing"
 	"bytes"
 	"encoding/hex"
+	"fmt"
+	"testing"
 )
-
 
 func TestAccount(t *testing.T) {
 	acc := NewAccount([]byte("account:myd;pawd:123456"))
 	raw := []byte("{from:acc.pri, to: another, tag: tanne}")
 	rawhash := MakeMsgHash(raw)
 	signed_raw := acc.Sign(raw)
-	
+
 	fmt.Println(rawhash, signed_raw)
 
 	if !acc.VerifyByRaw(signed_raw, raw) {

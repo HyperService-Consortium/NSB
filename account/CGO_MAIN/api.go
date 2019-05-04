@@ -4,7 +4,6 @@ import "C"
 import "unsafe"
 import wallet "github.com/Myriad-Dreamin/NSB/account"
 
-
 //export CDLL_NewLevelDBHandler
 func CDLL_NewLevelDBHandler(dbpath *C.char) C.int {
 	return C.int(wallet.NewLevelDBHandler((*wallet.Export_C_Char)(dbpath)))
@@ -12,7 +11,7 @@ func CDLL_NewLevelDBHandler(dbpath *C.char) C.int {
 
 //export CDLL_CloseDB
 func CDLL_CloseDB(dbptr C.int) {
-    wallet.CloseDB((wallet.Export_C_Int)(dbptr))
+	wallet.CloseDB((wallet.Export_C_Int)(dbptr))
 }
 
 //export CDLL_PreCheckWallet
@@ -49,6 +48,5 @@ func CDLL_WalletVerifyByRaw(wltptr C.int, idx C.int, signature unsafe.Pointer, m
 func CDLL_WalletVerifyByHash(wltptr C.int, idx C.int, signature unsafe.Pointer, msgHash unsafe.Pointer) C.int {
 	return C.int(wallet.WalletVerifyByHash((wallet.Export_C_Int)(wltptr), (wallet.Export_C_Int)(idx), signature, msgHash))
 }
-
 
 func main() {}

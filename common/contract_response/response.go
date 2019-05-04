@@ -1,16 +1,13 @@
 package response
 
-
 import (
 	"fmt"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 )
 
-
 const (
 	codeOK = 0
 )
-
 
 const (
 	codeDecodeJsonError = 1000 + iota
@@ -19,43 +16,40 @@ const (
 	codeInvalidFunctionType
 )
 
-
 func ExecOK() *cmn.ContractCallBackInfo {
-	return &cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
 	}
 }
 
-
 func DecodeJsonError(err error) *cmn.ContractCallBackInfo {
-	return &cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeDecodeJsonError),
-		Log: fmt.Sprintf("DecodeJsonError: %v", err),
+		Log:          fmt.Sprintf("DecodeJsonError: %v", err),
 	}
 }
 
 func OverFlowError(info string) *cmn.ContractCallBackInfo {
-	return &cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOverFlowError),
-		Log: "Overflow ...",
-		Info: info,
+		Log:          "Overflow ...",
+		Info:         info,
 	}
 }
 
 func InvalidFunctionType(info string) *cmn.ContractCallBackInfo {
-	return &cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeInvalidFunctionType),
-		Log: "InvalidFunctionType: Unrecognized function",
-		Info: info,
+		Log:          "InvalidFunctionType: Unrecognized function",
+		Info:         info,
 	}
 }
 
-
 func ArithmeticError(info string) *cmn.ContractCallBackInfo {
-	return &cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeArithmeticError),
-		Log: "ArithmeticError",
-		Info: info,
+		Log:          "ArithmeticError",
+		Info:         info,
 	}
 }
 

@@ -1,9 +1,9 @@
 package math
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
-	"encoding/json"
 )
 
 type myStruct struct {
@@ -14,16 +14,15 @@ type myStruct2 struct {
 	Ui128 Uint128
 }
 
-
 func TestMarshal(t *testing.T) {
-	var x = NewUint128FromBytes([]byte{1,0,0,0,0,0,0,0,0})
+	var x = NewUint128FromBytes([]byte{1, 0, 0, 0, 0, 0, 0, 0, 0})
 	fmt.Println(x)
 
 	bt, err := json.Marshal(x)
 	fmt.Println(string(bt), err)
 	bt, err = json.Marshal(&x)
 	fmt.Println(string(bt), err)
-	
+
 	var mys = &myStruct{
 		Ui128: x,
 	}

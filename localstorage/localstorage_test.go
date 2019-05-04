@@ -1,24 +1,24 @@
 package localstorage
 
 import (
-	"fmt"
-	"testing"
 	"bytes"
+	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
+	"testing"
 )
 
 var (
-	accountAddress1 = []byte("www")
-	accountAddress2 = []byte("HH")
-	acc1_history1 []byte
-	acc1_history2 []byte
-	acc2_history1 []byte
-	acc2_history2 []byte
-	map1 = "myMap1"
-	map2 = "myMap2"
-	key1 = []byte("ke")
-	key2 = []byte("keke")
-	key3 = []byte("kekey")
+	accountAddress1          = []byte("www")
+	accountAddress2          = []byte("HH")
+	acc1_history1            []byte
+	acc1_history2            []byte
+	acc2_history1            []byte
+	acc2_history2            []byte
+	map1                     = "myMap1"
+	map2                     = "myMap2"
+	key1                     = []byte("ke")
+	key2                     = []byte("keke")
+	key3                     = []byte("kekey")
 	acc1_map1value1_history1 = []byte("value1111")
 	acc1_map1value1_history2 = []byte("value1112")
 	acc1_map1value2_history1 = []byte("value1121")
@@ -31,7 +31,7 @@ var (
 	acc2_map1value2_history2 = []byte("value1222")
 	acc2_map1value3_history1 = []byte("valueA")
 	acc2_map1value3_history2 = []byte("valueB")
-	
+
 	acc1_map2value1_history1 = []byte("value2111")
 	acc1_map2value1_history2 = []byte("value2112")
 	acc1_map2value2_history1 = []byte("value2121")
@@ -44,8 +44,8 @@ var (
 	acc2_map2value2_history2 = []byte("value2222")
 	acc2_map2value3_history1 = []byte("valueA")
 	acc2_map2value3_history2 = []byte("valueB")
-	testdb *leveldb.DB
-	err error
+	testdb                   *leveldb.DB
+	err                      error
 )
 
 func TestOpenDB(t *testing.T) {
@@ -284,7 +284,6 @@ func TestAcc1History1FromDB(t *testing.T) {
 		return
 	}
 }
-
 
 func TestAcc2History1(t *testing.T) {
 	var storage *LocalStorage
@@ -721,7 +720,6 @@ func TestAcc1History2FromDB(t *testing.T) {
 		return
 	}
 }
-
 
 func TestAcc2History2(t *testing.T) {
 	var storage *LocalStorage
