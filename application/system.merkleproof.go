@@ -190,6 +190,7 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 	for {
 		
 		if len(hashChain) == 0 {
+			// TODO: key may be nil here
 			return response.ContractExecError(mptNodesConsumed)
 		}
 		if !bytes.Equal(curHash, hf(hashChain[0])) {
