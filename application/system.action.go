@@ -13,6 +13,13 @@ import (
  * storage := actionMap
  */
 
+func MustUnmarshal(data []byte, load interface{}) {
+	err := json.Unmarshal(data, &load)
+	if err != nil {
+		panic(response.DecodeJsonError(err))
+	}
+}
+
 func (nsb *NSBApplication) ActionRigisteredMethod(
 	env *cmn.TransactionHeader,
 	accInfo AccountInfo,
@@ -47,7 +54,7 @@ func actionKey(addr []byte, tid uint64, aid uint64) []byte {
 
 func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsAddAction
-	util.MustUnmarshal(bytesArgs, &args)
+	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
 	err := nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
@@ -70,17 +77,11 @@ type ArgsGetAction struct {
 	Aid uint64 `json:"3"`
 }
 
-type RetsGetAction struct {
-	Type uint8 `json:"4"`
-	Content []byte `json:"5"`
-	Signature []byte `json:"6"`
-}
-
 func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsGetAction
-	util.MustUnmarshal(bytesArgs, &args)
+	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
-	bt := err := nsb.actionMap.TryGet(
+	bt, err := nsb.actionMap.TryGet(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
 		util.ConcatBytes(Content, Signature),
 	)
@@ -89,6 +90,6 @@ func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	}
 	return &types.ResponseDeliverTx {
 		Code: uint32(response.CodeOK()),
-		Info: "updateSuccess",
+		Data: bt,
 	}
 }
