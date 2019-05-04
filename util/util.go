@@ -3,9 +3,8 @@ package util
 
 import (
     "fmt"
-    "encoding/binary"
-    "encoding/json"
     "bytes"
+    "encoding/binary"
 )
 
 func Int64ToBytes(i int64) []byte {
