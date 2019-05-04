@@ -144,7 +144,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 		return nil, nil, nil, errInfo
 	}
 
-	if !bytes.Equal(contractName, contractInfo.Name) {
+	if !bytes.Equal(contractName, conInfo.Name) {
 		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
 	}
 
@@ -161,7 +161,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	}
 	contractEnv.Storage, err = localstorage.NewLocalStorage(
 		txHeader.ContractAddress,
-		contractInfo.StorageRoot,
+		conInfo.StorageRoot,
 		nsb.statedb,
 	)
 
@@ -170,7 +170,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 		return nil, nil, nil, response.RequestStorageError(err)
 	}
 
-	return &contractEnv, &accInfo, &contractInfo, nil
+	return &contractEnv, accInfo, conInfo, nil
 }
 
 
@@ -179,7 +179,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	txHeader, errInfo := nsb.parseTxHeader(bytesTx)
+	txHeader, errInfo := nsb.parseTxHeader(txHeaderJson)
 	if errInfo != nil {
 		return nil, nil, errInfo
 	}
@@ -190,7 +190,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 		return nil, nil, errInfo
 	}
 
-	return &txHeader, &accInfo, nil
+	return txHeader, accInfo, nil
 }
 
 
