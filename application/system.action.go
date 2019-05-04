@@ -58,7 +58,7 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	// TODO: check valid isc/tid/aid
 	err := nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
-		util.ConcatBytes([]{Type}, Content, Signature),
+		util.ConcatBytes([]byte{Type}, Content, Signature),
 	)
 	if err != nil {
 		return response.ContractExecError(err)
