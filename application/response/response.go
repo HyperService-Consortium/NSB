@@ -67,6 +67,13 @@ var (
 )
 
 
+func DecodeJsonError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeDecodeJsonError),
+		Log: fmt.Sprintf("DecodeJsonError: %v", err),
+	}
+}
+
 func DecodeTxHeaderError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeTxHeaderError),
