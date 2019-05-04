@@ -8,7 +8,6 @@ import (
 	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/Myriad-Dreamin/NSB/account"
 	"github.com/Myriad-Dreamin/NSB/localstorage"
-	"github.com/Myriad-Dreamin/NSB/trie"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	"github.com/tendermint/tendermint/abci/types"
