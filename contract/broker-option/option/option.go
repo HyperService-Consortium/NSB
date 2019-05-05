@@ -22,6 +22,28 @@ type ValidBuyer struct {
 // 2ecddf60bb43e12eb402949337a4a0795480f1409e76b7f9cf52ef783532da0a
 
 
+func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) (*cmn.ContractCallBackInfo)
+{
+	option.env.Storage.SetBytes("remainingFund", option.env.Value.Bytes())
+	option.env.Storage.SetBytes("strikePrice", strikePrice.Bytes())
+
+	if len(owner) == 0 {
+		option.env.Storage.SetBytes("owner", option.env.From)
+	} else {
+		option.env.Storage.SetBytes("owner", owner)
+	}
+
+
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: uint32(codeOK),
+		Info: fmt.Sprintf(
+			"create success , this contract is deploy at %v",
+			hex.EncodeToString(option.env.ContractAddress),
+		),
+	}
+}
+
+
 func (option *Option) UpdateStake(value *math.Uint256) (*cmn.ContractCallBackInfo) {
 	option.env.Storage.SetBytes("strikePrice", value.Bytes())
 	
@@ -51,7 +73,8 @@ func (option *Option) BuyOption(proposal *math.Uint256) (*cmn.ContractCallBackIn
 
 
 func (option *Option) optionPrice(proposal *math.Uint256) *math.Uint256 {
-	var factor, price = math.NewUint256FromString("5", 10), math.NewUint256FromBytes(env.Storage.GetBytes("strikePrice"))
+	var factor = math.NewUint256FromString("5", 10)
+	var price = math.NewUint256FromBytes(option.env.Storage.GetBytes("strikePrice"))
 	if proposal.Comp(price) >= 0 {
 		absValue, checkErr := math.SubUint256(proposal, price)
 		checkErr = (checkErr || factor.Mul(absValue))

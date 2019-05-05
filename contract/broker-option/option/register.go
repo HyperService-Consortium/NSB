@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
+	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 )
 
@@ -38,7 +39,7 @@ func MustUnmarshal(data []byte, load interface{}) {
 
 func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var option = &Option{env: contractEnvironment}
-	switch env.FuncName {
+	switch contractEnvironment.FuncName {
 	case "UpdateStake":
 		var args ArgsUpdateStake
 		MustUnmarshal(bytesArgs, &args)
@@ -50,7 +51,7 @@ func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 		MustUnmarshal(bytesArgs, &args)
 		return option.BuyOption(args.Proposal)
 	default:
-		return InvalidFunctionType(env.FuncName)
+		return InvalidFunctionType(contractEnvironment.FuncName)
 	}
 }
 
@@ -59,18 +60,6 @@ func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) (*cmn.Contr
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
 
-	contractEnvironment.Storage.SetBytes("remainingFund", contractEnvironment.Value.Bytes())
-	contractEnvironment.Storage.SetBytes("strikePrice", args.StrikePrice.Bytes())
-
-	if len(args.Owner) == 0 {
-		contractEnvironment.Storage.SetBytes("owner", contractEnvironment.From)
-	} else {
-		contractEnvironment.Storage.SetBytes("owner", args.Owner)
-	}
-
-
-	return &cmn.ContractCallBackInfo{
-		CodeResponse: uint32(codeOK),
-		Info: fmt.Sprintf("create success , this contract is deploy at %v", hex.EncodeToString(env.ContractAddress)),
-	}
+	var option = &Option{env: contractEnvironment}
+	return option.NewContract(args.Owner, args.StrikePrice)
 }
