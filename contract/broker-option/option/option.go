@@ -22,8 +22,7 @@ type ValidBuyer struct {
 // 2ecddf60bb43e12eb402949337a4a0795480f1409e76b7f9cf52ef783532da0a
 
 
-func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) (*cmn.ContractCallBackInfo)
-{
+func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) (*cmn.ContractCallBackInfo) {
 	option.env.Storage.SetBytes("remainingFund", option.env.Value.Bytes())
 	option.env.Storage.SetBytes("strikePrice", strikePrice.Bytes())
 
