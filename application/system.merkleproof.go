@@ -292,120 +292,120 @@ package nsb
 // 	if err != nil {
 // 		return response.ContractExecError(err)
 // 	}
-=======
-		if len(hashChain) == 0 {
-			// TODO: key may be nil here
-			return response.ContractExecError(mptNodesConsumed)
-		}
-		if !bytes.Equal(curHash, hf(hashChain[0])) {
-			return response.ContractExecError(wrongMerkleTreeHash)
-		}
+// =======
+// 		if len(hashChain) == 0 {
+// 			// TODO: key may be nil here
+// 			return response.ContractExecError(mptNodesConsumed)
+// 		}
+// 		if !bytes.Equal(curHash, hf(hashChain[0])) {
+// 			return response.ContractExecError(wrongMerkleTreeHash)
+// 		}
 
-		curNode, err = trie.DecodeNode(curHash, hashChain[0])
-		if err != nil {
-			return response.ContractExecError(err)
-		}
-		hashChain = hashChain[1:]
+// 		curNode, err = trie.DecodeNode(curHash, hashChain[0])
+// 		if err != nil {
+// 			return response.ContractExecError(err)
+// 		}
+// 		hashChain = hashChain[1:]
 
-		switch n := curNode.(type) {
-		case *trie.FullNode:
-			keyrune, rsize, err = keybuf.ReadRune()
-			if err == io.EOF {
-				if len(hashChain) != 0 {
-					return response.ContractExecError(keyConsumed)
-				}
-				if !bytes.Equal(n[16], Value) {
-					return response.ContractExecError(wrongValue)
-				}
-				// else:
-				goto CheckKeyValueOK;
-			} else if err != nil {
-				return require.ContractExecError(err)
-			}
-			if keyrune == utf8.RuneError {
-				return response.ContractExecError(runeDecodeError)
-			}
+// 		switch n := curNode.(type) {
+// 		case *trie.FullNode:
+// 			keyrune, rsize, err = keybuf.ReadRune()
+// 			if err == io.EOF {
+// 				if len(hashChain) != 0 {
+// 					return response.ContractExecError(keyConsumed)
+// 				}
+// 				if !bytes.Equal(n[16], Value) {
+// 					return response.ContractExecError(wrongValue)
+// 				}
+// 				// else:
+// 				goto CheckKeyValueOK;
+// 			} else if err != nil {
+// 				return require.ContractExecError(err)
+// 			}
+// 			if keyrune == utf8.RuneError {
+// 				return response.ContractExecError(runeDecodeError)
+// 			}
 
-			curHash = []byte(curNode[int(keyrune)])
-		case *trie.ShortNode:
-			for idx := 0; idx < len(n.Key); idx++ {
-				keybyte, err = keybuf.ReadByte()
-				if err == io.EOF {
-					if idx != len(n.Key) - 1 {
-						if Value != nil {
-							return response.ContractExecError(wrongValue)
-						} else {
-							goto CheckKeyValueOK;
-						}
-					} else {
-						if len(hashChain) != 0 {
-							return response.ContractExecError(keyConsumed)
-						}
-						if !bytes.Equal([]byte(n.Val), Value) {
-							return response.ContractExecError(wrongValue)
-						}
-						// else:
-						goto CheckKeyValueOK;
-					}
-				} else if err != nil {
-					return require.ContractExecError(err)
-				}
-				if keybyte != n.Key[i] {
-					if Value != nil {
-						return response.ContractExecError(wrongValue)
-					} else {
-						goto CheckKeyValueOK;
-					}
-				}
-			}
+// 			curHash = []byte(curNode[int(keyrune)])
+// 		case *trie.ShortNode:
+// 			for idx := 0; idx < len(n.Key); idx++ {
+// 				keybyte, err = keybuf.ReadByte()
+// 				if err == io.EOF {
+// 					if idx != len(n.Key) - 1 {
+// 						if Value != nil {
+// 							return response.ContractExecError(wrongValue)
+// 						} else {
+// 							goto CheckKeyValueOK;
+// 						}
+// 					} else {
+// 						if len(hashChain) != 0 {
+// 							return response.ContractExecError(keyConsumed)
+// 						}
+// 						if !bytes.Equal([]byte(n.Val), Value) {
+// 							return response.ContractExecError(wrongValue)
+// 						}
+// 						// else:
+// 						goto CheckKeyValueOK;
+// 					}
+// 				} else if err != nil {
+// 					return require.ContractExecError(err)
+// 				}
+// 				if keybyte != n.Key[i] {
+// 					if Value != nil {
+// 						return response.ContractExecError(wrongValue)
+// 					} else {
+// 						goto CheckKeyValueOK;
+// 					}
+// 				}
+// 			}
 
-			curHash = []byte(n.Value)
-		}
-	}
-	CheckKeyValueOK:
-	// existence
-	err := nsb.validMerkleProofMap.TryUpdate(
-		merkleProofKey(hfType, jsonProof.RootHash, Key),
-		util.ConcatBytes(bytesOne, Value)
-	)
-	if err != nil {
-		return response.ContractExecError(err)
-	}
+// 			curHash = []byte(n.Value)
+// 		}
+// 	}
+// 	CheckKeyValueOK:
+// 	// existence
+// 	err := nsb.validMerkleProofMap.TryUpdate(
+// 		merkleProofKey(hfType, jsonProof.RootHash, Key),
+// 		util.ConcatBytes(bytesOne, Value)
+// 	)
+// 	if err != nil {
+// 		return response.ContractExecError(err)
+// 	}
 
-	return &types.ResponseDeliverTx{
-		Code: uint32(response.CodeOK()),
-		Info: "nice!",
-	}
-}
+// 	return &types.ResponseDeliverTx{
+// 		Code: uint32(response.CodeOK()),
+// 		Info: "nice!",
+// 	}
+// }
 
 
-type ArgsAddMerkleProof struct {
-	ISCAddress []byte `json:"1"`
-	// hexbytes
-	Tid uint64 `json:"2"`
-	// hexbytes
-	Aid       uint64 `json:"3"`
-	Type      uint8  `json:"4"`
-	Content   []byte `json:"5"`
-	Signature []byte `json:"6"`
-}
+// type ArgsAddMerkleProof struct {
+// 	ISCAddress []byte `json:"1"`
+// 	// hexbytes
+// 	Tid uint64 `json:"2"`
+// 	// hexbytes
+// 	Aid       uint64 `json:"3"`
+// 	Type      uint8  `json:"4"`
+// 	Content   []byte `json:"5"`
+// 	Signature []byte `json:"6"`
+// }
 
-func merkleProofKey(addr []byte, tid uint64, aid uint64) []byte {
-	return crypto.Sha512(addr, util.Uint64ToBytes(tid), util.Uint64ToBytes(aid))
-}
+// func merkleProofKey(addr []byte, tid uint64, aid uint64) []byte {
+// 	return crypto.Sha512(addr, util.Uint64ToBytes(tid), util.Uint64ToBytes(aid))
+// }
 
-func (nsb *NSBApplication) addMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
-	var args ArgsAddMerkleProof
-	MustUnmarshal(bytesArgs, &args)
-	// TODO: check valid isc/tid/aid
-	err := nsb.validOnchainMerkleProofMap.TryUpdate(
-		merkleProofKey(args.ISCAddress, args.Tid, args.Aid),
-		util.ConcatBytes([]byte{args.Type}, args.Content, args.Signature),
-	)
-	if err != nil {
-		return response.ContractExecError(err)
-	}
->>>>>>> 97b0cb86316c5151652215baeb5bcad11823a0ed
+// func (nsb *NSBApplication) addMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
+// 	var args ArgsAddMerkleProof
+// 	MustUnmarshal(bytesArgs, &args)
+// 	// TODO: check valid isc/tid/aid
+// 	err := nsb.validOnchainMerkleProofMap.TryUpdate(
+// 		merkleProofKey(args.ISCAddress, args.Tid, args.Aid),
+// 		util.ConcatBytes([]byte{args.Type}, args.Content, args.Signature),
+// 	)
+// 	if err != nil {
+// 		return response.ContractExecError(err)
+// 	}
+// >>>>>>> 97b0cb86316c5151652215baeb5bcad11823a0ed
 	
 // 	return &types.ResponseDeliverTx{
 // 		Code: uint32(response.CodeOK()),
