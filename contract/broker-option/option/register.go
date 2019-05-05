@@ -1,8 +1,6 @@
 package option
 
 import (
-	"fmt"
-	"encoding/hex"
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/math"
 	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
@@ -42,13 +40,13 @@ func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 	switch contractEnvironment.FuncName {
 	case "UpdateStake":
 		var args ArgsUpdateStake
-		MustUnmarshal(bytesArgs, &args)
+		MustUnmarshal(ContractEnvironment.Args, &args)
 		return option.UpdateStake(args.Value)
 	case "StakeFund":
 		return option.StakeFund()
 	case "BuyOption":
 		var args ArgsBuyOption
-		MustUnmarshal(bytesArgs, &args)
+		MustUnmarshal(ContractEnvironment.Args, &args)
 		return option.BuyOption(args.Proposal)
 	default:
 		return InvalidFunctionType(contractEnvironment.FuncName)
