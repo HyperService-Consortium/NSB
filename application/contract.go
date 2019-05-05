@@ -7,6 +7,7 @@ import (
 	"github.com/tendermint/tendermint/abci/types"
 	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
 	isc "github.com/Myriad-Dreamin/NSB/contract/isc"
+	opt "github.com/Myriad-Dreamin/NSB/contract/broker-option/option"
 )
 
 func (nsb *NSBApplication) execContractFuncs(
@@ -44,6 +45,8 @@ func (nsb *NSBApplication) execContractFuncs(
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO()),
 		} // sdeam.RegistedMethod(byteJson)
+	case "option":
+		return opt.RigisteredMethod(contractEnv)
 	default:
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
@@ -88,6 +91,8 @@ func (nsb *NSBApplication) createContracts(
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO()),
 		} // sdeam.RegistedMethod(byteJson)
+	case "option":
+		return opt.CreateNewContract(contractEnv)
 	default:
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
