@@ -40,13 +40,13 @@ func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 	switch contractEnvironment.FuncName {
 	case "UpdateStake":
 		var args ArgsUpdateStake
-		MustUnmarshal(ContractEnvironment.Args, &args)
+		MustUnmarshal(contractEnvironment.Args, &args)
 		return option.UpdateStake(args.Value)
 	case "StakeFund":
 		return option.StakeFund()
 	case "BuyOption":
 		var args ArgsBuyOption
-		MustUnmarshal(ContractEnvironment.Args, &args)
+		MustUnmarshal(contractEnvironment.Args, &args)
 		return option.BuyOption(args.Proposal)
 	default:
 		return InvalidFunctionType(contractEnvironment.FuncName)
