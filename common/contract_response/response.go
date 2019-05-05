@@ -16,9 +16,10 @@ const (
 	codeInvalidFunctionType
 )
 
-func ExecOK() *cmn.ContractCallBackInfo {
+func ExecOK(value *math.Uint256) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
+		Value: value,
 	}
 }
 
