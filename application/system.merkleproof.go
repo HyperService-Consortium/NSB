@@ -189,7 +189,7 @@ package nsb
 // 	// TODO: export node decoder
 // 	for {
 		
-<<<<<<< HEAD
+// <<<<<<< HEAD
 // 		if len(hashChain) == 0 {
 // 			return response.ContractExecError(mptNodesConsumed)
 // 		}
