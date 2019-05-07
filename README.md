@@ -28,8 +28,7 @@ tendermint node --home ./nsb --proxy_app tcp://0.0.0.0:27667
 ```
 
 # NSB-cli
-## On Windows10
-#### build
+#### build the execuable
 Under path/to/NSB/bin/nsb-cli
 ```
 go build
