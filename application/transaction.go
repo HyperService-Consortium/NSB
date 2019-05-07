@@ -353,7 +353,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 	} else if cb.Code == uint32(response.CodeUndateBalanceIn()) {
 		value := math.NewUint256FromBytes(cb.Data)
 
-		if value != nil {
+		if value == nil {
 			return response.DecodeBalanceError()
 		}
 
@@ -376,7 +376,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 	} else if cb.Code == uint32(response.CodeUndateBalanceOut()) {
 		value := math.NewUint256FromBytes(cb.Data)
 
-		if value != nil {
+		if value == nil {
 			return response.DecodeBalanceError()
 		}
 
