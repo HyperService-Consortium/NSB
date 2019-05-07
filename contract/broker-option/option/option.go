@@ -57,7 +57,7 @@ func (option *Option) StakeFund() (*cmn.ContractCallBackInfo) {
 	if checkErr {
 		return OverFlowError("remainingFund overflow")
 	} else {
-		remainingFund.SetBytes("remainingFund", remainingFund.Bytes())
+		option.env.Storage.SetBytes("remainingFund", remainingFund.Bytes())
 		return ExecOK(option.env.Value)
 	}
 }
