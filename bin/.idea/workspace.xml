@@ -3,12 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="cb1e79bf-63c8-4b77-89b0-f4f267a24fc8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kvstore/000338.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/000099.ldb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/000340.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/kvstore/CURRENT" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/CURRENT" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kvstore/CURRENT.bak" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/CURRENT.bak" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kvstore/LOG" beforeDir="false" afterPath="$PROJECT_DIR$/kvstore/LOG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kvstore/MANIFEST-000339" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kvstore/MANIFEST-000341" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nsbcli.log" beforeDir="false" afterPath="$PROJECT_DIR$/nsbcli.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/py_nsbcli/wallet.py" beforeDir="false" afterPath="$PROJECT_DIR$/py_nsbcli/wallet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../go.mod" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="400">
-              <caret line="19" column="20" lean-forward="true" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
+              <caret line="19" column="20" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
               <folding>
                 <element signature="e#41#54#0" expanded="true" />
               </folding>
@@ -57,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py_nsbcli/wallet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2700">
-              <caret line="108" selection-start-line="108" selection-end-line="108" />
+            <state relative-caret-position="-128">
+              <caret line="122" column="18" lean-forward="true" selection-start-line="122" selection-start-column="18" selection-end-line="122" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -66,8 +70,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/modules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
-              <caret line="195" column="28" selection-start-line="195" selection-start-column="28" selection-end-line="199" selection-end-column="36" />
+            <state relative-caret-position="2472">
+              <caret line="225" column="42" lean-forward="true" selection-start-line="225" selection-start-column="42" selection-end-line="225" selection-end-column="42" />
               <folding>
                 <element signature="e#100#119#0" expanded="true" />
               </folding>
@@ -136,7 +140,6 @@
         <option value="$PROJECT_DIR$/py_nsbcli/contract.py" />
         <option value="$PROJECT_DIR$/py_nsbcli/cast.py" />
         <option value="$PROJECT_DIR$/py_nsbcli/util.py" />
-        <option value="$PROJECT_DIR$/py_nsbcli/wallet.py" />
         <option value="$PROJECT_DIR$/py_nsbcli/transaction_header.py" />
         <option value="$PROJECT_DIR$/py_nsbcli/transaction_intent.py" />
         <option value="$PROJECT_DIR$/py_nsbcli/attestation.py" />
@@ -144,6 +147,7 @@
         <option value="$PROJECT_DIR$/py_nsbcli/action.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/modules.py" />
+        <option value="$PROJECT_DIR$/py_nsbcli/wallet.py" />
       </list>
     </option>
   </component>
@@ -165,6 +169,11 @@
             <path>
               <item name="bin" type="b2602c69:ProjectViewProjectNode" />
               <item name="bin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bin" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bin" type="b2602c69:ProjectViewProjectNode" />
@@ -285,7 +294,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13119073" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -386,13 +394,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py_nsbcli/wallet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2700">
-          <caret line="108" selection-start-line="108" selection-end-line="108" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/py_nsbcli/action.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2125">
@@ -424,17 +425,24 @@
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="400">
-          <caret line="19" column="20" lean-forward="true" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
+          <caret line="19" column="20" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
           <folding>
             <element signature="e#41#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/py_nsbcli/wallet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-128">
+          <caret line="122" column="18" lean-forward="true" selection-start-line="122" selection-start-column="18" selection-end-line="122" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/modules.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="195" column="28" selection-start-line="195" selection-start-column="28" selection-end-line="199" selection-end-column="36" />
+        <state relative-caret-position="2472">
+          <caret line="225" column="42" lean-forward="true" selection-start-line="225" selection-start-column="42" selection-end-line="225" selection-end-column="42" />
           <folding>
             <element signature="e#100#119#0" expanded="true" />
           </folding>
