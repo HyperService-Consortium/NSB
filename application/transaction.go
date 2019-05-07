@@ -190,7 +190,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 	return txHeader, accInfo, nil
 }
 
-func (nsb *NSBApplication) changeState(
+func (nsb *NSBApplication) modifyState(
 	cb *cmn.ContractCallBackInfo,
 	env *cmn.ContractEnvironment,
 	accInfo *AccountInfo,
@@ -358,7 +358,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			return response.DecodeBalanceError()
 		}
 
-		checkErr = accInfo.Balance.Sub(value)
+		checkErr := accInfo.Balance.Sub(value)
 		if checkErr {
 			return response.InsufficientBalanceToTransfer("user")
 		}
@@ -373,7 +373,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			return response.UpdateAccTrieError(err)
 		}
 
-		cb.Code = response.CodeOK()
+		cb.Code = uint32(response.CodeOK())
 	} else if cb.Code == uint32(response.CodeUndateBalanceOut()) {
 		value := math.NewUint256FromBytes(cb.Data)
 
@@ -381,7 +381,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			return response.DecodeBalanceError()
 		}
 
-		checkErr = accInfo.Balance.Add(value)
+		checkErr := accInfo.Balance.Add(value)
 		if checkErr {
 			return response.BalanceOverflow("user")
 		}
@@ -396,7 +396,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			return response.UpdateAccTrieError(err)
 		}
 
-		cb.Code = response.CodeOK()
+		cb.Code = uint32(response.CodeOK())
 	}
 
 	return cb
