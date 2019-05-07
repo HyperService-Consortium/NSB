@@ -171,13 +171,6 @@ func BalanceOverflow(userName string) *types.ResponseDeliverTx {
 	}
 }
 
-func DecodeBalanceError() *types.ResponseDeliverTx {
-	return &types.ResponseDeliverTx{
-		Code: uint32(codeDecodeBalanceError),
-		Log: "BalanceError: cannot decode from bytes",
-	}
-}
-
 func UndateBalanceIn(value *math.Uint256) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeUndateBalanceIn),
@@ -202,8 +195,8 @@ func DecodeBalanceError() *types.ResponseDeliverTx {
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
-func UndateBalanceIn() ResponseCode {return codeUndateBalanceIn}
-func UndateBalanceOut() ResponseCode {return codeUndateBalanceOut}
+func CodeUndateBalanceIn() ResponseCode {return codeUndateBalanceIn}
+func CodeUndateBalanceOut() ResponseCode {return codeUndateBalanceOut}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
 func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}
