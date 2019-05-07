@@ -21,7 +21,7 @@ from py_nsbcli.config import INCLUDE_PATH
 
 ENC = "utf-8"
 
-funcs = CDLL(INCLUDE_PATH + "/cwallet.dll")
+funcs = CDLL(INCLUDE_PATH + "/cwallet_mac.dll")
 
 funcs.CDLL_NewLevelDBHandler.argtype = GoString.Type
 funcs.CDLL_NewLevelDBHandler.restype = GolevelDBptr
