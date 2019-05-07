@@ -191,7 +191,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 }
 
 func (nsb *NSBApplication) changeState(
-	cb *cmt.ContractCallBackInfo,
+	cb *cmn.ContractCallBackInfo,
 	env *cmn.ContractEnvironment,
 	accInfo *AccountInfo,
 	conInfo *AccountInfo,
