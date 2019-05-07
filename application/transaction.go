@@ -205,7 +205,7 @@ func (nsb *NSBApplication) changeState(
 			}
 			checkErr = accInfo.Balance.Add(cb.Value)
 			if checkErr {
-				return response.BalanceOverflowed("user")
+				return response.BalanceOverflow("user")
 			}
 		} else {
 			checkErr := accInfo.Balance.Sub(cb.Value)
@@ -214,7 +214,7 @@ func (nsb *NSBApplication) changeState(
 			}
 			checkErr = conInfo.Balance.Add(cb.Value)
 			if checkErr {
-				return response.BalanceOverflowed("contract")
+				return response.BalanceOverflow("contract")
 			}
 		}
 	}
@@ -383,7 +383,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 
 		checkErr = accInfo.Balance.Add(value)
 		if checkErr {
-			return response.BalanceOverflowed("user")
+			return response.BalanceOverflow("user")
 		}
 
 		bt, err := json.Marshal(accInfo)

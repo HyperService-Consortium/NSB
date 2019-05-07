@@ -44,6 +44,8 @@ const ( // Contract
 	codeContractPanic ResponseCode = 300 + iota
 	codeInvalidFuncType
 	codeContractExecError
+	codeInsufficientBalanceToTransfer
+	codeBalanceOverflow
 )
 
 
@@ -161,10 +163,10 @@ func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
 	}
 }
 
-func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
+func BalanceOverflow(userName string) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeInsufficientBalanceToTransfer),
-		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
+		Code: uint32(codeBalanceOverflow),
+		Log: fmt.Sprintf("BalanceError: the %v's balance overflowed", userName),
 	}
 }
 
