@@ -3,6 +3,7 @@ package response
 
 import (
 	"fmt"
+	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -11,6 +12,8 @@ type ResponseCode uint32
 const ( // base
 	codeOK ResponseCode = 0 + iota
 	codeExecFail
+	codeUndateBalanceIn
+	codeUndateBalanceOut
 	codeUnknown
 	codeMissingTxMethod
 	codeMissingContract
@@ -28,6 +31,7 @@ const ( // Decode
 	codeDecodeBytesError
 	codeDecodeTxHeaderError
 	codeDecodeAccountInfoError
+	codeDecodeBalanceError
 )
 
 const ( // Transaction
@@ -41,6 +45,8 @@ const ( // Contract
 	codeContractPanic ResponseCode = 300 + iota
 	codeInvalidFuncType
 	codeContractExecError
+	codeInsufficientBalanceToTransfer
+	codeBalanceOverflow
 )
 
 
@@ -151,10 +157,46 @@ func ContractExecError(err error) *types.ResponseDeliverTx {
 	}
 }
 
+func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeInsufficientBalanceToTransfer),
+		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
+	}
+}
+
+func BalanceOverflow(userName string) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeBalanceOverflow),
+		Log: fmt.Sprintf("BalanceError: the %v's balance overflowed", userName),
+	}
+}
+
+func UndateBalanceIn(value *math.Uint256) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeUndateBalanceIn),
+		Data: value.Bytes(),
+	}
+}
+
+func UndateBalanceOut(value *math.Uint256) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeUndateBalanceOut),
+		Data: value.Bytes(),
+	}
+}
+
+func DecodeBalanceError() *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeDecodeBalanceError),
+		Log: "BalanceError: cannot decode from bytes",
+	}
+}
 
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
+func CodeUndateBalanceIn() ResponseCode {return codeUndateBalanceIn}
+func CodeUndateBalanceOut() ResponseCode {return codeUndateBalanceOut}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
 func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}
