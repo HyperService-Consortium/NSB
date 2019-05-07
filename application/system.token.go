@@ -1,7 +1,6 @@
 package nsb
 
 import (
-	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/math"
@@ -35,5 +34,5 @@ type ArgsSetBalance struct {
 }
 
 func (nsb *NSBApplication) setBalance(value *math.Uint256) *types.ResponseDeliverTx {
-	return ExecOK(value)
+	return UpdateBalanceOut(value)
 }
