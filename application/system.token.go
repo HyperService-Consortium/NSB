@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/crypto"
-	"github.com/Myriad-Dreamin/NSB/util"
 	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
@@ -14,14 +12,7 @@ import (
  * storage := actionMap
  */
 
-func MustUnmarshal(data []byte, load interface{}) {
-	err := json.Unmarshal(data, &load)
-	if err != nil {
-		panic(response.DecodeJsonError(err))
-	}
-}
-
-func (nsb *NSBApplication) ActionRigisteredMethod(
+func (nsb *NSBApplication) TokenRigisteredMethod(
 	env *cmn.TransactionHeader,
 	accInfo *AccountInfo,
 	funcName string,
@@ -29,7 +20,8 @@ func (nsb *NSBApplication) ActionRigisteredMethod(
 ) *types.ResponseDeliverTx {
 	switch funcName {
 	case "setBalance":
-		uargs := MustUnmarshal(args, ArgsSetBalance)
+		var uargs ArgsSetBalance
+		MustUnmarshal(args, &uargs)
 		return nsb.setBalance(uargs.Value)
 	case "getAction":
 		return nsb.getAction(args)
@@ -42,6 +34,6 @@ type ArgsSetBalance struct {
 	Value *math.Uint256 `json:"1"`
 }
 
-func (nsb *NSBApplication) setBalance(value *math.Uint256) {
+func (nsb *NSBApplication) setBalance(value *math.Uint256) *types.ResponseDeliverTx {
 	return ExecOK(value)
 }

@@ -3,6 +3,7 @@ package response
 
 import (
 	"fmt"
+	"github.com/Myriad-Dreamin/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -176,6 +177,28 @@ func DecodeBalanceError() *types.ResponseDeliverTx {
 		Log: "BalanceError: cannot decode from bytes",
 	}
 }
+
+func UndateBalanceIn(value *math.Uint256) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeUndateBalanceIn),
+		Data: value.Bytes(),
+	}
+}
+
+func UndateBalanceOut(value *math.Uint256) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeUndateBalanceOut),
+		Data: value.Bytes(),
+	}
+}
+
+func DecodeBalanceError() *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeDecodeBalanceError),
+		Log: "BalanceError: cannot decode from bytes",
+	}
+}
+
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
