@@ -39,6 +39,7 @@ class Client(object):
 
     def abci_info(self):
         response = self.get_json(self._admin.abci_info_url)
+        response['result']['response']['data'] = json.loads(response['result']['response']['data'])
         print(json.dumps(response, sort_keys=True, indent=4))
 
     def append_module(self, name: str, sub_module):
