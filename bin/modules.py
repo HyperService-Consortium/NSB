@@ -154,6 +154,15 @@ class Client(object):
         tx_header.sign(wlt)
         return self.create_contract("isc", tx_header)
 
+    def create_option(self, wlt, owner, price, value):
+        args_option = {
+                "owner": owner,
+                "strike_price": price
+        }
+        tx_header = TransactionHeader(wlt.address(0), None, json.dumps(args_isc).encode(ENC), value)
+        tx_header.sign(wlt)
+        return self.create_contract("option", tx_header)
+
     def add_action(self, wlt, action: Action):
         data_add_action = {
             "function_name": "addAction",
@@ -224,6 +233,12 @@ class KVDB(object):
             self._dbhandler = db
 
     def load_wallet(self, name) -> Wallet:
+        x = Wallet(self._dbhandler, name)
+        if x.handler_num < 0:
+            raise Exception("create failed")
+        return x
+
+    def create_wallet(self, name) -> Wallet:
         x = Wallet.create(self._dbhandler, name)
         if x.handler_num < 0:
             raise Exception("create failed")
