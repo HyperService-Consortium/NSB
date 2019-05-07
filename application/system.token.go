@@ -34,5 +34,5 @@ type ArgsSetBalance struct {
 }
 
 func (nsb *NSBApplication) setBalance(value *math.Uint256) *types.ResponseDeliverTx {
-	return UpdateBalanceOut(value)
+	return response.UndateBalanceOut(value)
 }
