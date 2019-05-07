@@ -224,6 +224,12 @@ class KVDB(object):
             self._dbhandler = db
 
     def load_wallet(self, name) -> Wallet:
+        x = Wallet(self._dbhandler, name)
+        if x.handler_num < 0:
+            raise Exception("create failed")
+        return x
+
+    def create_wallet(self, name) -> Wallet:
         x = Wallet.create(self._dbhandler, name)
         if x.handler_num < 0:
             raise Exception("create failed")

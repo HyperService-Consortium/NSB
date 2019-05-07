@@ -89,7 +89,11 @@ func WalletExist(db *leveldb.DB, name string) (bool, error) {
 	}
 
 	bt, err := db.Get([]byte(name), nil)
+	
 	if err != nil {
+		if err.Error() == "leveldb: not found" {
+			return false, nil
+		}
 		return false, err
 	}
 	return len(bt) != 0, nil
