@@ -24,6 +24,8 @@ admin = Admin()
 cli = Client(admin)
 cli.append_module("action", SystemAction(cli))
 cli.append_module("token", SystemToken(cli))
+cli.append_module("isc", ISC(cli))
+cli.append_module("option", Option(cli))
 kvdb = KVDB(glo_db)
 
 
