@@ -140,9 +140,7 @@ func (nsb *NSBApplication) systemCall(
 			Code: uint32(response.CodeTODO()),
 		} // sdeam.RegistedMethod(byteJson)
 	case "system.token":
-		return &types.ResponseDeliverTx{
-			Code: uint32(response.CodeTODO()),
-		} // sdeam.RegistedMethod(byteJson)
+		return nsb.TokenRigisteredMethod(env, accInfo, funcName, args)
 	default:
 		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeInvalidTxType()),

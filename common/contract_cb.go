@@ -10,6 +10,7 @@ type ContractCallBackInfo struct {
 	Log          string
 	Info         string
 	Value        *math.Uint256
+	OutFlag      bool
 	Tags         []KVPair
 }
 

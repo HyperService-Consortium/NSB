@@ -37,6 +37,7 @@ func MustUnmarshal(data []byte, load interface{}) {
 
 func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var option = &Option{env: contractEnvironment}
+
 	switch contractEnvironment.FuncName {
 	case "UpdateStake":
 		var args ArgsUpdateStake
