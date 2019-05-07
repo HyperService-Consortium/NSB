@@ -66,7 +66,7 @@ func (nsb *NSBApplication) Revert() error {
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
 		Data: fmt.Sprintf(
-			"{\"state_root\":%v, \"height\":%v, }",
+			"{\"state_root\":%v, \"height\":%v }",
 			hex.EncodeToString(nsb.state.StateRoot),
 			nsb.state.Height),
 		Version:    version.ABCIVersion,
