@@ -196,6 +196,10 @@ func (nsb *NSBApplication) modifyState(
 	accInfo *AccountInfo,
 	conInfo *AccountInfo,
 ) *types.ResponseDeliverTx {
+	if cb.Value == nil {
+		return nil
+	}
+
 	if cb.Value.BitLen() != 0 {
 		if cb.OutFlag {
 			checkErr := conInfo.Balance.Sub(cb.Value)

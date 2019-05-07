@@ -73,3 +73,8 @@ func TestUint256_G(t *testing.T) {
 	c := x.Div(y)
 	fmt.Println(c, x.String(), x.BitLen())
 }
+
+func TestUint256_H(t *testing.T) {
+	var x = NewUint256FromBytes(nil)
+	fmt.Println(x);
+}
