@@ -156,22 +156,22 @@ func ContractExecError(err error) *types.ResponseDeliverTx {
 
 func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeInsufficientBalanceToTransfer)
-		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName)
+		Code: uint32(codeInsufficientBalanceToTransfer),
+		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
 	}
 }
 
 func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeInsufficientBalanceToTransfer)
-		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName)
+		Code: uint32(codeInsufficientBalanceToTransfer),
+		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
 	}
 }
 
 func DecodeBalanceError() *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeDecodeBalanceError)
-		Log: "BalanceError: cannot decode from bytes"
+		Code: uint32(codeDecodeBalanceError),
+		Log: "BalanceError: cannot decode from bytes",
 	}
 }
 
