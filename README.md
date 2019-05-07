@@ -87,5 +87,18 @@ http://127.0.0.1:27667
 #### test
 ```python
 >>> cli.abci_info()
-
+{
+    "id": "",
+    "jsonrpc": "2.0",
+    "result": {
+        "response": {
+            "app_version": "1",
+            "data": {
+                "height": 129047,
+                "state_root": "283f38f544854a188d297987931316be82d971db8b30cd6fe746122cef4391c7"
+            },
+            "version": "0.16.0"
+        }
+    }
+}
 ```
