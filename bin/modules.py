@@ -155,11 +155,12 @@ class Client(object):
         return self.create_contract("isc", tx_header)
 
     def create_option(self, wlt, owner, price, value):
+        value = transbytes(price, 32)
         args_option = {
-                "owner": owner,
-                "strike_price": price
+                "owner": base64.b64encode(owner).decode(),
+                "strike_price": base64.b64encode(value).decode()
         }
-        tx_header = TransactionHeader(wlt.address(0), None, json.dumps(args_isc).encode(ENC), value)
+        tx_header = TransactionHeader(wlt.address(0), None, json.dumps(args_option).encode(ENC), value)
         tx_header.sign(wlt)
         return self.create_contract("option", tx_header)
 
