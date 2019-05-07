@@ -11,6 +11,8 @@ type ResponseCode uint32
 const ( // base
 	codeOK ResponseCode = 0 + iota
 	codeExecFail
+	codeUndateBalanceIn
+	codeUndateBalanceOut
 	codeUnknown
 	codeMissingTxMethod
 	codeMissingContract
@@ -28,6 +30,7 @@ const ( // Decode
 	codeDecodeBytesError
 	codeDecodeTxHeaderError
 	codeDecodeAccountInfoError
+	codeDecodeBalanceError
 )
 
 const ( // Transaction
@@ -151,10 +154,31 @@ func ContractExecError(err error) *types.ResponseDeliverTx {
 	}
 }
 
+func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeInsufficientBalanceToTransfer)
+		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName)
+	}
+}
 
+func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeInsufficientBalanceToTransfer)
+		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName)
+	}
+}
+
+func DecodeBalanceError() *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeDecodeBalanceError)
+		Log: "BalanceError: cannot decode from bytes"
+	}
+}
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
+func UndateBalanceIn() ResponseCode {return codeUndateBalanceIn}
+func UndateBalanceOut() ResponseCode {return codeUndateBalanceOut}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
 func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}
