@@ -13,9 +13,9 @@ type TransactionHeader struct {
 import json
 import base64
 
-from py_nsbcli.util import randint256
-from py_nsbcli.cast import transbytes, transint, MOD256
-from py_nsbcli.wallet import Wallet
+from py_nsbcli.util.util import randint256
+from py_nsbcli.util.cast import transbytes, transint, MOD256
+from py_nsbcli.types.wallet import Wallet
 from io import BytesIO
 
 

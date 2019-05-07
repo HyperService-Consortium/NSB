@@ -1,15 +1,9 @@
 
 """
-type TransactionIntent struct {
-    Fr   []byte `json:"from"`
-    To   []byte `json:"to"`
-    Seq  uint   `json:"seq"`
-    Amt  uint   `json:"amt"`
-    Meta []byte `json:"meta"`
-}
 """
 
-import json, base64
+import base64
+import json
 
 try:
     from hexbytes import HexBytes
@@ -94,4 +88,3 @@ class Action(object):
 
 if __name__ == '__main__':
     pass
-

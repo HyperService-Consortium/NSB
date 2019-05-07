@@ -1,7 +1,6 @@
 
 from ctypes import CDLL
 
-
 try:
     from hexbytes import HexBytes
 except ImportError or ModuleNotFoundError as e:
@@ -9,7 +8,7 @@ except ImportError or ModuleNotFoundError as e:
     exit(1)
 
 
-from py_nsbcli.gotypes import (
+from py_nsbcli.util.gotypes import (
     GoInt32,
     GoString,
     GoBytes,
@@ -169,6 +168,7 @@ class Wallet:
             GoBytes.frombytes(signature),
             GoBytes.frombytes(msg_hash)
         )
+
 
 
 if __name__ == '__main__':
