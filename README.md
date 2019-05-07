@@ -28,12 +28,12 @@ tendermint node --home ./nsb --proxy_app tcp://0.0.0.0:27667
 ```
 
 # NSB-cli
-
+## On Windows10
 #### build
 Under path/to/NSB/bin/nsb-cli
 ```
 go build
-mv nsb-cli ../
+mv nsb-cli.exe ../
 ```
 
 #### Create New Wallet
