@@ -21,6 +21,15 @@ func ExecOK(value *math.Uint256) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
 		Value: value,
+		OutFlag: 0,
+	}
+}
+
+func OKAndTransfer(value *math.Uint256) *cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: uint32(codeOK),
+		Value: value,
+		OutFlag: 1,
 	}
 }
 
