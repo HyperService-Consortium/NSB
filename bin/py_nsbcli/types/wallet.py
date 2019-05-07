@@ -27,7 +27,7 @@ if platform.system() == "Windows":
 elif platform.system() == "Darwin":
     funcs = CDLL(INCLUDE_PATH + "/cwallet_mac.dll")
 elif platform.system() == "Linux":
-    raise ImportError("can not import cwallet dynamic link library")
+    funcs = CDLL(INCLUDE_PATH + "/cwallet_linux.dll")
 else:
     raise ImportError("no corresponding cwallet api on this platform")
 
