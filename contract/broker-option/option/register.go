@@ -13,8 +13,8 @@ type Option struct {
 
 
 type ArgsCreateNewContract struct {
-	Owner       []byte        `json:"1"`
-	StrikePrice *math.Uint256 `json:"2"`
+	Owner       []byte        `json:"owner"`
+	StrikePrice *math.Uint256 `json:"strike_price"`
 }
 
 

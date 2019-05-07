@@ -17,11 +17,21 @@ from py_nsbcli.gotypes import (
     GoWalletptr
 )
 
+
+import platform
 from py_nsbcli.config import INCLUDE_PATH
 
 ENC = "utf-8"
 
-funcs = CDLL(INCLUDE_PATH + "/cwallet.dll")
+if platform.system() == "Windows":
+    funcs = CDLL(INCLUDE_PATH + "/cwallet.dll")
+elif platform.system() == "Darwin":
+    funcs = CDLL(INCLUDE_PATH + "/cwallet_mac.dll")
+elif platform.system() == "Linux":
+    raise ImportError("can not import cwallet dynamic link library")
+else:
+    raise ImportError("no corresponding cwallet api on this platform")
+
 
 funcs.CDLL_NewLevelDBHandler.argtype = GoString.Type
 funcs.CDLL_NewLevelDBHandler.restype = GolevelDBptr
@@ -117,9 +127,9 @@ class Wallet:
     def create(db_handler, name):
         wlt = Wallet(None, name)
         if isinstance(db_handler, LevelDB):
-            wlt._handler_num = funcs.CDLL_NewWalletHandlerFromDB(db_handler.handler_num, GoString.trans(name, ENC))
+            wlt._handler_num = funcs.CDLL_NewWalletHandler(db_handler.handler_num, GoString.trans(name, ENC))
         elif isinstance(db_handler, int):
-            wlt._handler_num = funcs.CDLL_NewWalletHandlerFromDB(db_handler, GoString.trans(name, ENC))
+            wlt._handler_num = funcs.CDLL_NewWalletHandler(db_handler, GoString.trans(name, ENC))
         else:
             wlt._handler_num = -1
         return wlt
