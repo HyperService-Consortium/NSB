@@ -28,22 +28,21 @@ tendermint node --home ./nsb --proxy_app tcp://0.0.0.0:27667
 ```
 
 # NSB-cli
-## On Windows10
-#### build
+#### build the execuable
 Under path/to/NSB/bin/nsb-cli
 ```
 go build
 mv nsb-cli.exe ../
 ```
 
-#### Create New Wallet
+#### Create New Wallet, which can contain a group of Accounts. 
 Under path/to/NSB/bin
 ```
 nsbcli.exe wallet create --db ./kvstore --wn Alice
 ```
 
 
-#### Create New Account
+#### Create a new Account to the wallet. 
 Under path/to/NSB/bin
 ```
 nsbcli.exe account create --db ./kvstore --wn Alice
