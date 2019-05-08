@@ -143,6 +143,8 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
+	
+	fmt.Println("cmp", conInfo.Name, contractName, "cmp")
 
 	if !bytes.Equal(contractName, conInfo.Name) {
 		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
