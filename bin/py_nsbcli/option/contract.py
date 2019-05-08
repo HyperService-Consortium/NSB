@@ -21,3 +21,15 @@ class Option(Contract):
         tx_header = TransactionHeader(wlt.address(0), None, json.dumps(args_option).encode(), value)
         tx_header.sign(wlt)
         return self.create_contract("option", tx_header)
+    
+    def update_stake(self, wlt, price):
+        price = transbytes(price, 32) 
+        data = { 
+            "function_name": "UpdateStake",
+            "args": base64.b64encode(price).decode()
+        }   
+        # This is printed when contract is deployed.
+        contract_address = b"4a41c6fa881c5388c2c37514b9e477b4a80191272bb5be819bd291fb88d7ffd1"
+        tx_header = TransactionHeader(wlt.address(0), contract_address, json.dumps(data).encode())
+        tx_header.sign(wlt)
+        return self.exec_contract_method("UpdateStake", tx_header)
