@@ -47,7 +47,13 @@ func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) (*cmn
 
 func (option *Option) UpdateStake(value *math.Uint256) (*cmn.ContractCallBackInfo) {
 	option.env.Storage.SetBytes("strikePrice", value.Bytes())
-	return ExecOK(nil)
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: uint32(codeOK),
+		Info: fmt.Sprintf(
+			"StrikePrice is updated as %v",
+			hex.EncodeToString(option.env.Storage.GetBytes("strikePrice")),
+		),
+	}
 }
 
 func (option *Option) StakeFund() (*cmn.ContractCallBackInfo) {

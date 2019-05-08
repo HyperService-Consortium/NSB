@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -74,6 +75,7 @@ func (nsb *NSBApplication) parseContractInfo(
 ) {
 	var contractInfo AccountInfo
 	if createFlag {
+		fmt.Println("creating", contractName)
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
 
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
@@ -141,6 +143,8 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
+	
+	fmt.Println("cmp", conInfo.Name, contractName, "cmp")
 
 	if !bytes.Equal(contractName, conInfo.Name) {
 		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
@@ -302,6 +306,8 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 	if errInfo != nil {
 		return errInfo
 	}
+	
+	fmt.Println(accInfo, conInfo)
 
 	cb := nsb.createContracts(string(bytesTx[0]), env)
 
