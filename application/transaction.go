@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
 	"errors"
