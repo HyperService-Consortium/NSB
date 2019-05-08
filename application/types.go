@@ -49,6 +49,6 @@ func (accInfo *AccountInfo) String() string {
 		accInfo.Balance.String(),
 		hex.EncodeToString(accInfo.CodeHash),
 		hex.EncodeToString(accInfo.StorageRoot),
-		string(accInfo.Name)
+		string(accInfo.Name),
 	)
 }
