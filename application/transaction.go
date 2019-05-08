@@ -304,6 +304,8 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 	if errInfo != nil {
 		return errInfo
 	}
+	
+	fmt.Println(accInfo, conInfo)
 
 	cb := nsb.createContracts(string(bytesTx[0]), env)
 
