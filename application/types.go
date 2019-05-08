@@ -45,9 +45,10 @@ type FAPair struct {
 
 func (accInfo *AccountInfo) String() string {
 	return fmt.Sprintf(
-		"Balance: %v\nodeHash: %v\nStorageRoot: %v\n",
+		"Balance: %v\nodeHash: %v\nStorageRoot: %v, name:%v\n",
 		accInfo.Balance.String(),
 		hex.EncodeToString(accInfo.CodeHash),
 		hex.EncodeToString(accInfo.StorageRoot),
+		string(accInfo.Name),
 	)
 }
