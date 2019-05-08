@@ -25,23 +25,23 @@ class Contract(object):
 
         return "0x" + bytes_buffer.getvalue().hex()
 
-    def create_contract(self, name: str or bytes, tx_header: TransactionHeader):
-        if isinstance(name, str):
-            name = name.encode(ENC)
+    def create_contract(self, contract_name: str or bytes, tx_header: TransactionHeader):
+        if isinstance(contract_name, str):
+            contract_name = contract_name.encode(ENC)
 
         self.broadcast_tx_commit(tx=Contract.generate_contract_tx(
             b"createContract",
-            name,
+            contract_name,
             tx_header.json().encode('utf-8')
         ))
 
-    def exec_contract_method(self, name: str or bytes, tx_header: TransactionHeader):
-        if isinstance(name, str):
-            name = name.encode(ENC)
+    def exec_contract_method(self, contract_name: str or bytes, tx_header: TransactionHeader):
+        if isinstance(contract_name, str):
+            contract_name = contract_name.encode(ENC)
 
         self.broadcast_tx_commit(tx=Contract.generate_contract_tx(
             b"sendTransaction",
-            name,
+            contract_name,
             tx_header.json().encode('utf-8')
         ))
 

@@ -26,10 +26,12 @@ class Option(Contract):
         price = transbytes(price, 32) 
         data = { 
             "function_name": "UpdateStake",
-            "args": base64.b64encode(price).decode()
+            "args": base64.b64encode(json.dumps({
+                "1": base64.b64encode(transbytes(price, 32)).decode()
+            }).encode()).decode()
         }   
         # This is printed when contract is deployed.
         contract_address = bytes.fromhex("862cf15d5d824c73ea1ae15fa3303d72a2d27072200660317e46508210d835a7")
         tx_header = TransactionHeader(wlt.address(0), contract_address, json.dumps(data).encode())
         tx_header.sign(wlt)
-        return self.exec_contract_method("UpdateStake", tx_header)
+        return self.exec_contract_method("option", tx_header)
