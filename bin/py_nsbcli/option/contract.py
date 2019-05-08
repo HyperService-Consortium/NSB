@@ -29,7 +29,7 @@ class Option(Contract):
             "args": base64.b64encode(price).decode()
         }   
         # This is printed when contract is deployed.
-        contract_address = b"4a41c6fa881c5388c2c37514b9e477b4a80191272bb5be819bd291fb88d7ffd1"
+        contract_address = bytes.fromhex("862cf15d5d824c73ea1ae15fa3303d72a2d27072200660317e46508210d835a7")
         tx_header = TransactionHeader(wlt.address(0), contract_address, json.dumps(data).encode())
         tx_header.sign(wlt)
         return self.exec_contract_method("UpdateStake", tx_header)

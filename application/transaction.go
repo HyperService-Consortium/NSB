@@ -74,6 +74,7 @@ func (nsb *NSBApplication) parseContractInfo(
 ) {
 	var contractInfo AccountInfo
 	if createFlag {
+		fmt.Println("creating", contractName)
 		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
 
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
