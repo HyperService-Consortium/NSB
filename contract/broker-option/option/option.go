@@ -38,8 +38,8 @@ func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) (*cmn
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
 		Info: fmt.Sprintf(
-			"create success , this contract is deploy at %v",
-			hex.EncodeToString(option.env.ContractAddress),
+			"creation succeed, this contract is deploy at %v, with strikePrice %v",
+			hex.EncodeToString(option.env.ContractAddress), hex.EncodeToString(option.env.Storage.GetBytes("strikePrice")),
 		),
 	}
 }
