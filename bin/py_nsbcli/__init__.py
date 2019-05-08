@@ -7,6 +7,7 @@ from py_nsbcli.types import (
 
 from py_nsbcli.types.transaction_header import TransactionHeader
 
+from py_nsbcli.option import *
 from py_nsbcli.isc import *
 from py_nsbcli.system_action import *
 from py_nsbcli.system_token import *
