@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"fmt"
 	"github.com/Myriad-Dreamin/NSB/application/response"
 	cmn "github.com/Myriad-Dreamin/NSB/common"
 	"github.com/Myriad-Dreamin/NSB/math"
@@ -17,6 +18,11 @@ type ArgsSetBalance struct {
 type ArgsTransfer struct {
 	Value *math.Uint256 `json:"1"`
 }
+
+
+
+
+
 
 func (nsb *NSBApplication) TokenRigisteredMethod(
 	env *cmn.TransactionHeader,
@@ -41,7 +47,7 @@ func (nsb *NSBApplication) TokenRigisteredMethod(
 
 func (nsb *NSBApplication) setBalance(accInfo *AccountInfo, value *math.Uint256) *types.ResponseDeliverTx {
 	accInfo.Balance = value
-	return response.ExecOK()
+	return response.ExecOK
 }
 
 
@@ -52,11 +58,11 @@ func (nsb *NSBApplication) transfer(
 ) *types.ResponseDeliverTx {
 	checkErr := frInfo.Balance.Sub(value)
 	if checkErr {
-		return response.ExecContractError("'from' account has no enough token to substract")
+		return response.ExecContractError(fmt.Errorf("'from' account has no enough token to substract"))
 	}
 	checkErr = toInfo.Balance.Add(value)
 	if checkErr {
-		return response.ExecContractError("'to' account's balance overflow")
+		return response.ExecContractError(fmt.Errorf("'to' account's balance overflow"))
 	}
-	return response.ExecOK()
+	return response.ExecOK
 }
