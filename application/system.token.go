@@ -48,13 +48,13 @@ func (nsb *NSBApplication) setBalance(accInfo *AccountInfo, value *math.Uint256)
 func (nsb *NSBApplication) transfer(
 	frInfo *AccountInfo,
 	toInfo *AccountInfo,
-	value *math.Uint256
+	value *math.Uint256,
 ) *types.ResponseDeliverTx {
 	checkErr := frInfo.Balance.Sub(value)
 	if checkErr {
 		return response.ExecContractError("'from' account has no enough token to substract")
 	}
-	checkErr := toInfo.Balance.Add(value)
+	checkErr = toInfo.Balance.Add(value)
 	if checkErr {
 		return response.ExecContractError("'to' account's balance overflow")
 	}
