@@ -185,13 +185,13 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 		return nil, nil, errInfo
 	}
 
-	var accInfo *AccountInfo
-	accInfo, errInfo = nsb.parseAccInfo(txHeader.From)
+	var frInfo, toInfo *AccountInfo
+	frInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
 		return nil, nil, errInfo
 	}
 
-	return txHeader, accInfo, nil
+	return txHeader, frInfo, nil
 }
 
 func (nsb *NSBApplication) modifyState(
@@ -337,7 +337,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 		return response.InvalidTxInputFormatWrongx18
 	}
 
-	env, accInfo, errInfo := nsb.prepareSystemContractEnvironment(bytesTx[1])
+	env, frInfo, toInfo, errInfo := nsb.prepareSystemContractEnvironment(bytesTx[1])
 	if errInfo != nil {
 		return errInfo
 	}
@@ -348,65 +348,80 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 		return errInfo
 	}
 
-	cb := nsb.systemCall(string(bytesTx[0]), env, accInfo, fap.FuncName, fap.Args)
+	cb := nsb.systemCall(string(bytesTx[0]), env, frInfo, toInfo, fap.FuncName, fap.Args)
 
 	if cb.Code == uint32(response.CodeOK()) {
-		bt, err := json.Marshal(accInfo)
+		bt, err := json.Marshal(frInfo)
 		if err != nil {
 			return response.EncodeAccountInfoError(err)
-		}
-
-		err = nsb.accMap.TryUpdate(env.From, bt)
-		if err != nil {
-			return response.UpdateAccTrieError(err)
-		}
-	} else if cb.Code == uint32(response.CodeUndateBalanceIn()) {
-		value := math.NewUint256FromBytes(cb.Data)
-
-		if value == nil {
-			return response.DecodeBalanceError()
-		}
-
-		checkErr := accInfo.Balance.Sub(value)
-		if checkErr {
-			return response.InsufficientBalanceToTransfer("user")
 		}
 		
-		bt, err := json.Marshal(accInfo)
-		if err != nil {
-			return response.EncodeAccountInfoError(err)
-		}
-
 		err = nsb.accMap.TryUpdate(env.From, bt)
 		if err != nil {
 			return response.UpdateAccTrieError(err)
 		}
 
-		cb.Code = uint32(response.CodeOK())
-	} else if cb.Code == uint32(response.CodeUndateBalanceOut()) {
-		value := math.NewUint256FromBytes(cb.Data)
-
-		if value == nil {
-			return response.DecodeBalanceError()
+		if toInfo != nil {
+			bt, err = json.Marshal(toInfo)
+			if err != nil {
+				return response.EncodeAccountInfoError(err)
+			}
+			
+			err = nsb.accMap.TryUpdate(env.From, bt)
+			if err != nil {
+				return response.UpdateAccTrieError(err)
+			}
 		}
 
-		checkErr := accInfo.Balance.Add(value)
-		if checkErr {
-			return response.BalanceOverflow("user")
-		}
-
-		bt, err := json.Marshal(accInfo)
-		if err != nil {
-			return response.EncodeAccountInfoError(err)
-		}
-
-		err = nsb.accMap.TryUpdate(env.From, bt)
-		if err != nil {
-			return response.UpdateAccTrieError(err)
-		}
-
-		cb.Code = uint32(response.CodeOK())
+		
 	}
+	// else if cb.Code == uint32(response.CodeUndateBalanceIn()) {
+	// 	value := math.NewUint256FromBytes(cb.Data)
+
+	// 	if value == nil {
+	// 		return response.DecodeBalanceError()
+	// 	}
+
+	// 	checkErr := accInfo.Balance.Sub(value)
+	// 	if checkErr {
+	// 		return response.InsufficientBalanceToTransfer("user")
+	// 	}
+		
+	// 	bt, err := json.Marshal(accInfo)
+	// 	if err != nil {
+	// 		return response.EncodeAccountInfoError(err)
+	// 	}
+
+	// 	err = nsb.accMap.TryUpdate(env.From, bt)
+	// 	if err != nil {
+	// 		return response.UpdateAccTrieError(err)
+	// 	}
+
+	// 	cb.Code = uint32(response.CodeOK())
+	// } else if cb.Code == uint32(response.CodeUndateBalanceOut()) {
+	// 	value := math.NewUint256FromBytes(cb.Data)
+
+	// 	if value == nil {
+	// 		return response.DecodeBalanceError()
+	// 	}
+
+	// 	checkErr := accInfo.Balance.Add(value)
+	// 	if checkErr {
+	// 		return response.BalanceOverflow("user")
+	// 	}
+
+	// 	bt, err := json.Marshal(accInfo)
+	// 	if err != nil {
+	// 		return response.EncodeAccountInfoError(err)
+	// 	}
+
+	// 	err = nsb.accMap.TryUpdate(env.From, bt)
+	// 	if err != nil {
+	// 		return response.UpdateAccTrieError(err)
+	// 	}
+
+	// 	cb.Code = uint32(response.CodeOK())
+	// }
 
 	return cb
 }
