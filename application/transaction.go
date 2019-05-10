@@ -379,7 +379,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 				return response.EncodeAccountInfoError(err)
 			}
 			
-			err = nsb.accMap.TryUpdate(env.From, bt)
+			err = nsb.accMap.TryUpdate(env.ContractAddress, bt)
 			if err != nil {
 				return response.UpdateAccTrieError(err)
 			}
