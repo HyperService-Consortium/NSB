@@ -178,6 +178,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte) (
 	*cmn.TransactionHeader,
 	*AccountInfo,
+	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	txHeader, errInfo := nsb.parseTxHeader(txHeaderJson)
