@@ -56,6 +56,12 @@ func (nsb *NSBApplication) transfer(
 	toInfo *AccountInfo,
 	value *math.Uint256,
 ) *types.ResponseDeliverTx {
+
+	// resist frInfo == toInfo
+	if frInfo == toInfo {
+		return response.ExecOK
+	}
+	
 	checkErr := frInfo.Balance.Sub(value)
 	if checkErr {
 		return response.ExecContractError(fmt.Errorf("'from' account has no enough token to substract"))
