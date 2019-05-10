@@ -61,7 +61,7 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 		util.ConcatBytes([]byte{args.Type}, args.Content, args.Signature),
 	)
 	if err != nil {
-		return response.ContractExecError(err)
+		return response.ExecContractError(err)
 	}
 	return &types.ResponseDeliverTx{
 		Code: uint32(response.CodeOK()),
@@ -83,7 +83,7 @@ func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	// TODO: check valid isc/tid/aid
 	bt, err := nsb.actionMap.TryGet(actionKey(args.ISCAddress, args.Tid, args.Aid))
 	if err != nil {
-		return response.ContractExecError(err)
+		return response.ExecContractError(err)
 	}
 	return &types.ResponseDeliverTx{
 		Code: uint32(response.CodeOK()),
