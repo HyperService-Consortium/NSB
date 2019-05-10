@@ -7,3 +7,6 @@ url = https://github.com/Myriad-Dreamin/go-rlp
 path = trie
 
 url = https://github.com/Myriad-Dreamin/go-mpt
+[submodule "bin/py_nsbcli"]
+	path = bin/py_nsbcli
+	url = http://github.com/Myriad-Dreamin/py-nsbcli
