@@ -192,10 +192,15 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 		return nil, nil, nil, errInfo
 	}
 	if txHeader.ContractAddress != nil {
-		toInfo, errInfo = nsb.parseAccInfo(txHeader.ContractAddress)
-		if errInfo != nil {
-			return nil, nil, nil, errInfo
+		if bytes.Equal(txHeader.ContractAddress, txHeader.From) {
+			toInfo = frInfo
+		} else {
+			toInfo, errInfo = nsb.parseAccInfo(txHeader.ContractAddress)
+			if errInfo != nil {
+				return nil, nil, nil, errInfo
+			}
 		}
+		
 	}
 
 	return txHeader, frInfo, toInfo, nil
