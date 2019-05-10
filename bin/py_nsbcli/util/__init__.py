@@ -1,3 +1,0 @@
-
-
-from .gojson import GoJson
