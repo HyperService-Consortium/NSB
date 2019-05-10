@@ -182,16 +182,22 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 ) {
 	txHeader, errInfo := nsb.parseTxHeader(txHeaderJson)
 	if errInfo != nil {
-		return nil, nil, errInfo
+		return nil, nil, nil, errInfo
 	}
 
 	var frInfo, toInfo *AccountInfo
 	frInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
-		return nil, nil, errInfo
+		return nil, nil, nil, errInfo
+	}
+	if txHeader.ContractAddress != nil {
+		toInfo, errInfo = nsb.parseAccInfo(txHeader.ContractAddress)
+		if errInfo != nil {
+			return nil, nil, nil, errInfo
+		}
 	}
 
-	return txHeader, frInfo, nil
+	return txHeader, frInfo, toInfo, nil
 }
 
 func (nsb *NSBApplication) modifyState(
@@ -372,7 +378,6 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 				return response.UpdateAccTrieError(err)
 			}
 		}
-
 		
 	}
 	// else if cb.Code == uint32(response.CodeUndateBalanceIn()) {
