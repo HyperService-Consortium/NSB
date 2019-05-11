@@ -8,6 +8,7 @@ import (
 	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
 	isc "github.com/Myriad-Dreamin/NSB/contract/isc"
 	opt "github.com/Myriad-Dreamin/NSB/contract/broker-option/option"
+	dlg "github.com/Myriad-Dreamin/NSB/contract/delegate"
 )
 
 func (nsb *NSBApplication) execContractFuncs(
@@ -47,6 +48,8 @@ func (nsb *NSBApplication) execContractFuncs(
 		} // sdeam.RegistedMethod(byteJson)
 	case "option":
 		return opt.RigisteredMethod(contractEnv)
+	case "delegate":
+		return dlg.RigisteredMethod(contractEnv)
 	default:
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
@@ -93,6 +96,8 @@ func (nsb *NSBApplication) createContracts(
 		} // sdeam.RegistedMethod(byteJson)
 	case "option":
 		return opt.CreateNewContract(contractEnv)
+	case "delegate":
+		return dlg.CreateNewContract(contractEnv)
 	default:
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),
