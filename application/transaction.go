@@ -289,7 +289,8 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 	}
 
 	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
-
+	
+	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {
 		// TODO: modify accInfo
 		errInfo = nsb.modifyState(cb, env, accInfo, conInfo)
@@ -300,14 +301,13 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		if errInfo != nil {
 			return errInfo
 		}
-
 		if cb.Tags == nil {
-			Tags := []ten_cmn.KVPair {ten_cmn.KVPair {
-				[]byte("TransactionHash"),
-				crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+			Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
-			Tags := make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
+			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
 			for _, tag := range(cb.Tags) {
 				Tags = append(Tags, ten_cmn.KVPair{
 					Key: tag.Key(),
@@ -346,6 +346,8 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 
 	cb := nsb.createContracts(string(bytesTx[0]), env)
 
+
+	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {
 		// TODO: modify accInfo
 		errInfo = nsb.modifyState(cb, env, accInfo, conInfo)
@@ -356,23 +358,23 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		if errInfo != nil {
 			return errInfo
 		}
-
+		
 		if cb.Tags == nil {
 			Tags := []ten_cmn.KVPair {ten_cmn.KVPair {
-				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
 			Tags := make([]cmn.KVPair, 0, len(cb.Tags) + 1)
 			for _, tag := range(cb.Tags) {
 				Tags = append(Tags, ten_cmn.KVPair{
-					tag.Key(),
-					tag.Value(),
+					Key: tag.Key(),
+					Value: tag.Value(),
 				})
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
-				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
 	}
