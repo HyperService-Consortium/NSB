@@ -148,14 +148,14 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 
 func (mp *MerkMap) MakeErrorProof(err error) string {
 	var proofJson ProofJson
-	proofJson.Log = fmt.Errorf(err)
+	proofJson.Log = fmt.Sprintf("%v", err)
 	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
 
 func (mp *MerkMap) MakeErrorProofFromString(str string) string {
 	var proofJson ProofJson
-	proofJson.Log = fmt.Errorf(str)
+	proofJson.Log = fmt.Sprintf("%v", err)
 	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
