@@ -11,7 +11,7 @@ import (
 	"github.com/Myriad-Dreamin/NSB/localstorage"
 	"github.com/Myriad-Dreamin/NSB/crypto"
 	"github.com/Myriad-Dreamin/NSB/math"
-	ten_cmn "github.com/tendermint/tendermint/blob/master/libs/common"
+	ten_cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
