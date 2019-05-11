@@ -124,7 +124,7 @@ func (mp *MerkMap) TryPureDelete(key []byte) error {
 }
 
 func (mp *MerkMap) TryProve(key []byte) (proof [][]byte, err error) {
-	returnmp.merk.TryProve(mp.location(key))
+	return mp.merk.TryProve(mp.location(key))
 }
 
 func (mp *MerkMap) MakeProof(key []byte) string {
@@ -132,14 +132,12 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 	proofJson.Key = key
 	val, err := mp.TryGet(key)
 	if err != nil {
-		proofJson.Log = fmt.Errorf(err)
-		goto ret_proof;
+		return merk.MakeErrorProof(err)
 	}
 	proofJson.Value = val
 	proof, err := mp.TryProve(key)
 	if err != nil {
-		proofJson.Log = fmt.Errorf(err)
-		goto ret_proof;
+		goto merk.MakeErrorProof(err)
 	}
 	proofJson.Proof = proof
 
