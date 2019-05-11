@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/merkmap/MerkMapError"
 	"github.com/Myriad-Dreamin/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -123,7 +124,7 @@ func (mp *MerkMap) TryPureDelete(key []byte) error {
 	return mp.merk.TryDelete(key)
 }
 
-func (mp *MerkMap) TryProve(key []byte) (proof [][]byte, err error) {
+func (mp *MerkMap) TryProve(key []byte) ([][]byte, error) {
 	return mp.merk.TryProve(mp.location(key))
 }
 
@@ -141,7 +142,6 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 	}
 	proofJson.Proof = proof
 
-	ret_proof:
 	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
@@ -149,14 +149,14 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 func (mp *MerkMap) MakeErrorProof(err error) string {
 	var proofJson ProofJson
 	proofJson.Log = fmt.Errorf(err)
-	bt, _ := json.Marshal(ProofJson)
+	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
 
 func (mp *MerkMap) MakeErrorProofFromString(str string) string {
 	var proofJson ProofJson
 	proofJson.Log = fmt.Errorf(str)
-	bt, _ := json.Marshal(ProofJson)
+	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
 
