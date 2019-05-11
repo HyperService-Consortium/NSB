@@ -23,7 +23,7 @@ func (nsb *NSBApplication) parseTxHeader(txHeaderJson []byte) (
 	*cmn.TransactionHeader,
 	*types.ResponseDeliverTx,
 ) {
-	byteInfo, err := nsb.txMap.TryUpdateGet(txHeaderJson)
+	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
 	// internal error
 	if err != nil {
 		return nil, response.ReTrieveTxError(err)
@@ -304,19 +304,19 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		if cb.Tags == nil {
 			Tags := []ten_cmn.KVPair {ten_cmn.KVPair {
 				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
-			Tags := make([]cmn.KVPair, 0, len(cb.Tags) + 1)
+			Tags := make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
 			for _, tag := range(cb.Tags) {
 				Tags = append(Tags, ten_cmn.KVPair{
-					tag.Key(),
-					tag.Value(),
+					Key: tag.Key(),
+					Value: tag.Value(),
 				})
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
-				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
 
