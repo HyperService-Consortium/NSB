@@ -6,6 +6,7 @@ do not use function sys.exit()
 import atexit
 
 from py_nsbcli import *
+from py_nsbcli.modules.admin import get_admin
 import py_nsbcli
 
 
@@ -21,7 +22,7 @@ check_glo_db_is_ok()
 
 
 # modules
-admin = Admin()
+admin = get_admin("")
 cli = Client(admin)
 cli.append_module("action", py_nsbcli.SystemAction(cli))
 cli.append_module("token", py_nsbcli.SystemToken(cli))
