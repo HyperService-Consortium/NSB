@@ -132,12 +132,12 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 	proofJson.Key = key
 	val, err := mp.TryGet(key)
 	if err != nil {
-		return merk.MakeErrorProof(err)
+		return mp.MakeErrorProof(err)
 	}
 	proofJson.Value = val
 	proof, err := mp.TryProve(key)
 	if err != nil {
-		goto merk.MakeErrorProof(err)
+		return mp.MakeErrorProof(err)
 	}
 	proofJson.Proof = proof
 
