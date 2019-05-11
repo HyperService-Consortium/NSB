@@ -22,7 +22,7 @@ func (kv *KVPairInstance) Value() []byte {
 
 
 func MakeKVPair(key []byte, value []byte) KVPair {
-	return KVPairInstance{
+	return &KVPairInstance{
 		key: key,
 		value: value,
 	}
