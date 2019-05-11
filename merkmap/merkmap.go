@@ -19,7 +19,7 @@ type MerkMap struct {
 
 type ProofJson struct {
 	Proof [][]byte `json:"proof"`,
-	Key []byte `json:"key"`,,
+	Key []byte `json:"key"`,
 	Value []byte `json:"value"`,
 	Log string `json:"log"`,
 }
@@ -144,7 +144,7 @@ func (mp *MerkMap) MakeProof(key []byte) string {
 	proofJson.Proof = proof
 
 	ret_proof:
-	bt, _ := json.Marshal(ProofJson)
+	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
 
