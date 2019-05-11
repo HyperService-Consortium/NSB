@@ -9,9 +9,16 @@ type KVPair interface {
 
 type KVPairInstance struct {}
 
+
 func MakeKVPair(key []byte, value []byte) KVPair {
+	var mk = func() []byte {
+		return key
+	}
+	var mv = func() []byte {
+		return value
+	}
 	return KVPairInstance{
-		Key: func() []byte {return key},
-		Value: func() []byte {return value},
+		Key: mk,
+		Value: mv,
 	}
 }
