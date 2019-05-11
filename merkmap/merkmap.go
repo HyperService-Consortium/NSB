@@ -1,8 +1,10 @@
 package merkmap
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
 	"github.com/Myriad-Dreamin/NSB/merkmap/MerkMapError"
 	"github.com/Myriad-Dreamin/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -14,6 +16,15 @@ type MerkMap struct {
 	slot     []byte
 	lastRoot []byte
 }
+
+
+type ProofJson struct {
+	Proof [][]byte `json:"proof"`
+	Key []byte `json:"key"`
+	Value []byte `json:"value"`
+	Log string `json:"log"`
+}
+
 
 func concatBytes(dat ...[]byte) []byte {
 	var buff bytes.Buffer
@@ -101,9 +112,54 @@ func (mp *MerkMap) TryGet(key []byte) ([]byte, error) {
 	return mp.merk.TryGet(mp.location(key))
 }
 
+func (mp *MerkMap) TryPureGet(key []byte) ([]byte, error) {
+	return mp.merk.TryGet(key)
+}
+
 func (mp *MerkMap) TryDelete(key []byte) error {
 	return mp.merk.TryDelete(mp.location(key))
 }
+
+func (mp *MerkMap) TryPureDelete(key []byte) error {
+	return mp.merk.TryDelete(key)
+}
+
+func (mp *MerkMap) TryProve(key []byte) ([][]byte, error) {
+	return mp.merk.TryProve(mp.location(key))
+}
+
+func (mp *MerkMap) MakeProof(key []byte) string {
+	var proofJson ProofJson
+	proofJson.Key = key
+	val, err := mp.TryGet(key)
+	if err != nil {
+		return mp.MakeErrorProof(err)
+	}
+	proofJson.Value = val
+	proof, err := mp.TryProve(key)
+	if err != nil {
+		return mp.MakeErrorProof(err)
+	}
+	proofJson.Proof = proof
+
+	bt, _ := json.Marshal(proofJson)
+	return string(bt)
+}
+
+func (mp *MerkMap) MakeErrorProof(err error) string {
+	var proofJson ProofJson
+	proofJson.Log = fmt.Sprintf("%v", err)
+	bt, _ := json.Marshal(proofJson)
+	return string(bt)
+}
+
+func (mp *MerkMap) MakeErrorProofFromString(str string) string {
+	var proofJson ProofJson
+	proofJson.Log = str
+	bt, _ := json.Marshal(proofJson)
+	return string(bt)
+}
+
 
 func (mp *MerkMap) Revert() (err error) {
 	mp.merk, err = trie.NewTrie(trie.BytesToHash(mp.lastRoot), mp.db)

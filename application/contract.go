@@ -104,7 +104,8 @@ func (nsb *NSBApplication) createContracts(
 func (nsb *NSBApplication) systemCall(
 	contractName string,
 	env *cmn.TransactionHeader,
-	accInfo *AccountInfo,
+	frInfo *AccountInfo,
+	toInfo *AccountInfo,
 	funcName string,
 	args []byte,
 ) (cb *types.ResponseDeliverTx) {
@@ -134,13 +135,13 @@ func (nsb *NSBApplication) systemCall(
 
 	switch contractName {
 	case "system.action":
-		return nsb.ActionRigisteredMethod(env, accInfo, funcName, args)
+		return nsb.ActionRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.merkleproof":
 		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeTODO()),
 		} // sdeam.RegistedMethod(byteJson)
 	case "system.token":
-		return nsb.TokenRigisteredMethod(env, accInfo, funcName, args)
+		return nsb.TokenRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	default:
 		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeInvalidTxType()),
