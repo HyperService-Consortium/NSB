@@ -84,7 +84,7 @@ func (nsb *NSBApplication) QueryIndex(req *types.RequestQuery) string {
 		if accInfo.StorageRoot == nil {
 			return nsb.accMap.MakeErrorProofFromString("empty map")
 		}
-		accStorageTrie, _ := merkmap.NewMerkMapFromDB(args.Address, )
+		accStorageTrie, _ := merkmap.NewMerkMapFromDB(args.Address, accInfo.StorageRoot, []byte{})
 		return accStorageTrie.MakeProof(req.Data)
 	default:
 		return "unknown query type"
