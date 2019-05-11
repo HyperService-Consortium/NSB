@@ -155,7 +155,7 @@ func (mp *MerkMap) MakeErrorProof(err error) string {
 
 func (mp *MerkMap) MakeErrorProofFromString(str string) string {
 	var proofJson ProofJson
-	proofJson.Log = fmt.Sprintf("%v", err)
+	proofJson.Log = str
 	bt, _ := json.Marshal(proofJson)
 	return string(bt)
 }
