@@ -18,10 +18,10 @@ type MerkMap struct {
 
 
 type ProofJson struct {
-	Proof [][]byte `json:"proof"`,
-	Key []byte `json:"key"`,
-	Value []byte `json:"value"`,
-	Log string `json:"log"`,
+	Proof [][]byte `json:"proof"`
+	Key []byte `json:"key"`
+	Value []byte `json:"value"`
+	Log string `json:"log"`
 }
 
 
