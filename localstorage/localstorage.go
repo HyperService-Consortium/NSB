@@ -14,7 +14,7 @@ type LocalStorage struct {
 }
 
 func NewLocalStorage(accountAddress []byte, storageRoot interface{}, db *leveldb.DB) (*LocalStorage, error) {
-	emptySlot := crypto.Sha256(sto.accountAddress)
+	emptySlot := crypto.Sha256(accountAddress)
 	variSlotMap, err := merkmap.NewMerkMapFromDB(db, storageRoot, emptySlot)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func NewLocalStorage(accountAddress []byte, storageRoot interface{}, db *leveldb
 		accountAddress: append(accountAddress),
 		statedb:        db,
 		variSlotMap:    variSlotMap,
-		slotMapCache:   map[string]*merkmap.MerkMap{emptySlot: variSlotMap},
+		slotMapCache:   map[string]*merkmap.MerkMap{"": variSlotMap},
 	}, nil
 }
 
