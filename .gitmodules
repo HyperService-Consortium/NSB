@@ -1,9 +1,7 @@
 [submodule "rlp"]
-
 path = rlp
 url = https://github.com/Myriad-Dreamin/go-rlp
 
 [submodule "trie"]
 path = trie
-
 url = https://github.com/Myriad-Dreamin/go-mpt

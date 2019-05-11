@@ -12,8 +12,8 @@ type ResponseCode uint32
 const ( // base
 	codeOK ResponseCode = 0 + iota
 	codeExecFail
-	codeUndateBalanceIn
-	codeUndateBalanceOut
+	codeUpdateBalanceIn
+	codeUpdateBalanceOut
 	codeUnknown
 	codeMissingTxMethod
 	codeMissingContract
@@ -44,7 +44,7 @@ const ( // Transaction
 const ( // Contract
 	codeContractPanic ResponseCode = 300 + iota
 	codeInvalidFuncType
-	codeContractExecError
+	codeExecContractError
 	codeInsufficientBalanceToTransfer
 	codeBalanceOverflow
 )
@@ -150,10 +150,10 @@ func InvalidFuncTypeError(err error) *types.ResponseDeliverTx {
 	}
 }
 
-func ContractExecError(err error) *types.ResponseDeliverTx {
+func ExecContractError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeContractExecError),
-		Log: fmt.Sprintf("ContractExecError: %v", err),
+		Code: uint32(codeExecContractError),
+		Log: fmt.Sprintf("ExecContractError: %v", err),
 	}
 }
 
@@ -171,16 +171,16 @@ func BalanceOverflow(userName string) *types.ResponseDeliverTx {
 	}
 }
 
-func UndateBalanceIn(value *math.Uint256) *types.ResponseDeliverTx {
+func UpdateBalanceIn(value *math.Uint256) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeUndateBalanceIn),
+		Code: uint32(codeUpdateBalanceIn),
 		Data: value.Bytes(),
 	}
 }
 
-func UndateBalanceOut(value *math.Uint256) *types.ResponseDeliverTx {
+func UpdateBalanceOut(value *math.Uint256) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
-		Code: uint32(codeUndateBalanceOut),
+		Code: uint32(codeUpdateBalanceOut),
 		Data: value.Bytes(),
 	}
 }
@@ -195,8 +195,8 @@ func DecodeBalanceError() *types.ResponseDeliverTx {
 
 func CodeOK() ResponseCode {return codeOK}
 func CodeContractPanic() ResponseCode {return codeContractPanic}
-func CodeUndateBalanceIn() ResponseCode {return codeUndateBalanceIn}
-func CodeUndateBalanceOut() ResponseCode {return codeUndateBalanceOut}
+func CodeUpdateBalanceIn() ResponseCode {return codeUpdateBalanceIn}
+func CodeUpdateBalanceOut() ResponseCode {return codeUpdateBalanceOut}
 func CodeTODO() ResponseCode {return codeTODO}
 func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
 func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}

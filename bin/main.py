@@ -6,6 +6,7 @@ do not use function sys.exit()
 import atexit
 
 from py_nsbcli import *
+import py_nsbcli
 
 
 def check_glo_db_is_ok():
@@ -15,16 +16,16 @@ def check_glo_db_is_ok():
         exit(1)
 
 
-glo_db = LevelDB("./kvstore")
+glo_db = py_nsbcli.LevelDB("./kvstore")
 check_glo_db_is_ok()
 
 
 # modules
 admin = Admin()
 cli = Client(admin)
-cli.append_module("action", SystemAction(cli))
-cli.append_module("token", SystemToken(cli))
-cli.append_module("isc", ISC(cli))
+cli.append_module("action", py_nsbcli.SystemAction(cli))
+cli.append_module("token", py_nsbcli.SystemToken(cli))
+cli.append_module("isc", py_nsbcli.ISC(cli))
 kvdb = KVDB(glo_db)
 
 
