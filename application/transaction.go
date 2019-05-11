@@ -360,12 +360,12 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		}
 		
 		if cb.Tags == nil {
-			Tags := []ten_cmn.KVPair {ten_cmn.KVPair {
+			Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
 				Key: []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
-			Tags := make([]cmn.KVPair, 0, len(cb.Tags) + 1)
+			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
 			for _, tag := range(cb.Tags) {
 				Tags = append(Tags, ten_cmn.KVPair{
 					Key: tag.Key(),
@@ -432,13 +432,13 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 
 		if cb.Tags == nil {
 			cb.Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
-				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
 			cb.Tags = append(cb.Tags, ten_cmn.KVPair{
-				[]byte("TransactionHash"),
-				crypto.Keccak256("tx:", bytesTx[1]),
+				Key: []byte("TransactionHash"),
+				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
 		
