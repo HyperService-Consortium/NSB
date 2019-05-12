@@ -9,6 +9,8 @@ from py_nsbcli import *
 from py_nsbcli.modules.admin import get_admin
 import py_nsbcli
 
+from option import Option
+
 
 def check_glo_db_is_ok():
     global glo_db
