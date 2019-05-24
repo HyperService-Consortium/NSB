@@ -2,8 +2,8 @@ package response
 
 import (
 	"fmt"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/math"
+	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperServiceOne/NSB/math"
 )
 
 const (

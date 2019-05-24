@@ -3,8 +3,8 @@ package nsb
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/math"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tendermint/libs/db"

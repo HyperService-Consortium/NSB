@@ -2,13 +2,13 @@ package nsb
 
 import (
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/application/response"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
+	"github.com/HyperServiceOne/NSB/application/response"
+	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/tendermint/tendermint/abci/types"
-	// sdeam "github.com/Myriad-Dreamin/NSB/contract/sdeam"
-	isc "github.com/Myriad-Dreamin/NSB/contract/isc"
-	opt "github.com/Myriad-Dreamin/NSB/contract/broker-option/option"
-	dlg "github.com/Myriad-Dreamin/NSB/contract/delegate"
+	// sdeam "github.com/HyperServiceOne/NSB/contract/sdeam"
+	isc "github.com/HyperServiceOne/NSB/contract/isc"
+	opt "github.com/HyperServiceOne/NSB/contract/broker-option/option"
+	dlg "github.com/HyperServiceOne/NSB/contract/delegate"
 )
 
 func (nsb *NSBApplication) execContractFuncs(

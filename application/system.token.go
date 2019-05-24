@@ -2,9 +2,9 @@ package nsb
 
 import (
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/application/response"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/math"
+	"github.com/HyperServiceOne/NSB/application/response"
+	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperServiceOne/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 

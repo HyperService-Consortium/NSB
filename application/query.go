@@ -2,7 +2,7 @@ package nsb
 
 import (
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/merkmap"
 	// "encoding/hex"
 	"encoding/json"
 )

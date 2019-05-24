@@ -2,7 +2,7 @@ package nsbnet
 
 import (
 	"fmt"
-	abcinsb "github.com/Myriad-Dreamin/NSB/application"
+	abcinsb "github.com/HyperServiceOne/NSB/application"
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
 	"github.com/tendermint/tendermint/abci/types"

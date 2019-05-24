@@ -4,8 +4,8 @@ import (
 	// dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/contract/isc/action/ActionType"
-	"github.com/Myriad-Dreamin/NSB/contract/isc/action/ActionError"
+	"github.com/HyperServiceOne/NSB/contract/isc/action/ActionType"
+	"github.com/HyperServiceOne/NSB/contract/isc/action/ActionError"
 )
 
 

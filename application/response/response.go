@@ -3,7 +3,7 @@ package response
 
 import (
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/math"
+	"github.com/HyperServiceOne/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 

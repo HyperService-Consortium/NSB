@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/Myriad-Dreamin/NSB/localstorage"
-	"github.com/Myriad-Dreamin/NSB/math"
+	"github.com/HyperServiceOne/NSB/localstorage"
+	"github.com/HyperServiceOne/NSB/math"
 )
 
 type ContractEnvironment struct {

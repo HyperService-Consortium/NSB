@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/Myriad-Dreamin/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/crypto"
 	"github.com/syndtr/goleveldb/leveldb"
 	eddsa "golang.org/x/crypto/ed25519"
 )
