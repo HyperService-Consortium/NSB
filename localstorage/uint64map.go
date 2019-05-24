@@ -1,8 +1,8 @@
 package localstorage
 
 import (
-	"github.com/Myriad-Dreamin/NSB/merkmap"
-	"github.com/Myriad-Dreamin/NSB/util"
+	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/util"
 )
 
 type Uint64Map struct {

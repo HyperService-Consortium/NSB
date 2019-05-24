@@ -1,7 +1,7 @@
 package localstorage
 
 import (
-	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/merkmap"
 )
 
 type Bytable interface {

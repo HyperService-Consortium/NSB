@@ -1,8 +1,8 @@
 package localstorage
 
 import (
-	"github.com/Myriad-Dreamin/NSB/crypto"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

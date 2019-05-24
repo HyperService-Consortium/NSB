@@ -2,7 +2,7 @@ package localstorage
 
 import (
 	"encoding/json"
-	"github.com/Myriad-Dreamin/NSB/merkmap"
+	"github.com/HyperServiceOne/NSB/merkmap"
 )
 
 type JsonBytesMap struct {

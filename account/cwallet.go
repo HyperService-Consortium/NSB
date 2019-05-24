@@ -3,7 +3,7 @@ package account
 import (
 	"C"
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/crypto"
 	"github.com/syndtr/goleveldb/leveldb"
 	eddsa "golang.org/x/crypto/ed25519"
 	"unsafe"

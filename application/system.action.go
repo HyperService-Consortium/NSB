@@ -2,10 +2,10 @@ package nsb
 
 import (
 	"encoding/json"
-	"github.com/Myriad-Dreamin/NSB/application/response"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/crypto"
-	"github.com/Myriad-Dreamin/NSB/util"
+	"github.com/HyperServiceOne/NSB/application/response"
+	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperServiceOne/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/util"
 	"github.com/tendermint/tendermint/abci/types"
 )
 

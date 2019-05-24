@@ -4,8 +4,8 @@ import (
 	// dbm "github.com/tendermint/tendermint/libs/db"
 	"encoding/json"
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/contract/isc/merkleproof/MerkleProofType"
-	"github.com/Myriad-Dreamin/NSB/contract/isc/merkleproof/MerkleProofError"
+	"github.com/HyperServiceOne/NSB/contract/isc/merkleproof/MerkleProofType"
+	"github.com/HyperServiceOne/NSB/contract/isc/merkleproof/MerkleProofError"
 )
 
 type MerkleProof struct {

@@ -1,7 +1,7 @@
 package localstorage
 
 import (
-	"github.com/Myriad-Dreamin/NSB/util"
+	"github.com/HyperServiceOne/NSB/util"
 )
 
 func (sto *LocalStorage) SetBytes(variName string, value []byte) {

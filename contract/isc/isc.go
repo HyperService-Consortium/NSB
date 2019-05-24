@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"encoding/hex"
 	"encoding/json"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
-	"github.com/Myriad-Dreamin/NSB/contract/isc/transaction"
-	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
+	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
+	. "github.com/HyperServiceOne/NSB/common/contract_response"
 )
 
 

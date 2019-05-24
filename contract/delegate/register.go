@@ -2,9 +2,9 @@ package delegate
 
 import (
 	"encoding/json"
-	cmn "github.com/Myriad-Dreamin/NSB/common"
-	. "github.com/Myriad-Dreamin/NSB/common/contract_response"
-	"github.com/Myriad-Dreamin/NSB/math"
+	cmn "github.com/HyperServiceOne/NSB/common"
+	. "github.com/HyperServiceOne/NSB/common/contract_response"
+	"github.com/HyperServiceOne/NSB/math"
 )
 
 type ArgsCreateNewContract struct {
