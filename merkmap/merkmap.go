@@ -173,6 +173,7 @@ func (mp *MerkMap) Commit(cb trie.LeafCallback) (root []byte, err error) {
 	return mp.lastRoot, err
 }
 
+
 // dont use this function if its db handler comes from outside
 func (mp *MerkMap) Close() error {
 	return mp.db.Close()

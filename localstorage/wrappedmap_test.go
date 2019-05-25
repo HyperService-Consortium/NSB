@@ -40,24 +40,16 @@ func TestCreateMap(t *testing.T) {
 	var mykey2 = MyBytes("wwwww")
 	var expVal = []byte("exp")
 
-	err = udmap.Set(mykey, expVal)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	err = udmap.Set(mykey2, expVal)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	udmap.Set(mykey, expVal)
+	udmap.Set(mykey2, expVal)
 
 	var getVal []byte
-	getVal, err = udmap.Get(mykey)
+	getVal = udmap.Get(mykey)
 	if !bytes.Equal(getVal, expVal) {
 		t.Error("no equal")
 		return
 	}
-	getVal, err = udmap.Get(mykey2)
+	getVal = udmap.Get(mykey2)
 	if !bytes.Equal(getVal, expVal) {
 		t.Error("no equal")
 		return

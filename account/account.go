@@ -2,7 +2,7 @@ package account
 
 import (
 	"fmt"
-	"github.com/Myriad-Dreamin/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/crypto"
 	eddsa "golang.org/x/crypto/ed25519"
 	"time"
 )

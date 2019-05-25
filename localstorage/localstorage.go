@@ -6,11 +6,14 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
+type CommitEvent func()()
+
 type LocalStorage struct {
 	accountAddress []byte
 	statedb        *leveldb.DB
 	variSlotMap    *merkmap.MerkMap
 	slotMapCache   map[string]*merkmap.MerkMap
+	events []CommitEvent
 }
 
 func NewLocalStorage(accountAddress []byte, storageRoot interface{}, db *leveldb.DB) (*LocalStorage, error) {
@@ -49,5 +52,8 @@ func (sto *LocalStorage) tryDelete(slotName string, map_offset []byte) error {
 }
 
 func (sto *LocalStorage) Commit() (root []byte, err error) {
+	for _, ev := range sto.events {
+		ev()
+	}
 	return sto.variSlotMap.Commit(nil)
 }

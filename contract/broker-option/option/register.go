@@ -29,7 +29,7 @@ type ArgsBuyOption struct {
 
 
 func MustUnmarshal(data []byte, load interface{}) {
-	err := json.Unmarshal(data, &load)
+	err := json.Unmarshal(data, load)
 	if err != nil {
 		panic(DecodeJsonError(err))
 	}

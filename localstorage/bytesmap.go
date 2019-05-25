@@ -14,14 +14,26 @@ func (sto *LocalStorage) NewBytesMap(mapName string) *BytesMap {
 	}
 }
 
-func (bmap *BytesMap) Set(map_offset []byte, value []byte) error {
-	return bmap.merk.TryUpdate(map_offset, value)
+func (bmap *BytesMap) Set(map_offset []byte, value []byte) {
+	err := bmap.merk.TryUpdate(map_offset, value)
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
-func (bmap *BytesMap) Get(map_offset []byte) ([]byte, error) {
-	return bmap.merk.TryGet(map_offset)
+func (bmap *BytesMap) Get(map_offset []byte) []byte {
+	bt, err := bmap.merk.TryGet(map_offset)
+	if err != nil {
+		panic(err)
+	}
+	return bt
 }
 
-func (bmap *BytesMap) Delete(map_offset []byte) error {
-	return bmap.merk.TryDelete(map_offset)
+func (bmap *BytesMap) Delete(map_offset []byte) {
+	err := bmap.merk.TryDelete(map_offset)
+	if err != nil {
+		panic(err)
+	}
+	return 
 }

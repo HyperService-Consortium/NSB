@@ -15,6 +15,7 @@ const (
 	codeOverFlowError
 	codeArithmeticError
 	codeInvalidFunctionType
+	codeExecContractError
 )
 
 func ExecOK(value *math.Uint256) *cmn.ContractCallBackInfo {
@@ -22,6 +23,13 @@ func ExecOK(value *math.Uint256) *cmn.ContractCallBackInfo {
 		CodeResponse: uint32(codeOK),
 		Value: value,
 		OutFlag: false,
+	}
+}
+
+func ExecContractError(err error) *cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: uint32(codeExecContractError),
+		Log: fmt.Sprintf("ExecContractError: %v", err),
 	}
 }
 
