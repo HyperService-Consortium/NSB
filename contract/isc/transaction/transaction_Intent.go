@@ -1,11 +1,14 @@
 package transaction
 
+import . "github.com/HyperServiceOne/NSB/common/contract_response"
+import "encoding/json"
+import "github.com/HyperServiceOne/NSB/math"
 
 type TransactionIntent struct {
 	Fr          []byte              `json:"from"`
 	To          []byte              `json:"to"`
-	Seq         uint                `json:"seq"`
-	Amt         uint                `json:"amt"`
+	Seq         *math.Uint256                `json:"seq"`
+	Amt         *math.Uint256                `json:"amt"`
 	Meta        []byte              `json:"meta"`
 }
 
@@ -22,3 +25,14 @@ type TransactionStates struct {
 	ContractId  []byte              `json:"contract_id"`
 	txs         []TransactionIntent `json:"transactions"`
 }
+
+func (tx *TransactionIntent) Bytes() []byte {
+	bt, err := json.Marshal(tx)
+	if err != nil {
+		panic(DecodeJsonError(err))
+	}
+	return bt
+}
+
+
+

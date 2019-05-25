@@ -15,14 +15,26 @@ func (sto *LocalStorage) NewInt64Map(mapName string) *Int64Map {
 	}
 }
 
-func (i64map *Int64Map) Set(map_offset int64, value []byte) error {
-	return i64map.merk.TryUpdate(util.Int64ToBytes(map_offset), value)
+func (i64map *Int64Map) Set(map_offset int64, value []byte) {
+	err := i64map.merk.TryUpdate(util.Int64ToBytes(map_offset), value)
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
 
-func (i64map *Int64Map) Get(map_offset int64) ([]byte, error) {
-	return i64map.merk.TryGet(util.Int64ToBytes(map_offset))
+func (i64map *Int64Map) Get(map_offset int64) []byte {
+	bt, err := i64map.merk.TryGet(util.Int64ToBytes(map_offset))
+	if err != nil {
+		panic(err)
+	}
+	return bt
 }
 
-func (i64map *Int64Map) Delete(map_offset int64) error {
-	return i64map.merk.TryDelete(util.Int64ToBytes(map_offset))
+func (i64map *Int64Map) Delete(map_offset int64) {
+	err := i64map.merk.TryDelete(util.Int64ToBytes(map_offset))
+	if err != nil {
+		panic(err)
+	}
+	return 
 }
