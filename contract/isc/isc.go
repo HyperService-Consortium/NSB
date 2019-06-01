@@ -31,6 +31,10 @@ func (iscc *ISC) IsIniting() bool {
 	return iscc.env.Storage.GetUint8("iscState") == ISCState.Initing
 }
 
+func (iscc *ISC) IsInited() bool {
+	return iscc.env.Storage.GetUint8("iscState") == ISCState.Inited
+}
+
 func (iscc *ISC) IsSettling() bool {
 	return iscc.env.Storage.GetUint8("iscState") == ISCState.Settling
 }
@@ -44,14 +48,14 @@ func (iscc *ISC) NewContract(iscOwners [][]byte, funds []uint32, vesSig []byte, 
 	isOwner := iscc.env.Storage.NewBoolMap("iscOwner")
 
 	for idx, iscOwner := range iscOwners {
-		AssertTrue(isOwner.Get(iscOwner) == false, "the address is already isc owner")
+		AssertTrue(isOwner.Get(iscOwner) == false, "the address is already the isc owner")
 		owners.Append(iscOwner)
 		mustFunds.Set(iscOwner, funds[idx])
 		isOwner.Set(iscOwner, true)
 	}
 	iscc.env.Storage.NewBytesMap("userAcked").Set(iscc.env.From, vesSig)
 	transactions := iscc.env.Storage.NewBytesArray("transactions")
-	for transactionIntent := range transactionIntents {
+	for _, transactionIntent := range transactionIntents {
 		bt, err := json.Marshal(transactionIntent)
 		if err != nil {
 			return ExecContractError(err)
@@ -64,104 +68,149 @@ func (iscc *ISC) NewContract(iscOwners [][]byte, funds []uint32, vesSig []byte, 
 	}
 }
 
-func (iscc *ISC) UpdateTxInfo(tid int64, transactionIntent *transaction.TransactionIntent) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxInfo(tid uint64, transactionIntent *transaction.TransactionIntent) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
-
-	iscc.env.Storage.NewInt64Map("transactions").Set(tid, transactionIntent.Bytes())
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
+	fmt.Println("will set", transactionIntent.Bytes())
+	txArr.Set(tid, transactionIntent.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) UpdateTxFr(tid int64, fr []byte) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxFr(tid uint64, fr []byte) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
 
-	txArr, tb := iscc.env.Storage.NewInt64Map("transactions"), tid
-	txb := txArr.Get(tb)
+	txb := txArr.Get(tid)
 	var tx transaction.TransactionIntent
 	MustUnmarshal(txb, &tx)
 
 	tx.Fr = fr
-	txArr.Set(tb, tx.Bytes())
+	txArr.Set(tid, tx.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) UpdateTxTo(tid int64, to []byte) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxTo(tid uint64, to []byte) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
 
-	txArr, tb := iscc.env.Storage.NewInt64Map("transactions"), tid
-	txb := txArr.Get(tb)
+	txb := txArr.Get(tid)
 	var tx transaction.TransactionIntent
 	MustUnmarshal(txb, &tx)
 
 	tx.To = to
-	txArr.Set(tb, tx.Bytes())
+	txArr.Set(tid, tx.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) UpdateTxSeq(tid int64, seq *math.Uint256) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxSeq(tid uint64, seq *math.Uint256) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
 
-	txArr, tb := iscc.env.Storage.NewInt64Map("transactions"), tid
-	txb := txArr.Get(tb)
+	txb := txArr.Get(tid)
 	var tx transaction.TransactionIntent
 	MustUnmarshal(txb, &tx)
 
 	tx.Seq = seq
-	txArr.Set(tb, tx.Bytes())
+	txArr.Set(tid, tx.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) UpdateTxAmt(tid int64, amt *math.Uint256) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxAmt(tid uint64, amt *math.Uint256) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
 
-	txArr, tb := iscc.env.Storage.NewInt64Map("transactions"), tid
-	txb := txArr.Get(tb)
+	txb := txArr.Get(tid)
 	var tx transaction.TransactionIntent
 	MustUnmarshal(txb, &tx)
 
 	tx.Amt = amt
-	txArr.Set(tb, tx.Bytes())
+	txArr.Set(tid, tx.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) UpdateTxMeta(tid int64, meta []byte) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) UpdateTxMeta(tid uint64, meta []byte) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	AssertTrue(iscc.env.Storage.NewInt64Map("transactionsFrozen").Get(tid)[0] == 0, "frozen transaction")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	AssertTrue(txArr.Length() > tid, "transaction index overflow")
+	AssertTrue(iscc.env.Storage.NewUint64Map("transactionsFrozen").Get(tid) == nil, "frozen transaction")
 	
-	txArr, tb := iscc.env.Storage.NewInt64Map("transactions"), tid
-	txb := txArr.Get(tb)
+	txb := txArr.Get(tid)
 	var tx transaction.TransactionIntent
 	MustUnmarshal(txb, &tx)
 
 	tx.Meta = meta
-	txArr.Set(tb, tx.Bytes())
+	txArr.Set(tid, tx.Bytes())
 	return ExecOK(nil)
 }
 
-func (iscc *ISC) FreezeInfo(tid int64) (*cmn.ContractCallBackInfo) {
+func (iscc *ISC) FreezeInfo(tid uint64) (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	iscc.env.Storage.NewInt64Map("transactionsFrozen").Set(tid, []byte{1})
+	transFrozen := iscc.env.Storage.NewUint64Map("transactionsFrozen")
+	if transFrozen.Get(tid) == nil {
+		transFrozen.Set(tid, []byte{1})
+		newf := iscc.env.Storage.GetUint64("freezedInfoCount") + 1
+		if newf == iscc.env.Storage.NewBytesArray("transactions").Length() {
+			iscc.env.Storage.SetUint8("iscState", ISCState.Inited)
+		}
+		iscc.env.Storage.SetUint64("freezedInfoCount", newf)
+	}
 	return ExecOK(nil)
 }
 
 // func (iscc *ISC) freezeAllInfo() (*cmn.ContractCallBackInfo) {
-// 	iscc.env.Storage.NewInt64Map("transactionsFrozen").Set(tid, []byte{1})
+// 	iscc.env.Storage.NewUint64Map("transactionsFrozen").Set(tid, []byte{1})
 // }
 
 func (iscc *ISC) UserAck(signature []byte) (*cmn.ContractCallBackInfo) {
 	// sign session
-	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	iscc.env.Storage.NewBytesMap("userAcked").Set(iscc.env.From, []byte{1})
+	AssertTrue(iscc.IsInited(), "ISC is initializing")
+	userAcked := iscc.env.Storage.NewBytesMap("userAcked")
+	if userAcked.Get(iscc.env.From) == nil {
+		userAcked.Set(iscc.env.From, []byte{1})
+		newf := iscc.env.Storage.GetUint64("userAckCount") + 1
+		fmt.Println(newf, iscc.env.Storage.NewBytesArray("owners").Length())
+		if newf == iscc.env.Storage.NewBytesArray("owners").Length() {
+			iscc.env.Storage.SetUint8("iscState", ISCState.Opening)
+		}
+		iscc.env.Storage.SetUint64("userAckCount", newf)
+	}
+	
 	return ExecOK(nil)
 }
 
+
+func (iscc *ISC) resetAckState() {
+	iscc.env.Storage.SetUint8("iscState", ISCState.Initing)
+
+	iscc.env.Storage.SetUint64("freezedInfoCount", 0)
+	transFrozen := iscc.env.Storage.NewUint64Map("transactionsFrozen")
+	txArr := iscc.env.Storage.NewBytesArray("transactions")
+	for idx := uint64(0); idx < txArr.Length(); idx++ {
+		transFrozen.Delete(idx)
+	}
+
+	iscc.env.Storage.SetUint64("userAckCount", 0)
+	userAcked := iscc.env.Storage.NewBytesMap("userAcked")
+	ownerArr := iscc.env.Storage.NewBytesArray("owners")
+	for idx := uint64(0); idx < ownerArr.Length(); idx++ {
+		userAcked.Delete(ownerArr.Get(idx))
+	}
+}
+
+
 func (iscc *ISC) UserRefuse(signature []byte) (*cmn.ContractCallBackInfo) {
-	AssertTrue(iscc.IsIniting(), "ISC is initialized")
-	iscc.env.Storage.NewBytesMap("userAcked").Set(iscc.env.From, []byte{1})
+	AssertTrue(iscc.IsInited(), "ISC is initializing")
+	iscc.resetAckState()
 	return ExecOK(nil)
 }
 
@@ -174,9 +223,3 @@ func (iscc *ISC) SettleContract() (*cmn.ContractCallBackInfo) {
 	AssertTrue(iscc.IsSettling(), "ISC is not settling yet")
 	return ExecOK(nil)
 }
-
-func (iscc *ISC) ReturnFunds() (*cmn.ContractCallBackInfo) {
-	AssertTrue(iscc.IsActive() == false, "ISC is not closed yet")
-	return ExecOK(nil)
-}
-
