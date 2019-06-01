@@ -1,7 +1,6 @@
 package nsb
 
 import (
-	"fmt"
 	"github.com/HyperServiceOne/NSB/application/response"
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/tendermint/tendermint/abci/types"
@@ -88,7 +87,6 @@ func (nsb *NSBApplication) createContracts(
 
 	switch contractName {
 	case "isc":
-		fmt.Println(contractEnv)
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo{

@@ -10,7 +10,7 @@ import (
 
 
 type Action struct {
-	Atype       ActionType.Type             `json:"action_type"`
+	Atype       uint8             `json:"action_type"`
 	Signature   []byte                      `json:"signatrue"`
 	MsgHash     []byte                      `json:"msg_hash"`
 }
