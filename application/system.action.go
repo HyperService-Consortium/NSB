@@ -6,6 +6,7 @@ import (
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/HyperServiceOne/NSB/crypto"
 	"github.com/HyperServiceOne/NSB/util"
+	autil "github.com/HyperServiceOne/NSB/action"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -39,9 +40,7 @@ func (nsb *NSBApplication) ActionRigisteredMethod(
 
 type ArgsAddAction struct {
 	ISCAddress []byte `json:"1"`
-	// hexbytes
 	Tid uint64 `json:"2"`
-	// hexbytes
 	Aid       uint64 `json:"3"`
 	Type      uint8  `json:"4"`
 	Content   []byte `json:"5"`
@@ -56,9 +55,13 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	var args ArgsAddAction
 	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
+	action, err := autil.NewAction(args.Type, args.Signature, args.Content)
+	if err != nil {
+		return response.ExecContractError(err)
+	}
 	err := nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
-		util.ConcatBytes([]byte{args.Type}, args.Content, args.Signature),
+		action.Concat(),
 	)
 	if err != nil {
 		return response.ExecContractError(err)

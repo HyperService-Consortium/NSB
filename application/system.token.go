@@ -19,11 +19,6 @@ type ArgsTransfer struct {
 	Value *math.Uint256 `json:"1"`
 }
 
-
-
-
-
-
 func (nsb *NSBApplication) TokenRigisteredMethod(
 	env *cmn.TransactionHeader,
 	frInfo *AccountInfo,
