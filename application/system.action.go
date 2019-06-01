@@ -59,7 +59,7 @@ func (nsb *NSBApplication) addAction(bytesArgs []byte) *types.ResponseDeliverTx 
 	if err != nil {
 		return response.ExecContractError(err)
 	}
-	err := nsb.actionMap.TryUpdate(
+	err = nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
 		action.Concat(),
 	)
