@@ -1,7 +1,7 @@
 package main
 
 import (
-	nsbnet "github.com/Myriad-Dreamin/NSB/net"
+	nsbnet "github.com/HyperServiceOne/NSB/net"
 )
 
 func main() {
