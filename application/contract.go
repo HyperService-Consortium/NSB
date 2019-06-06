@@ -140,9 +140,7 @@ func (nsb *NSBApplication) systemCall(
 	case "system.action":
 		return nsb.ActionRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.merkleproof":
-		return &types.ResponseDeliverTx{
-			Code: uint32(response.CodeTODO()),
-		} // sdeam.RegistedMethod(byteJson)
+		return nsb.MerkleProofRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.token":
 		return nsb.TokenRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	default:
