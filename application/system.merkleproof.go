@@ -89,6 +89,8 @@ func (nsb *NSBApplication) MerkleProofRigisteredMethod(
 		return nsb.validateMerkleProof(args)
 	case "getMerkleProof":
 		return nsb.getMerkleProof(args)
+	case "addBlockCheck":
+		return nsb.addBlockCheck(args)
 	default:
 		return response.InvalidFuncTypeError(MethodMissing)
 	}
