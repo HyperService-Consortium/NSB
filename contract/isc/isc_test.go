@@ -1,23 +1,60 @@
 package isc
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"testing"
+
+	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperServiceOne/NSB/contract/isc/ISCState"
+	"github.com/HyperServiceOne/NSB/contract/isc/TxState"
+	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
 	"github.com/HyperServiceOne/NSB/localstorage"
 	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperServiceOne/NSB/util"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
-	"github.com/HyperServiceOne/NSB/contract/isc/ISCState"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"fmt"
-	"bytes"
-	"testing"
-	"encoding/json"
 )
-
 
 var __x_ldb *leveldb.DB
 var __x_storage *localstorage.LocalStorage
 var __x_env *cmn.ContractEnvironment
 
+func reset(t *testing.T, b []byte) []byte {
+	t.Helper()
+	var c []byte
+	var err error
+	if __x_storage != nil {
+		c, err = __x_storage.Commit()
+		if err != nil {
+			t.Error(err)
+			return nil
+		}
+	}
+	__x_storage, err = localstorage.NewLocalStorage(b, c, __x_ldb)
+	if err != nil {
+		t.Error(err)
+		return nil
+	}
+	__x_env = &cmn.ContractEnvironment{
+		Storage: __x_storage,
+	}
+	return c
+}
+
+func resetroot(t *testing.T, b, c []byte) {
+	t.Helper()
+	var err error
+	__x_storage, err = localstorage.NewLocalStorage(b, c, __x_ldb)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	__x_env = &cmn.ContractEnvironment{
+		Storage: __x_storage,
+	}
+	return
+}
 
 func TestMakeStorage(t *testing.T) {
 	var err error
@@ -26,16 +63,8 @@ func TestMakeStorage(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	__x_storage, err = localstorage.NewLocalStorage([]byte{0,1,2}, []byte{}, __x_ldb)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	__x_env = &cmn.ContractEnvironment{
-		Storage: __x_storage,
-	}
+	reset(t, []byte{0, 1, 2})
 }
-
 
 /*
 type ArgsCreateNewContract struct {
@@ -68,32 +97,32 @@ type ContractEnvironment struct {
 */
 
 func TestISCMakeISC(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
+			resetroot(t, []byte{0, 1, 2}, qwq)
 			t.Error(err)
 			return
 		}
 	}()
 
-
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2};
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
 	var iscOnwers = [][]byte{u, v}
 	var funds = []uint32{0, 0}
 	var vesSig = []byte{0}
 	var transactionIntents = []*transaction.TransactionIntent{
 		&transaction.TransactionIntent{
-			Fr: u,
-			To: v,
-			Seq: math.NewUint256FromHexString("10"),
-			Amt: math.NewUint256FromHexString("10"),
+			Fr:   u,
+			To:   v,
+			Seq:  math.NewUint256FromHexString("10"),
+			Amt:  math.NewUint256FromHexString("10"),
 			Meta: []byte{0},
 		},
 	}
 	var args = &ArgsCreateNewContract{
-		IscOwners: iscOnwers,
-		Funds: funds,
-		VesSig: vesSig,
+		IscOwners:          iscOnwers,
+		Funds:              funds,
+		VesSig:             vesSig,
 		TransactionIntents: transactionIntents,
 	}
 	bt, err := json.Marshal(args)
@@ -109,31 +138,32 @@ func TestISCMakeISC(t *testing.T) {
 }
 
 func TestISCBadMakeISC(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
+			resetroot(t, []byte{0, 1, 2}, qwq)
 			fmt.Println(err)
 			return
 		}
 	}()
 
-	var u, v = []byte{0, 0, 0}, []byte{0, 0, 2};
+	var u, v = []byte{0, 0, 0}, []byte{0, 0, 2}
 	var iscOnwers = [][]byte{u, v}
 	var funds = []uint32{0, 0}
 	var vesSig = []byte{0}
 	var transactionIntents = []*transaction.TransactionIntent{
 		&transaction.TransactionIntent{
-			Fr: u,
-			To: v,
-			Seq: math.NewUint256FromHexString("10"),
-			Amt: math.NewUint256FromHexString("10"),
+			Fr:   u,
+			To:   v,
+			Seq:  math.NewUint256FromHexString("10"),
+			Amt:  math.NewUint256FromHexString("10"),
 			Meta: []byte{0},
 		},
 	}
 	var args = &ArgsCreateNewContract{
-		IscOwners: iscOnwers,
-		Funds: funds,
-		VesSig: vesSig,
+		IscOwners:          iscOnwers,
+		Funds:              funds,
+		VesSig:             vesSig,
 		TransactionIntents: transactionIntents,
 	}
 	bt, err := json.Marshal(args)
@@ -148,31 +178,32 @@ func TestISCBadMakeISC(t *testing.T) {
 }
 
 func TestISCBadMakeISC2(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
-			fmt.Println(err)
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
 			return
 		}
 	}()
-	
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2};
+
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
 	var iscOnwers = [][]byte{u, v}
 	var funds = []uint32{0}
 	var vesSig = []byte{0}
 	var transactionIntents = []*transaction.TransactionIntent{
 		&transaction.TransactionIntent{
-			Fr: u,
-			To: v,
-			Seq: math.NewUint256FromHexString("10"),
-			Amt: math.NewUint256FromHexString("10"),
+			Fr:   u,
+			To:   v,
+			Seq:  math.NewUint256FromHexString("10"),
+			Amt:  math.NewUint256FromHexString("10"),
 			Meta: []byte{0},
 		},
 	}
 	var args = &ArgsCreateNewContract{
-		IscOwners: iscOnwers,
-		Funds: funds,
-		VesSig: vesSig,
+		IscOwners:          iscOnwers,
+		Funds:              funds,
+		VesSig:             vesSig,
 		TransactionIntents: transactionIntents,
 	}
 	bt, err := json.Marshal(args)
@@ -187,25 +218,25 @@ func TestISCBadMakeISC2(t *testing.T) {
 }
 
 func TestResetInfo(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
-			fmt.Println(err)
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
 			return
 		}
 	}()
-	
 
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2};
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
 	var transactionIntent = &transaction.TransactionIntent{
-		Fr: u,
-		To: v,
-		Seq: math.NewUint256FromHexString("666"),
-		Amt: math.NewUint256FromHexString("666"),
+		Fr:   u,
+		To:   v,
+		Seq:  math.NewUint256FromHexString("666"),
+		Amt:  math.NewUint256FromHexString("666"),
 		Meta: []byte{0},
 	}
-	var args = &ArgsUpdateTxInfo {
-		Tid: 0,
+	var args = &ArgsUpdateTxInfo{
+		Tid:               0,
 		TransactionIntent: transactionIntent,
 	}
 	bt, err := json.Marshal(args)
@@ -230,23 +261,23 @@ func TestResetInfo(t *testing.T) {
 		return
 	}
 
-	if ! bytes.Equal(bt, txArr.Get(0)) {
+	if !bytes.Equal(bt, txArr.Get(0)) {
 		fmt.Println("Test Set Info not equal...")
 	}
 }
 
 func TestFreezeInfo(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
-			fmt.Println(err)
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
 			return
 		}
 	}()
-	
 
 	var u = []byte{0, 0, 1}
-	var args = &ArgsFreezeInfo {
+	var args = &ArgsFreezeInfo{
 		Tid: 0,
 	}
 	bt, err := json.Marshal(args)
@@ -269,25 +300,25 @@ func TestFreezeInfo(t *testing.T) {
 }
 
 func TestResetInfoAfterAllFrozen(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
-			fmt.Println(err)
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
 			return
 		}
 	}()
-	
 
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2};
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
 	var transactionIntent = &transaction.TransactionIntent{
-		Fr: u,
-		To: v,
-		Seq: math.NewUint256FromHexString("666"),
-		Amt: math.NewUint256FromHexString("666"),
+		Fr:   u,
+		To:   v,
+		Seq:  math.NewUint256FromHexString("666"),
+		Amt:  math.NewUint256FromHexString("666"),
 		Meta: []byte{0},
 	}
-	var args = &ArgsUpdateTxInfo {
-		Tid: 0,
+	var args = &ArgsUpdateTxInfo{
+		Tid:               0,
 		TransactionIntent: transactionIntent,
 	}
 	bt, err := json.Marshal(args)
@@ -312,24 +343,23 @@ func TestResetInfoAfterAllFrozen(t *testing.T) {
 		return
 	}
 
-	if ! bytes.Equal(bt, txArr.Get(0)) {
+	if !bytes.Equal(bt, txArr.Get(0)) {
 		fmt.Println("Test Set Info not equal...")
 	}
 }
 
-
 func TestUserAcks(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
 	defer func() {
 		if err := recover(); err != nil {
-			__x_storage.Revert()
-			fmt.Println(err)
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
 			return
 		}
 	}()
-	
 
 	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
-	var args = &ArgsUserAck {
+	var args = &ArgsUserAck{
 		Signature: []byte("test..."),
 	}
 	bt, err := json.Marshal(args)
@@ -344,17 +374,102 @@ func TestUserAcks(t *testing.T) {
 
 	fmt.Println(RigisteredMethod(__x_env))
 	__x_storage.Commit()
-	
-	
+
 	__x_env.From = v
 
 	fmt.Println(RigisteredMethod(__x_env))
 	__x_storage.Commit()
-	
+
 	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Opening)
+}
+
+func TestProcessTransaction(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
+	defer func() {
+		if err := recover(); err != nil {
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
+			return
+		}
+	}()
+
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
+
+	__x_env.From = v
+	__x_env.ContractAddress = []byte{0, 1, 2, 3}
+	__x_env.FuncName = "InsuranceClaim"
+	__x_env.Args = append(append(make([]byte, 0, 16), util.Uint64ToBytes(0)...), util.Uint64ToBytes(TxState.Open)...)
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
+
+	__x_env.From = u
+	__x_env.Args = append(append(make([]byte, 0, 16), util.Uint64ToBytes(0)...), util.Uint64ToBytes(TxState.Opened)...)
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
+
+	__x_env.From = v
+	__x_env.Args = append(append(make([]byte, 0, 16), util.Uint64ToBytes(0)...), util.Uint64ToBytes(TxState.Closed)...)
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
+
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Opening)
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Settling)
+}
+
+func TestCloseContract(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
+	defer func() {
+		if err := recover(); err != nil {
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
+			return
+		}
+	}()
+
+	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
+
+	__x_env.From = u
+	__x_env.ContractAddress = []byte{0, 1, 2, 3}
+	__x_env.FuncName = "SettleContract"
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
+
+	__x_env.From = v
+
+	fmt.Println(RigisteredMethod(__x_env))
+
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Opening)
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Settling)
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Closed)
+}
+
+func TestCloseContractTwice(t *testing.T) {
+	qwq := reset(t, []byte{0, 1, 2})
+	defer func() {
+		if err := recover(); err != nil {
+			resetroot(t, []byte{0, 1, 2}, qwq)
+			t.Error(err)
+			return
+		}
+	}()
+
+	var v = []byte{0, 0, 2}
+
+	__x_env.From = v
+	__x_env.ContractAddress = []byte{0, 1, 2, 3}
+	__x_env.FuncName = "SettleContract"
+
+	fmt.Println(RigisteredMethod(__x_env))
+
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Opening)
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Settling)
+	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Closed)
 }
 
 func TestUnmakeStorage(t *testing.T) {
 	__x_ldb.Close()
 }
-

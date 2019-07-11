@@ -1,10 +1,13 @@
 package isc
 
 import (
-	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
 	"encoding/json"
-	. "github.com/HyperServiceOne/NSB/common/contract_response"
+	"errors"
+
 	cmn "github.com/HyperServiceOne/NSB/common"
+	. "github.com/HyperServiceOne/NSB/common/contract_response"
+	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
+	"github.com/HyperServiceOne/NSB/util"
 )
 
 func MustUnmarshal(data []byte, load interface{}) {
@@ -19,20 +22,20 @@ type ISC struct {
 }
 
 type ArgsCreateNewContract struct {
-	IscOwners          [][]byte                        `json:"isc_owners"`
-	Funds              []uint32                        `json:"required_funds"`
-	VesSig             []byte                          `json:"ves_signature"`
+	IscOwners          [][]byte                         `json:"isc_owners"`
+	Funds              []uint32                         `json:"required_funds"`
+	VesSig             []byte                           `json:"ves_signature"`
 	TransactionIntents []*transaction.TransactionIntent `json:"transaction_intents"`
 }
 
 type ArgsUpdateTxInfo struct {
-	Tid uint64 `json:"tid"`
+	Tid               uint64                         `json:"tid"`
 	TransactionIntent *transaction.TransactionIntent `json:"transaction_intent"`
 }
 
 type ArgsUpdateTxFr struct {
 	Tid uint64 `json:"tid"`
-	Fr []byte `json:"from"`
+	Fr  []byte `json:"from"`
 }
 
 type ArgsFreezeInfo struct {
@@ -43,8 +46,12 @@ type ArgsUserAck struct {
 	Signature []byte `json:"signature"`
 }
 
+type ArgsInsuranceClaim struct {
+	Tid uint64
+	Aid uint64
+}
 
-func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
+func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
 
@@ -71,6 +78,13 @@ func RigisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 		var args ArgsUserAck
 		MustUnmarshal(env.Args, &args)
 		return iscc.UserAck(args.Signature)
+	case "InsuranceClaim":
+		return iscc.InsuranceClaim(util.BytesToUint64(env.Args[0:8]), util.BytesToUint64(env.Args[8:16]))
+	case "SettleContract":
+		if env.Args != nil {
+			return ExecContractError(errors.New("this function must have no input"))
+		}
+		return iscc.SettleContract()
 	default:
 		return InvalidFunctionType(env.FuncName)
 	}

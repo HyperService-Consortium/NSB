@@ -1,11 +1,12 @@
 package TxState
 
-type Type uint8
+type Type = uint64
+
 const (
-	unknown Type = 0 + iota
-	initing
-	inited
-	open
-	opened
-	closed
+	Unknown Type = 0 + iota
+	Initing
+	Inited
+	Open
+	Opened
+	Closed
 )
