@@ -1,23 +1,25 @@
 package localstorage
 
 import (
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"fmt"
 	"unsafe"
+
+	"github.com/HyperServiceOne/NSB/merkmap"
 )
 
 type BytesArray struct {
-	merk *merkmap.MerkMap
-	length uint64
+	merk                       *merkmap.MerkMap
+	length                     uint64
 	__x_fast_bytes_interpreter []byte
 }
 
 func (sto *LocalStorage) NewBytesArray(arrName string) *BytesArray {
 	barr := &BytesArray{
-		merk: sto.makeStorageSlot(arrName),
-		length: sto.GetUint64(arrName),
+		merk:                       sto.makeStorageSlot(arrName),
+		length:                     sto.GetUint64(arrName),
 		__x_fast_bytes_interpreter: []byte{0, 0, 0, 0, 0, 0, 0, 0},
 	}
-	sto.events = append(sto.events, func()() {
+	sto.events = append(sto.events, func() {
 		sto.SetUint64(arrName, barr.length)
 	})
 	return barr
@@ -27,14 +29,14 @@ func (barr *BytesArray) Length() uint64 {
 	return barr.length
 }
 
-
 func (barr *BytesArray) Set(arr_offset uint64, value []byte) {
+	fmt.Println("setting!!!!", arr_offset, value)
 	*(*uint64)(unsafe.Pointer(&barr.__x_fast_bytes_interpreter[0])) = *(*uint64)(unsafe.Pointer(&arr_offset))
 	err := barr.merk.TryUpdate(barr.__x_fast_bytes_interpreter, value)
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
 
 func (barr *BytesArray) Get(arr_offset uint64) []byte {
@@ -52,7 +54,7 @@ func (barr *BytesArray) Delete(arr_offset uint64) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
 
 func (barr *BytesArray) Append(value []byte) {
@@ -61,6 +63,5 @@ func (barr *BytesArray) Append(value []byte) {
 	if err != nil {
 		panic(err)
 	}
-	barr.length++;
+	barr.length++
 }
-
