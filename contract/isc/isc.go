@@ -2,7 +2,6 @@ package isc
 
 import (
 	"bytes"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
@@ -42,6 +41,7 @@ func (iscc *ISC) IsSettling() bool {
 }
 
 func (iscc *ISC) NewContract(iscOwners [][]byte, funds []uint32, vesSig []byte, transactionIntents []*transaction.TransactionIntent) *cmn.ContractCallBackInfo {
+	AssertTrue(len(iscOwners) != 0, "nil iscOwners is not allowed")
 	AssertTrue(len(iscOwners) == len(funds), "the length of owners is not equal to that of funds")
 	AssertTrue(bytes.Equal(iscc.env.From, iscOwners[0]), "first owner must be sender")
 
@@ -70,7 +70,8 @@ func (iscc *ISC) NewContract(iscOwners [][]byte, funds []uint32, vesSig []byte, 
 	}
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(CodeOK),
-		Info:         fmt.Sprintf("create success , this contract is deploy at %v", hex.EncodeToString(iscc.env.ContractAddress)),
+		Info:         "success",
+		Data:         iscc.env.ContractAddress,
 	}
 }
 
