@@ -54,7 +54,6 @@ type ArgsInsuranceClaim struct {
 func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
-
 	var iscc = &ISC{env: contractEnvironment}
 	return iscc.NewContract(args.IscOwners, args.Funds, args.VesSig, args.TransactionIntents)
 }

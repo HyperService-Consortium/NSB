@@ -1,18 +1,19 @@
 package nsb
 
 import (
-	"fmt"
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+
 	"github.com/HyperServiceOne/NSB/account"
 	"github.com/HyperServiceOne/NSB/application/response"
 	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/localstorage"
 	"github.com/HyperServiceOne/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/localstorage"
 	"github.com/HyperServiceOne/NSB/math"
-	ten_cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/abci/types"
+	ten_cmn "github.com/tendermint/tendermint/libs/common"
 )
 
 var (
@@ -145,7 +146,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
-	
+
 	fmt.Println("cmp", conInfo.Name, contractName, "cmp")
 
 	if !bytes.Equal(contractName, conInfo.Name) {
@@ -202,7 +203,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 				return nil, nil, nil, errInfo
 			}
 		}
-		
+
 	}
 
 	return txHeader, frInfo, toInfo, nil
@@ -289,7 +290,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 	}
 
 	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
-	
+
 	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {
 		// TODO: modify accInfo
@@ -302,20 +303,20 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 			return errInfo
 		}
 		if cb.Tags == nil {
-			Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
-				Key: []byte("TransactionHash"),
+			Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
-			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
-			for _, tag := range(cb.Tags) {
+			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags)+1)
+			for _, tag := range cb.Tags {
 				Tags = append(Tags, ten_cmn.KVPair{
-					Key: tag.Key(),
+					Key:   tag.Key(),
 					Value: tag.Value(),
 				})
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
-				Key: []byte("TransactionHash"),
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
@@ -327,6 +328,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		Log:  cb.Log,
 		// Tags:
 		Info: cb.Info,
+		Data: cb.Data,
 		Tags: Tags,
 	}
 }
@@ -341,11 +343,10 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 	if errInfo != nil {
 		return errInfo
 	}
-	
+
 	fmt.Println(accInfo, conInfo)
 
 	cb := nsb.createContracts(string(bytesTx[0]), env)
-
 
 	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {
@@ -358,22 +359,22 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		if errInfo != nil {
 			return errInfo
 		}
-		
+
 		if cb.Tags == nil {
-			Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
-				Key: []byte("TransactionHash"),
+			Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
-			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags) + 1)
-			for _, tag := range(cb.Tags) {
+			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags)+1)
+			for _, tag := range cb.Tags {
 				Tags = append(Tags, ten_cmn.KVPair{
-					Key: tag.Key(),
+					Key:   tag.Key(),
 					Value: tag.Value(),
 				})
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
-				Key: []byte("TransactionHash"),
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
@@ -384,6 +385,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		Log:  cb.Log,
 		// Tags:
 		Info: cb.Info,
+		Data: cb.Data,
 		Tags: Tags,
 	}
 }
@@ -412,7 +414,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 		if err != nil {
 			return response.EncodeAccountInfoError(err)
 		}
-		
+
 		err = nsb.accMap.TryUpdate(env.From, bt)
 		if err != nil {
 			return response.UpdateAccTrieError(err)
@@ -423,7 +425,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			if err != nil {
 				return response.EncodeAccountInfoError(err)
 			}
-			
+
 			err = nsb.accMap.TryUpdate(env.ContractAddress, bt)
 			if err != nil {
 				return response.UpdateAccTrieError(err)
@@ -431,17 +433,17 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 		}
 
 		if cb.Tags == nil {
-			cb.Tags = []ten_cmn.KVPair {ten_cmn.KVPair {
-				Key: []byte("TransactionHash"),
+			cb.Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			}}
 		} else {
 			cb.Tags = append(cb.Tags, ten_cmn.KVPair{
-				Key: []byte("TransactionHash"),
+				Key:   []byte("TransactionHash"),
 				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
 			})
 		}
-		
+
 	}
 	// else if cb.Code == uint32(response.CodeUndateBalanceIn()) {
 	// 	value := math.NewUint256FromBytes(cb.Data)
@@ -454,7 +456,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 	// 	if checkErr {
 	// 		return response.InsufficientBalanceToTransfer("user")
 	// 	}
-		
+
 	// 	bt, err := json.Marshal(accInfo)
 	// 	if err != nil {
 	// 		return response.EncodeAccountInfoError(err)

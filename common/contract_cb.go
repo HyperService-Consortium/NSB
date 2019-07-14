@@ -9,6 +9,7 @@ type ContractCallBackInfo struct {
 	CodeResponse uint32
 	Log          string
 	Info         string
+	Data         []byte
 	Value        *math.Uint256
 	OutFlag      bool
 	Tags         []KVPair

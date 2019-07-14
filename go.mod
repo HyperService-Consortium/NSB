@@ -22,12 +22,14 @@ replace (
 
 require (
 	github.com/Myriad-Dreamin/go-mpt v1.1.0
+	github.com/alecthomas/gocyclo v0.0.0-20150208221726-aa8f8b160214 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-kit/kit v0.8.0 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/google/gofuzz v1.0.0 // indirect
+	github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
