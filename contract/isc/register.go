@@ -43,6 +43,7 @@ type ArgsFreezeInfo struct {
 }
 
 type ArgsUserAck struct {
+	Address   []byte `json:"address"`
 	Signature []byte `json:"signature"`
 }
 
@@ -76,7 +77,7 @@ func RigisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	case "UserAck":
 		var args ArgsUserAck
 		MustUnmarshal(env.Args, &args)
-		return iscc.UserAck(args.Signature)
+		return iscc.UserAck(args.Address, args.Signature)
 	case "InsuranceClaim":
 		return iscc.InsuranceClaim(util.BytesToUint64(env.Args[0:8]), util.BytesToUint64(env.Args[8:16]))
 	case "SettleContract":

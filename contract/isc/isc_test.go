@@ -131,7 +131,7 @@ func TestRuntimeErrorBug(t *testing.T) {
 		return
 	}
 	__x_env.From = []byte{1, 2, 3}
-	__x_env.ContractAddress = []byte{1, 0, 2, 3 ,4 }
+	__x_env.ContractAddress = []byte{1, 0, 2, 3, 4}
 	__x_env.Args = b
 	fmt.Println(CreateNewContract(__x_env))
 }
@@ -222,7 +222,7 @@ func TestISCBadMakeISC2(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
 			resetroot(t, []byte{0, 1, 2}, qwq)
-			t.Error(err)
+			fmt.Println(err)
 			return
 		}
 	}()
@@ -344,7 +344,7 @@ func TestResetInfoAfterAllFrozen(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
 			resetroot(t, []byte{0, 1, 2}, qwq)
-			t.Error(err)
+			fmt.Println(err)
 			return
 		}
 	}()
@@ -400,6 +400,7 @@ func TestUserAcks(t *testing.T) {
 
 	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
 	var args = &ArgsUserAck{
+		Address:   u,
 		Signature: []byte("test..."),
 	}
 	bt, err := json.Marshal(args)
@@ -415,7 +416,14 @@ func TestUserAcks(t *testing.T) {
 	fmt.Println(RigisteredMethod(__x_env))
 	__x_storage.Commit()
 
+	args.Address = v
+	bt, err = json.Marshal(args)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	__x_env.From = v
+	__x_env.Args = bt
 
 	fmt.Println(RigisteredMethod(__x_env))
 	__x_storage.Commit()
@@ -434,6 +442,22 @@ func TestProcessTransaction(t *testing.T) {
 	}()
 
 	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
+
+	__x_env.From = v
+	__x_env.ContractAddress = []byte{0, 1, 2, 3}
+	__x_env.FuncName = "InsuranceClaim"
+	__x_env.Args = append(append(make([]byte, 0, 16), util.Uint64ToBytes(0)...), util.Uint64ToBytes(TxState.Instantiating)...)
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
+
+	__x_env.From = u
+	__x_env.ContractAddress = []byte{0, 1, 2, 3}
+	__x_env.FuncName = "InsuranceClaim"
+	__x_env.Args = append(append(make([]byte, 0, 16), util.Uint64ToBytes(0)...), util.Uint64ToBytes(TxState.Instantiated)...)
+
+	fmt.Println(RigisteredMethod(__x_env))
+	__x_storage.Commit()
 
 	__x_env.From = v
 	__x_env.ContractAddress = []byte{0, 1, 2, 3}
@@ -469,7 +493,7 @@ func TestCloseContract(t *testing.T) {
 		}
 	}()
 
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
+	var u = []byte{0, 0, 1}
 
 	__x_env.From = u
 	__x_env.ContractAddress = []byte{0, 1, 2, 3}
@@ -478,9 +502,10 @@ func TestCloseContract(t *testing.T) {
 	fmt.Println(RigisteredMethod(__x_env))
 	__x_storage.Commit()
 
-	__x_env.From = v
-
-	fmt.Println(RigisteredMethod(__x_env))
+	// __x_env.From = v
+	//
+	// fmt.Println(RigisteredMethod(__x_env))
+	// __x_storage.Commit()
 
 	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Opening)
 	fmt.Println(__x_storage.GetUint8("iscState") == ISCState.Settling)
@@ -492,7 +517,7 @@ func TestCloseContractTwice(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
 			resetroot(t, []byte{0, 1, 2}, qwq)
-			t.Error(err)
+			fmt.Println(err)
 			return
 		}
 	}()
