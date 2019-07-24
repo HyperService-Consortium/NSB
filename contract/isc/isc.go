@@ -178,12 +178,12 @@ func (iscc *ISC) FreezeInfo(tid uint64) *cmn.ContractCallBackInfo {
 // 	iscc.env.Storage.NewUint64Map("transactionsFrozen").Set(tid, []byte{1})
 // }
 
-func (iscc *ISC) UserAck(signature []byte) *cmn.ContractCallBackInfo {
+func (iscc *ISC) UserAck(fr, signature []byte) *cmn.ContractCallBackInfo {
 	// sign session
 	AssertTrue(iscc.IsInited(), "ISC is initializing")
 	userAcked := iscc.env.Storage.NewBytesMap("userAcked")
-	if userAcked.Get(iscc.env.From) == nil {
-		userAcked.Set(iscc.env.From, []byte{1})
+	if userAcked.Get(fr) == nil {
+		userAcked.Set(fr, []byte{1})
 		newf := iscc.env.Storage.GetUint64("userAckCount") + 1
 		fmt.Println(newf, iscc.env.Storage.NewBytesArray("owners").Length())
 
@@ -226,6 +226,7 @@ func (iscc *ISC) InsuranceClaim(tid, aid uint64) *cmn.ContractCallBackInfo {
 	AssertTrue(storing_tid == tid, "this transaction is not active")
 	var AidMap = iscc.env.Storage.NewUint64Map("AidMap")
 	var storing_aid = util.BytesToUint64(AidMap.Get(tid))
+	fmt.Println(storing_aid+1, aid)
 	AssertTrue(storing_aid+1 == aid, "this action is not active")
 	AidMap.Set(tid, util.Uint64ToBytes(aid))
 	if aid == TxState.Closed {
