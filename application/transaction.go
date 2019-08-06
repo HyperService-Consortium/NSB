@@ -147,11 +147,11 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 		return nil, nil, nil, errInfo
 	}
 
-	fmt.Println("cmp", conInfo.Name, contractName, "cmp")
+	// fmt.Println("cmp", conInfo.Name, contractName, "cmp")
 
-	if !bytes.Equal(contractName, conInfo.Name) {
-		return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
-	}
+	// if !bytes.Equal(contractName, conInfo.Name) {
+	// 	return nil, nil, nil, response.ReTrieveTxError(ContractNameNotEqual)
+	// }
 
 	// TODO: verify signature
 
@@ -289,7 +289,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		return errInfo
 	}
 
-	cb := nsb.execContractFuncs(string(bytesTx[0]), env)
+	cb := nsb.execContractFuncs(string(conInfo.Name), env)
 
 	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {

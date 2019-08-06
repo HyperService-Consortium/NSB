@@ -1,19 +1,17 @@
 package isc
 
-
 import (
 	"github.com/tendermint/tendermint/abci/types"
 )
 
-
-func addAction() (types.ResponseDeliverTx) {
+func addAction() types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{
-		Code: uint32(CodeOK),
+		Code: 0,
 	}
 }
 
-func getAction() (types.ResponseDeliverTx) {
+func getAction() types.ResponseDeliverTx {
 	return types.ResponseDeliverTx{
-		Code: uint32(CodeOK),
+		Code: 0,
 	}
 }

@@ -69,7 +69,7 @@ func (iscc *ISC) NewContract(iscOwners [][]byte, funds []uint32, vesSig []byte, 
 		AidMap.Set(uint64(idx), util.Uint64ToBytes(TxState.Initing))
 	}
 	return &cmn.ContractCallBackInfo{
-		CodeResponse: uint32(CodeOK),
+		CodeResponse: CodeOK(),
 		Info:         "success",
 		Data:         iscc.env.ContractAddress,
 	}
@@ -226,7 +226,7 @@ func (iscc *ISC) InsuranceClaim(tid, aid uint64) *cmn.ContractCallBackInfo {
 	AssertTrue(storing_tid == tid, "this transaction is not active")
 	var AidMap = iscc.env.Storage.NewUint64Map("AidMap")
 	var storing_aid = util.BytesToUint64(AidMap.Get(tid))
-	fmt.Println(storing_aid+1, aid)
+	// fmt.Println(storing_aid+1, aid)
 	AssertTrue(storing_aid+1 == aid, "this action is not active")
 	AidMap.Set(tid, util.Uint64ToBytes(aid))
 	if aid == TxState.Closed {
@@ -243,4 +243,42 @@ func (iscc *ISC) SettleContract() *cmn.ContractCallBackInfo {
 	AssertTrue(iscc.IsSettling(), "ISC is not settling yet")
 	iscc.env.Storage.SetUint8("iscState", ISCState.Closed)
 	return ExecOK(nil)
+}
+
+func (iscc *ISC) GetOwners() *cmn.ContractCallBackInfo {
+	owners := iscc.env.Storage.NewBytesArray("owners")
+	var ret [][]byte
+	for idx := uint64(0); idx < owners.Length(); idx++ {
+		ret = append(ret, owners.Get(idx))
+	}
+
+	b, err := json.Marshal(ret)
+	if err != nil {
+		return ExecContractError(err)
+	}
+
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: CodeOK(),
+		Data:         b,
+	}
+}
+
+func (iscc *ISC) IsOwner(address []byte) *cmn.ContractCallBackInfo {
+	isOwner := iscc.env.Storage.NewBoolMap("iscOwner")
+	b, err := json.Marshal(isOwner.Get(address))
+	if err != nil {
+		return ExecContractError(err)
+	}
+
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: CodeOK(),
+		Data:         b,
+	}
+}
+
+func (iscc *ISC) GetState() *cmn.ContractCallBackInfo {
+	return &cmn.ContractCallBackInfo{
+		CodeResponse: CodeOK(),
+		Data:         []byte{iscc.env.Storage.GetUint8("iscState")},
+	}
 }
