@@ -10,6 +10,7 @@ import (
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/HyperServiceOne/NSB/crypto"
 	"github.com/HyperServiceOne/NSB/util"
+	merkleprooftype "github.com/Myriad-Dreamin/go-uip/const/merkle-proof-type"
 	"github.com/tendermint/tendermint/abci/types"
 	// "github.com/Myriad-Dreamin/go-mpt"
 )
@@ -18,12 +19,6 @@ import (
  * storage := validMerkleProofMap
  * storage2 := validOnchainMerkleProofMap
  */
-
-const (
-	simpleMerkleTreeUsingSha256 uint8 = 0 + iota
-	simpleMerkleTreeUsingSha512
-	merklePatriciaTrieUsingKeccak256
-)
 
 var (
 	bytesOne                      = []byte{1}
@@ -62,7 +57,7 @@ func errithNode(i int) error {
 }
 
 type ArgsValidateMerkleProof struct {
-	Type     uint8  `json:"1"`
+	Type     uint16 `json:"1"`
 	RootHash []byte `json:"2"`
 	Key      []byte `json:"3"`
 	Value    []byte `json:"4"`
@@ -97,17 +92,19 @@ func (nsb *NSBApplication) MerkleProofRigisteredMethod(
 	}
 }
 
-func validateMerkleProofKey(typeId uint8, rootHash, key []byte) []byte {
-	return crypto.Sha512([]byte{typeId}, rootHash, key)
+func validateMerkleProofKey(typeId uint16, rootHash, key []byte) []byte {
+	return crypto.Sha512([]byte{uint8(typeId & 0xff), uint8(typeId >> 8)}, rootHash, key)
 }
 
 func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsValidateMerkleProof
 	MustUnmarshal(bytesArgs, &args)
 	switch args.Type {
-	case simpleMerkleTreeUsingSha256, simpleMerkleTreeUsingSha512:
+	case merkleprooftype.SimpleMerkleTreeUsingSha256, merkleprooftype.SimpleMerkleTreeUsingSha512:
 		return nsb.validateSimpleMerkleTree(args.Proof, args.Key, args.Type)
-	case merklePatriciaTrieUsingKeccak256:
+	case merkleprooftype.MerklePatriciaTrieUsingKeccak256:
+		return nsb.validateMerklePatriciaTrie(args.Proof, args.Key, args.Value, args.Type)
+	case merkleprooftype.SecureMerklePatriciaTrieUsingKeccak256:
 		return nsb.validateMerklePatriciaTrie(args.Proof, args.Key, args.Value, args.Type)
 	default:
 		return response.ExecContractError(unrecognizedMerkleProofType)
@@ -117,7 +114,7 @@ func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.Response
 func (nsb *NSBApplication) validateSimpleMerkleTree(
 	Proof []byte,
 	Key []byte,
-	hfType uint8,
+	hfType uint16,
 ) *types.ResponseDeliverTx {
 	var jsonProof SimpleMerkleProof
 	MustUnmarshal(Proof, &jsonProof)
@@ -162,7 +159,7 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 	Proof []byte,
 	Key []byte,
 	Value []byte,
-	hfType uint8,
+	hfType uint16,
 ) *types.ResponseDeliverTx {
 	var jsonProof MPTMerkleProof
 	MustUnmarshal(Proof, &jsonProof)
@@ -275,12 +272,12 @@ func (nsb *NSBApplication) validateMerklePatriciaTrie(
 type ArgsAddBlockCheck struct {
 	ChainID  uint64 `json:"1"`
 	BlockID  []byte `json:"2"`
-	RcType   uint8  `json:"3"`
+	RtType   uint8  `json:"3"`
 	RootHash []byte `json:"4"`
 }
 
-func merkleProofKey(chainID uint64, blockID []byte, RcType uint8) []byte {
-	return crypto.Sha512(util.Uint64ToBytes(chainID), blockID, []byte{RcType})
+func merkleProofKey(chainID uint64, blockID []byte, RtType uint8) []byte {
+	return crypto.Sha512(util.Uint64ToBytes(chainID), blockID, []byte{RtType})
 }
 
 func (nsb *NSBApplication) addBlockCheck(bytesArgs []byte) *types.ResponseDeliverTx {
@@ -288,7 +285,7 @@ func (nsb *NSBApplication) addBlockCheck(bytesArgs []byte) *types.ResponseDelive
 	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/blockid
 	err := nsb.validOnchainMerkleProofMap.TryUpdate(
-		merkleProofKey(args.ChainID, args.BlockID, args.RcType),
+		merkleProofKey(args.ChainID, args.BlockID, args.RtType),
 		args.RootHash,
 	)
 	if err != nil {
@@ -302,14 +299,14 @@ func (nsb *NSBApplication) addBlockCheck(bytesArgs []byte) *types.ResponseDelive
 }
 
 type ArgsGetMerkleProof struct {
-	Type     uint8  `json:"1"`
+	Type     uint16 `json:"1"`
 	RootHash []byte `json:"2"`
 	Key      []byte `json:"3"`
-	Value    []byte `json:"4"`
-	Proof    []byte `json:"5"`
-	ChainID  uint64 `json:"6"`
-	BlockID  []byte `json:"7"`
-	RcType   uint8  `json:"8"`
+	// Value    []byte `json:"4"`
+	// Proof    []byte `json:"5"`
+	ChainID uint64 `json:"4"`
+	BlockID []byte `json:"5"`
+	RtType  uint8  `json:"6"`
 	// Value []byte `json:"7"`
 }
 
@@ -318,7 +315,7 @@ func (nsb *NSBApplication) getMerkleProof(bytesArgs []byte) *types.ResponseDeliv
 	MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
 	bt, err := nsb.validOnchainMerkleProofMap.TryGet(
-		merkleProofKey(args.ChainID, args.BlockID, args.RcType),
+		merkleProofKey(args.ChainID, args.BlockID, args.RtType),
 	)
 	if err != nil {
 		return response.ExecContractError(err)
