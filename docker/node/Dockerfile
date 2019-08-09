@@ -1,5 +1,5 @@
 FROM alpine:3.7
-MAINTAINER Greg Szabo <greg@tendermint.com>
+MAINTAINER Myriad-Dreamin <camiyoru@gmail.com>
 
 RUN apk update && \
     apk upgrade && \
