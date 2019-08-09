@@ -9,3 +9,9 @@ localstorage/testdb/LOG
 localstorage/testdb/MANIFEST-000259
 
 contract/isc/testdb/
+
+docker/build/node*
+docker/build/data*
+docker/build/-server/*
+docker/build/nsbstate.db/*
+docker/build/trienode.db/*

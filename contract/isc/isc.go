@@ -223,16 +223,18 @@ func (iscc *ISC) UserRefuse(signature []byte) *cmn.ContractCallBackInfo {
 func (iscc *ISC) InsuranceClaim(tid, aid uint64) *cmn.ContractCallBackInfo {
 	AssertTrue(iscc.IsOpening(), "ISC is not open yet")
 	var storing_tid = iscc.env.Storage.GetUint64("tid")
+	fmt.Println("current tid...", tid, storing_tid)
 	AssertTrue(storing_tid == tid, "this transaction is not active")
 	var AidMap = iscc.env.Storage.NewUint64Map("AidMap")
 	var storing_aid = util.BytesToUint64(AidMap.Get(tid))
-	// fmt.Println(storing_aid+1, aid)
+	fmt.Println("...", storing_aid+1, aid)
 	AssertTrue(storing_aid+1 == aid, "this action is not active")
 	AidMap.Set(tid, util.Uint64ToBytes(aid))
 	if aid == TxState.Closed {
 		tid++
 		iscc.env.Storage.SetUint64("tid", tid)
 		if tid == iscc.env.Storage.NewBytesArray("transactions").Length() {
+			fmt.Println("setting....")
 			iscc.env.Storage.SetUint8("iscState", ISCState.Settling)
 		}
 	}
