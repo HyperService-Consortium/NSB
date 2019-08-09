@@ -7,7 +7,7 @@ SILENT:=
 
 all:
 	mkdir ${BUILD}
-	mv ${CURPATH}/node/tendermint ${BUILD}	
+	cp ${CURPATH}/node/tendermint ${BUILD}	
 	docker build --tag ${NODENAME} node
 
 network:
@@ -34,6 +34,9 @@ start:
 restart:
 	docker-compose -f ${CURPATH}/testnode.yml restart ${SILENT}
 
+stop:
+	docker-compose -f ${CURPATH}/testnode.yml stop ${SILENT}
+
 .PHONY: all
 
 .PHONY: network
@@ -47,3 +50,6 @@ restart:
 .PHONY: start
 
 .PHONY: restart
+
+.PHONY: stop
+
