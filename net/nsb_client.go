@@ -2,6 +2,7 @@ package nsbnet
 
 import (
 	"fmt"
+	"flag"
 	abcinsb "github.com/HyperServiceOne/NSB/application"
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
@@ -11,12 +12,18 @@ import (
 )
 
 const (
-	nsb_port           = ":27667"
-	nsb_tcp            = "tcp://0.0.0.0:27667"
+	// nsb_port           = ":27667"
+	// nsb_tcp            = "tcp://0.0.0.0:27667"
 	nsb_net_type       = "socket"
-	nsb_db_dir         = "./data/"
 	nsb_must_connected = false
 )
+
+var (
+	nsb_port = flag.String("port", ":27667", "port")
+	nsb_db_dir = flag.String("db", "./data/", "db")
+	nsb_tcp = flag.String("server", "tcp://0.0.0.0:27667", "server address")
+)
+
 
 type NSB struct {
 	app    types.Application
@@ -26,12 +33,12 @@ type NSB struct {
 }
 
 func NewNSBClient() (cli abcicli.Client, err error) {
-	cli, err = abcicli.NewClient(nsb_port, nsb_net_type, nsb_must_connected)
+	cli, err = abcicli.NewClient(*nsb_port, nsb_net_type, nsb_must_connected)
 	return
 }
 
 func NewNSBServer(app types.Application) (srv cmn.Service, err error) {
-	srv, err = abcisrv.NewServer(nsb_tcp, nsb_net_type, app)
+	srv, err = abcisrv.NewServer(*nsb_tcp, nsb_net_type, app)
 	return
 }
 
@@ -40,19 +47,19 @@ func NewNSB() (nsb NSB, err error) {
 	nsb.logger = log.NewNopLogger()
 
 	fmt.Println("create app...")
-	nsb.app, err = abcinsb.NewNSBApplication(nsb_db_dir)
+	nsb.app, err = abcinsb.NewNSBApplication(*nsb_db_dir)
 	if err != nil {
 		return
 	}
 
-	fmt.Println("create server...")
+	fmt.Println("create server... on", *nsb_tcp)
 	nsb.srv, err = NewNSBServer(nsb.app)
 	if err != nil {
 		return
 	}
 	nsb.srv.SetLogger(log.NewNopLogger())
 
-	fmt.Println("create client...")
+	fmt.Println("create client... on", *nsb_port)
 	nsb.cli, err = NewNSBClient()
 	if err != nil {
 		return
@@ -97,3 +104,9 @@ func (nsb *NSB) LoopUntilStop() {
 
 	select {}
 }
+
+
+func init() {
+	flag.Parse()
+}
+

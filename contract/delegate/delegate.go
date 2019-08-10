@@ -22,8 +22,8 @@ func (delegate *Delegate) NewContract(_delegates [][]byte, district string, tota
 	delegate.env.Storage.NewInt64Map("delegates")
 	for i,x:= range _delegates{
 		AssertFalse(len(x)==0,"delegate is not null" )
-		_=delegate.env.Storage.NewBytesMap("isDelegate").Set(x,[]byte("true"))
-		_=delegate.env.Storage.NewInt64Map("delegates").Set(int64(i),x)
+		delegate.env.Storage.NewBytesMap("isDelegate").Set(x,[]byte("true"))
+		delegate.env.Storage.NewInt64Map("delegates").Set(int64(i),x)
 		count += 1
 	}
 
@@ -40,12 +40,12 @@ func (delegate *Delegate) NewContract(_delegates [][]byte, district string, tota
 }
 
 func (delegate *Delegate) Vote() (*cmn.ContractCallBackInfo){
-	cher,_:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
+	cher:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
 	AssertTrue(string(cher)=="true", "delegate Only")
 
-	str,_:= delegate.env.Storage.NewBytesMap("isDelegateVoted").Get(delegate.env.From)
+	str:= delegate.env.Storage.NewBytesMap("isDelegateVoted").Get(delegate.env.From)
 	if string(str)== "false"{
-		_= delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("true"))
+		delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("true"))
 		totalVotes := math.NewUint256FromBytes(delegate.env.Storage.GetBytes("totalVotes"))
 		totalVotes.Add(math.NewUint256FromString("1", 10))
 		delegate.env.Storage.SetBytes("totalVotes", totalVotes.Bytes())
@@ -61,10 +61,10 @@ func (delegate *Delegate) Vote() (*cmn.ContractCallBackInfo){
 }
 
 func (delegate *Delegate) ResetVote() (*cmn.ContractCallBackInfo){
-	cher,_:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
+	cher:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
 	AssertTrue(string(cher)=="true", "delegate Only")
 
-	_ = delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("false"))
+	delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("false"))
 
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),

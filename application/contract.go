@@ -1,14 +1,14 @@
 package nsb
 
 import (
-	"fmt"
 	"github.com/HyperServiceOne/NSB/application/response"
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/tendermint/tendermint/abci/types"
+
 	// sdeam "github.com/HyperServiceOne/NSB/contract/sdeam"
-	isc "github.com/HyperServiceOne/NSB/contract/isc"
 	opt "github.com/HyperServiceOne/NSB/contract/broker-option/option"
 	dlg "github.com/HyperServiceOne/NSB/contract/delegate"
+	isc "github.com/HyperServiceOne/NSB/contract/isc"
 )
 
 func (nsb *NSBApplication) execContractFuncs(
@@ -85,10 +85,8 @@ func (nsb *NSBApplication) createContracts(
 			}
 		}
 	}()
-
 	switch contractName {
 	case "isc":
-		fmt.Println(contractEnv)
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo{
@@ -142,9 +140,7 @@ func (nsb *NSBApplication) systemCall(
 	case "system.action":
 		return nsb.ActionRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.merkleproof":
-		return &types.ResponseDeliverTx{
-			Code: uint32(response.CodeTODO()),
-		} // sdeam.RegistedMethod(byteJson)
+		return nsb.MerkleProofRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.token":
 		return nsb.TokenRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	default:
