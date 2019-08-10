@@ -2,6 +2,7 @@ package response
 
 import (
 	"fmt"
+
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/HyperServiceOne/NSB/math"
 )
@@ -21,23 +22,23 @@ const (
 func ExecOK(value *math.Uint256) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
-		Value: value,
-		OutFlag: false,
+		Value:        value,
+		OutFlag:      false,
 	}
 }
 
 func ExecContractError(err error) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeExecContractError),
-		Log: fmt.Sprintf("ExecContractError: %v", err),
+		Log:          fmt.Sprintf("ExecContractError: %v", err),
 	}
 }
 
 func OKAndTransfer(value *math.Uint256) *cmn.ContractCallBackInfo {
 	return &cmn.ContractCallBackInfo{
 		CodeResponse: uint32(codeOK),
-		Value: value,
-		OutFlag: true,
+		Value:        value,
+		OutFlag:      true,
 	}
 }
 
@@ -106,3 +107,5 @@ func AssertNoErr(assertErr error, AssertInfo interface{}) {
 	}
 	return
 }
+
+func CodeOK() uint32 { return codeOK }

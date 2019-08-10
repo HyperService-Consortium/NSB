@@ -27,7 +27,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 
 	var stmp *merkmap.MerkMap
 	var statedb *leveldb.DB
-	statedb, err = leveldb.OpenFile("./data/trienode.db", nil)
+	statedb, err = leveldb.OpenFile(dbDir + "trienode.db", nil)
 	if err != nil {
 		return nil, err
 	}

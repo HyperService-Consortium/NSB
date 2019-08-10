@@ -2,9 +2,10 @@ package isc
 
 import (
 	"encoding/json"
-	"github.com/HyperServiceOne/NSB/math"
+
 	cmn "github.com/HyperServiceOne/NSB/common"
 	. "github.com/HyperServiceOne/NSB/common/contract_response"
+	"github.com/HyperServiceOne/NSB/math"
 )
 
 type ArgsSafeAdd struct {
@@ -24,7 +25,7 @@ func SafeAdd(JsonParas []byte) *cmn.ContractCallBackInfo {
 		return OverFlowError("Arithmetic Overflow occurred while executing A+B")
 	}
 	return &cmn.ContractCallBackInfo{
-		CodeResponse: CodeOK,
-		Info: args.A.String(),
+		CodeResponse: CodeOK(),
+		Info:         args.A.String(),
 	}
 }
