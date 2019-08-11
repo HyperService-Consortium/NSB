@@ -28,21 +28,16 @@ require (
 	github.com/alexflint/go-arg v1.0.0 // indirect
 	github.com/go-kit/kit v0.8.0 // indirect
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
-	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/google/gofuzz v1.0.0 // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8 // indirect
 	github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb // indirect
-	github.com/jmhodges/levigo v1.0.0 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/securego/gosec v0.0.0-20190709033609-4b59c948083c // indirect
-	github.com/syndtr/goleveldb v1.0.0
-	github.com/tendermint/go-amino v0.14.1 // indirect
-	github.com/tendermint/tendermint v0.31.5
+	github.com/syndtr/goleveldb v1.0.1-0.20190318030020-c3a204f8e965
+	github.com/tendermint/tendermint v0.32.2
+	github.com/tendermint/tm-db v0.1.1
 	github.com/tsenart/deadcode v0.0.0-20160724212837-210d2dc333e9 // indirect
 	github.com/urfave/cli v1.20.0
 	github.com/walle/lll v0.0.0-20160702150637-8b13b3fbf731 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
-	google.golang.org/grpc v1.20.1 // indirect
 	mvdan.cc/interfacer v0.0.0-20180901003855-c20040233aed // indirect
 	mvdan.cc/lint v0.0.0-20170908181259-adc824a0674b // indirect
 )
