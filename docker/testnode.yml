@@ -73,7 +73,7 @@ services:
       nsb_net:
         ipv4_address: 192.167.233.5
 
-node4:
+  node4:
     container_name: node4
     image: "tendermint-nsb/node"
     ports:
@@ -81,7 +81,7 @@ node4:
     environment:
       - PORT=:27671
       - DB_DIR=./data4/
-      - TCP_AD=tcp://192.167.233.2:27667
+      - TCP_AD=tcp://192.167.233.6:27671
       - ID=4
       - LOG=${LOG:-tendermint.log}
     volumes:
@@ -100,7 +100,7 @@ node4:
       - PORT=:27672
       - DB_DIR=./data1/
       - ID=5
-      - TCP_AD=tcp://192.167.233.3:27672
+      - TCP_AD=tcp://192.167.233.7:27672
       - LOG=${LOG:-tendermint.log}
     volumes:
       - ./build:/tendermint:Z
@@ -116,7 +116,7 @@ node4:
       - DB_DIR=./data6/
       - PORT=:27673
       - ID=6
-      - TCP_AD=tcp://192.167.233.4:27673
+      - TCP_AD=tcp://192.167.233.8:27673
       - LOG=${LOG:-tendermint.log}
     ports:
       - "26669-26670:26656-26657"
@@ -134,7 +134,7 @@ node4:
       - PORT=:27674
       - DB_DIR=./data7/
       - ID=7
-      - TCP_AD=tcp://192.167.233.5:27670
+      - TCP_AD=tcp://192.167.233.9:27670
       - LOG=${LOG:-tendermint.log}
     ports:
       - "26671-26672:26656-26657"
