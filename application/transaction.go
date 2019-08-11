@@ -329,7 +329,12 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		// Tags:
 		Info: cb.Info,
 		Data: cb.Data,
-		Tags: Tags,
+		Events: []types.Event{
+			types.Event{
+				Type:       "sendTransaction",
+				Attributes: Tags,
+			},
+		},
 	}
 }
 
@@ -386,7 +391,12 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		// Tags:
 		Info: cb.Info,
 		Data: cb.Data,
-		Tags: Tags,
+		Events: []types.Event{
+			types.Event{
+				Type:       "createContract",
+				Attributes: Tags,
+			},
+		},
 	}
 }
 
@@ -432,15 +442,23 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 			}
 		}
 
-		if cb.Tags == nil {
-			cb.Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
-				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
-			}}
+		if cb.Events == nil {
+			cb.Events = []types.Event{
+				types.Event{
+					Type: "systemCall",
+					Attributes: []ten_cmn.KVPair{ten_cmn.KVPair{
+						Key:   []byte("TransactionHash"),
+						Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+					}},
+				},
+			}
 		} else {
-			cb.Tags = append(cb.Tags, ten_cmn.KVPair{
-				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+			cb.Events = append(cb.Events, types.Event{
+				Type: "systemCall",
+				Attributes: []ten_cmn.KVPair{ten_cmn.KVPair{
+					Key:   []byte("TransactionHash"),
+					Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+				}},
 			})
 		}
 
