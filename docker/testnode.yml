@@ -73,6 +73,78 @@ services:
       nsb_net:
         ipv4_address: 192.167.233.5
 
+node4:
+    container_name: node4
+    image: "tendermint-nsb/node"
+    ports:
+      - "26665-26666:26656-26657"
+    environment:
+      - PORT=:27671
+      - DB_DIR=./data4/
+      - TCP_AD=tcp://192.167.233.2:27667
+      - ID=4
+      - LOG=${LOG:-tendermint.log}
+    volumes:
+      - ./build:/tendermint:Z
+    command: node --proxy_app=tcp://192.167.233.6:27671
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.6
+
+  node5:
+    container_name: node5
+    image: "tendermint-nsb/node"
+    ports:
+      - "26667-26668:26656-26657"
+    environment:
+      - PORT=:27672
+      - DB_DIR=./data1/
+      - ID=5
+      - TCP_AD=tcp://192.167.233.3:27672
+      - LOG=${LOG:-tendermint.log}
+    volumes:
+      - ./build:/tendermint:Z
+    command: node --proxy_app=tcp://192.167.233.7:27672
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.7
+
+  node6:
+    container_name: node6
+    image: "tendermint-nsb/node"
+    environment:
+      - DB_DIR=./data6/
+      - PORT=:27673
+      - ID=6
+      - TCP_AD=tcp://192.167.233.4:27673
+      - LOG=${LOG:-tendermint.log}
+    ports:
+      - "26669-26670:26656-26657"
+    volumes:
+      - ./build:/tendermint:Z
+    command: node --proxy_app=tcp://192.167.233.8:27673
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.8
+
+  node7:
+    container_name: node7
+    image: "tendermint-nsb/node"
+    environment:
+      - PORT=:27674
+      - DB_DIR=./data7/
+      - ID=7
+      - TCP_AD=tcp://192.167.233.5:27670
+      - LOG=${LOG:-tendermint.log}
+    ports:
+      - "26671-26672:26656-26657"
+    volumes:
+      - ./build:/tendermint:Z
+    command: node --proxy_app=tcp://192.167.233.9:27674
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.9
+
 networks:
   nsb_net:
    external: true

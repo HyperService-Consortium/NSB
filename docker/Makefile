@@ -17,7 +17,7 @@ network:
 build:
 	if ! [ -f ${BUILD}/node0/config/genesis.json ]
 	then
-		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v 4 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
+		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v 8 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
 	fi
 	docker-compose -f ${CURPATH}/testnode.yml up
 
