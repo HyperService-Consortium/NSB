@@ -33,6 +33,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		return nil, err
 	}
 	stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
+	// stmp, err = merkmap.NewMerkMapFromDB(statedb, "00", "00")
 	if err != nil {
 		return nil, err
 	}
@@ -61,6 +62,10 @@ func (nsb *NSBApplication) Revert() error {
 	}
 	nsb.accMap = nsb.stateMap.ArrangeSlot([]byte("acc:"))
 	nsb.txMap = nsb.stateMap.ArrangeSlot([]byte("tx:"))
+	nsb.actionMap = nsb.stateMap.ArrangeSlot([]byte("act:"))
+	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vlm:"))
+	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vom:"))
+
 	return nil
 }
 
