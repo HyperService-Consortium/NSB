@@ -134,7 +134,7 @@ services:
       - PORT=:27674
       - DB_DIR=./data7/
       - ID=7
-      - TCP_AD=tcp://192.167.233.9:27670
+      - TCP_AD=tcp://192.167.233.9:27674
       - LOG=${LOG:-tendermint.log}
     ports:
       - "26671-26672:26656-26657"
