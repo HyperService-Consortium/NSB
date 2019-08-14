@@ -32,8 +32,8 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	if err != nil {
 		return nil, err
 	}
-	stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
-	// stmp, err = merkmap.NewMerkMapFromDB(statedb, "00", "00")
+	// stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
+	stmp, err = merkmap.NewMerkMapFromDB(statedb, "00", "00")
 	if err != nil {
 		return nil, err
 	}
