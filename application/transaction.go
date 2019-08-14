@@ -79,7 +79,7 @@ func (nsb *NSBApplication) parseContractInfo(
 	var contractInfo AccountInfo
 	if createFlag {
 		fmt.Println("creating", contractName)
-		txHeader.ContractAddress = []byte(account.NewAccount([]byte{}).PublicKey)
+		txHeader.ContractAddress = []byte(account.NewAccount(txHeader.Signature, txHeader.Nonce.Bytes(), nsb.state.StateRoot).PublicKey)
 
 		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 		contractInfo.Name = contractName
