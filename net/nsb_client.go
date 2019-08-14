@@ -1,8 +1,9 @@
 package nsbnet
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
+
 	abcinsb "github.com/HyperServiceOne/NSB/application"
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
@@ -19,11 +20,10 @@ const (
 )
 
 var (
-	nsb_port = flag.String("port", ":27667", "port")
+	nsb_port   = flag.String("port", ":27667", "port")
 	nsb_db_dir = flag.String("db", "./data/", "db")
-	nsb_tcp = flag.String("server", "tcp://0.0.0.0:27667", "server address")
+	nsb_tcp    = flag.String("server", "tcp://0.0.0.0:27667", "server address")
 )
-
 
 type NSB struct {
 	app    types.Application
@@ -81,7 +81,7 @@ func (nsb *NSB) Start() (err error) {
 		return
 	}
 
-	fmt.Printf("the application is listening %v\n", nsb_tcp)
+	fmt.Printf("the application is listening %v\n", *nsb_tcp)
 	return
 }
 
@@ -105,8 +105,6 @@ func (nsb *NSB) LoopUntilStop() {
 	select {}
 }
 
-
 func init() {
 	flag.Parse()
 }
-
