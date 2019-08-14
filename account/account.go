@@ -2,9 +2,10 @@ package account
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/HyperServiceOne/NSB/crypto"
 	eddsa "golang.org/x/crypto/ed25519"
-	"time"
 )
 
 var (
@@ -20,8 +21,8 @@ type Account struct {
 	// randSalt []byte
 }
 
-func NewAccount(seed []byte) *Account {
-	if len(seed) == 0 {
+func NewAccount(seeds ...[]byte) *Account {
+	if len(seeds) == 0 || len(seeds) == 1 && len(seeds[0]) == 0 {
 		var acc Account
 		var err error
 		acc.PublicKey, acc.PrivateKey, err = eddsa.GenerateKey(nil)
@@ -30,7 +31,13 @@ func NewAccount(seed []byte) *Account {
 		}
 		return &acc
 	}
-	pri := eddsa.NewKeyFromSeed(crypto.Sha256(seed_header, seed))
+
+	bufHash := crypto.Sha256Hash(seed_header)
+	for _, seed := range seeds {
+		bufHash.Write(seed)
+	}
+
+	pri := eddsa.NewKeyFromSeed(bufHash.Sum(nil))
 	return &Account{
 		PrivateKey: pri,
 		PublicKey:  pri.Public().(eddsa.PublicKey),
