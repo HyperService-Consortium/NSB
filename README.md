@@ -4,7 +4,7 @@ Tendermint implementation of the NetworkStatusBlockchain.
 
 #### Start Client: 
 
-Under /root/work/go/src/github.com/Myriad-Dreamin/NSB 
+Under /root/work/go/src/github.com/HyperserviceOne/NSB 
 
 ```
 go run nsb_cli.go
@@ -24,7 +24,7 @@ tendermint init --home ./nsb
 Under /root
 
 ```
-tendermint node --home ./nsb --proxy_app tcp://0.0.0.0:27667
+tendermint node --rpc.laddr tcp://0.0.0.0:26657 --home ./nsb --proxy_app tcp://0.0.0.0:27667
 ```
 
 # NSB-cli
