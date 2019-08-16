@@ -10,8 +10,8 @@ all:
 	cp ${CURPATH}/node/tendermint ${BUILD}	
 	docker build --tag ${NODENAME} node
 
-network:
-	docker network create --driver bridge --subnet 192.167.232.0/22  nsb_net
+# network:
+#	docker-compose -f network.yml up # docker network create --driver bridge --subnet 192.167.232.0/22  nsb_net
 
 .ONESHELL:
 build:
@@ -39,7 +39,7 @@ stop:
 
 .PHONY: all
 
-.PHONY: network
+#.PHONY: network
 
 .PHONY: build
 
