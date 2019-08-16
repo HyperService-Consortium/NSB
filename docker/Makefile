@@ -10,14 +10,14 @@ all:
 	cp ${CURPATH}/node/tendermint ${BUILD}	
 	docker build --tag ${NODENAME} node
 
-network:
-	docker network create --driver bridge --subnet 192.167.232.0/22  nsb_net
+# network:
+#	docker-compose -f network.yml up # docker network create --driver bridge --subnet 192.167.232.0/22  nsb_net
 
 .ONESHELL:
 build:
 	if ! [ -f ${BUILD}/node0/config/genesis.json ]
 	then
-		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v 4 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
+		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v 8 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
 	fi
 	docker-compose -f ${CURPATH}/testnode.yml up
 
@@ -39,7 +39,7 @@ stop:
 
 .PHONY: all
 
-.PHONY: network
+#.PHONY: network
 
 .PHONY: build
 

@@ -1,7 +1,7 @@
 package merkleproof
 
 import (
-	// dbm "github.com/tendermint/tendermint/libs/db"
+	// dbm "github.com/tendermint/tm-db"
 	"encoding/json"
 	"fmt"
 	"github.com/HyperServiceOne/NSB/contract/isc/merkleproof/MerkleProofType"

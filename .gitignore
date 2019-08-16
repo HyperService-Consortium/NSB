@@ -8,6 +8,7 @@ localstorage/testdb/LOCK
 localstorage/testdb/LOG
 localstorage/testdb/MANIFEST-000259
 
+data/
 contract/isc/testdb/
 
 docker/build/node*

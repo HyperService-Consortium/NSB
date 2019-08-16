@@ -6,13 +6,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+
 	"github.com/HyperServiceOne/NSB/application/response"
 	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
+	dbm "github.com/tendermint/tm-db"
 )
 
 func NewNSBApplication(dbDir string) (*NSBApplication, error) {
@@ -27,11 +28,12 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 
 	var stmp *merkmap.MerkMap
 	var statedb *leveldb.DB
-	statedb, err = leveldb.OpenFile(dbDir + "trienode.db", nil)
+	statedb, err = leveldb.OpenFile(dbDir+"trienode.db", nil)
 	if err != nil {
 		return nil, err
 	}
-	stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
+	// stmp, err = merkmap.NewMerkMapFromDB(statedb, state.StateRoot, "00")
+	stmp, err = merkmap.NewMerkMapFromDB(statedb, "00", "00")
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +62,10 @@ func (nsb *NSBApplication) Revert() error {
 	}
 	nsb.accMap = nsb.stateMap.ArrangeSlot([]byte("acc:"))
 	nsb.txMap = nsb.stateMap.ArrangeSlot([]byte("tx:"))
+	nsb.actionMap = nsb.stateMap.ArrangeSlot([]byte("act:"))
+	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vlm:"))
+	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vom:"))
+
 	return nil
 }
 
@@ -99,14 +105,14 @@ func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEnd
 	return types.ResponseEndBlock{ValidatorUpdates: nsb.ValUpdates}
 }
 
-func (nsb *NSBApplication) CheckTx(tx []byte) types.ResponseCheckTx {
+func (nsb *NSBApplication) CheckTx(types.RequestCheckTx) types.ResponseCheckTx {
 	fmt.Println("CheckTx")
 	return types.ResponseCheckTx{Code: 0}
 }
 
-func (nsb *NSBApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
+func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseDeliverTx {
 	fmt.Println("DeliverTx")
-	bytesTx := bytes.Split(tx, []byte("\x19"))
+	bytesTx := bytes.Split(req.Tx, []byte("\x19"))
 	var ret types.ResponseDeliverTx
 	if len(bytesTx) != 2 {
 		return *response.InvalidTxInputFormatWrongx19

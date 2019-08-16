@@ -1,18 +1,17 @@
 package nsb
 
 import (
-	"github.com/tendermint/tendermint/abci/types"
 	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/tendermint/tendermint/abci/types"
+
 	// "encoding/hex"
 	"encoding/json"
 )
 
-
 type ArgsGetStorageAt struct {
 	Address []byte `json:"1"`
-	Key []byte `json:"2"`
+	Key     []byte `json:"2"`
 }
-
 
 func (nsb *NSBApplication) QueryIndex(req *types.RequestQuery) string {
 	switch req.Path {
@@ -66,7 +65,7 @@ func (nsb *NSBApplication) QueryIndex(req *types.RequestQuery) string {
 		if args.Address == nil {
 			return nsb.accMap.MakeErrorProofFromString("nil account address")
 		}
-		
+
 		if len(args.Address) != 32 {
 			return nsb.accMap.MakeErrorProofFromString("err account address: the length is not 32")
 		}

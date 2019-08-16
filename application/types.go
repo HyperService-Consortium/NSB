@@ -7,7 +7,7 @@ import (
 	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tendermint/libs/db"
+	dbm "github.com/tendermint/tm-db"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
