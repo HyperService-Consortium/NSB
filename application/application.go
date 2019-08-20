@@ -2,7 +2,6 @@ package nsb
 
 import (
 	"bytes"
-	"encoding/binary"
 	"errors"
 	"fmt"
 
@@ -77,38 +76,53 @@ func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	}
 }
 
-// Save the validators in the merkle tree
+// InitChain Save the validators in the merkle tree
 func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseInitChain {
+	nsb.logger.Info("InitChain")
 	for _, v := range req.Validators {
 		r := nsb.updateValidator(v)
 		if r.IsErr() {
 			nsb.logger.Error("Error updating validators", "r", r)
 		}
 	}
-	return types.ResponseInitChain{}
+	return types.ResponseInitChain{
+		ConsensusParams: &types.ConsensusParams{
+			Block: &types.BlockParams{
+				MaxBytes: 66060288,
+				MaxGas:   1024,
+			},
+			Evidence: &types.EvidenceParams{
+				MaxAge: 100,
+			},
+			Validator: &types.ValidatorParams{
+				PubKeyTypes: []string{"ed25519"},
+			},
+		},
+		Validators: nsb.ValUpdates,
+	}
 }
 
 // Track the block hash and header information
 func (nsb *NSBApplication) BeginBlock(req types.RequestBeginBlock) types.ResponseBeginBlock {
 	// reset valset changes
-	fmt.Println("BeginBlock")
-	nsb.ValUpdates = make([]types.ValidatorUpdate, 0)
+	nsb.logger.Info("BeginBlock")
+	nsb.ValUpdates = nsb.ValUpdates[:0]
 	return types.ResponseBeginBlock{}
 }
 
 // Update the validator set
 func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEndBlock {
-	fmt.Println("EndBlock")
+	nsb.logger.Info("EndBlock")
 	return types.ResponseEndBlock{ValidatorUpdates: nsb.ValUpdates}
 }
 
 func (nsb *NSBApplication) CheckTx(types.RequestCheckTx) types.ResponseCheckTx {
-	fmt.Println("CheckTx")
+	nsb.logger.Info("CheckTx")
 	return types.ResponseCheckTx{Code: 0}
 }
 
 func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseDeliverTx {
-	fmt.Println("DeliverTx")
+	nsb.logger.Info("DeliverTx")
 	bytesTx := bytes.Split(req.Tx, []byte("\x19"))
 	var ret types.ResponseDeliverTx
 	if len(bytesTx) != 2 {
@@ -141,10 +155,7 @@ func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseD
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
-	fmt.Println("Commit")
-	// Using a memdb - just return the big endian size of the db
-	appHash := make([]byte, 32)
-	binary.PutVarint(appHash, nsb.state.Height)
+	nsb.logger.Info("Commit")
 	var err error
 
 	// accMap, txMap is the sub-Map of stateMap
