@@ -4,6 +4,8 @@ CURPATH=$(shell pwd)
 BUILD=${CURPATH}/build
 NODENAME=tendermint-nsb/node
 SILENT:= 
+COUNT=4
+FILE=testnode4.yml
 
 all:
 	mkdir ${BUILD}
@@ -17,25 +19,25 @@ all:
 build:
 	if ! [ -f ${BUILD}/node0/config/genesis.json ]
 	then
-		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v 8 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
+		docker run --rm -v ${BUILD}:/tendermint:Z ${NODENAME} testnet --v ${COUNT} --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
 	fi
-	docker-compose -f ${CURPATH}/testnode.yml up
+	docker-compose -f ${CURPATH}/${FILE} up
 
 down:
-	docker-compose -f ${CURPATH}/testnode.yml down
+	docker-compose -f ${CURPATH}/${FILE} down
 
 clean:
 	rm -rf -r ${BUILD}/node*
 	rm -rf -r ${BUILD}/data*
 
 start:
-	docker-compose -f ${CURPATH}/testnode.yml start ${SILENT}
+	docker-compose -f ${CURPATH}/${FILE} start ${SILENT}
 
 restart:
-	docker-compose -f ${CURPATH}/testnode.yml restart ${SILENT}
+	docker-compose -f ${CURPATH}/${FILE} restart ${SILENT}
 
 stop:
-	docker-compose -f ${CURPATH}/testnode.yml stop ${SILENT}
+	docker-compose -f ${CURPATH}/${FILE} stop ${SILENT}
 
 .PHONY: all
 
