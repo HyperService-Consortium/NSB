@@ -53,7 +53,7 @@ func NewNSB() (nsb NSB, err error) {
 	nsb.logger = logger
 
 	nsb.logger.Info("create app...")
-	nsb.app, err = abcinsb.NewNSBApplication(*nsb_db_dir)
+	nsb.app, err = abcinsb.NewNSBApplication(logger, *nsb_db_dir)
 	if err != nil {
 		return
 	}
