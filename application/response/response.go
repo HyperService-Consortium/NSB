@@ -1,14 +1,14 @@
 package response
 
-
 import (
 	"fmt"
+
 	"github.com/HyperServiceOne/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
-
 type ResponseCode uint32
+
 const ( // base
 	codeOK ResponseCode = 0 + iota
 	codeExecFail
@@ -23,6 +23,7 @@ const ( // base
 	codeUpdateAccTrieError
 	codeRequestStorageError
 	codeEncodeAccountInfoError
+	codeUnauthorizedError
 	codeTODO = 99
 )
 
@@ -49,125 +50,123 @@ const ( // Contract
 	codeBalanceOverflow
 )
 
-
 var (
 	ExecOK = &types.ResponseDeliverTx{
 		Code: uint32(codeOK),
 	}
 	DuplicateTxError = &types.ResponseDeliverTx{
 		Code: uint32(codeDuplicateTxError),
-		Log: "DuplicateTxError: this transaction is already on the Transaction Trie",
+		Log:  "DuplicateTxError: this transaction is already on the Transaction Trie",
 	}
 	InvalidTxInputFormatWrongx18 = &types.ResponseDeliverTx{
 		Code: uint32(codeInvalidTxInputFormat),
-		Log: "InvalidInputFormat: mismatch of format (TransactionHeader\\x18Transaction)",
+		Log:  "InvalidInputFormat: mismatch of format (TransactionHeader\\x18Transaction)",
 	}
 	InvalidTxInputFormatWrongx19 = &types.ResponseDeliverTx{
 		Code: uint32(codeInvalidTxInputFormat),
-		Log: "InvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
+		Log:  "InvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
 	}
 	MissingContract = &types.ResponseDeliverTx{
 		Code: uint32(codeMissingContract),
-		Log: "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
+		Log:  "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
 	}
 )
-
 
 func DecodeJsonError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeJsonError),
-		Log: fmt.Sprintf("DecodeJsonError: %v", err),
+		Log:  fmt.Sprintf("DecodeJsonError: %v", err),
 	}
 }
 
 func DecodeTxHeaderError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeTxHeaderError),
-		Log: fmt.Sprintf("DecodeTxHeaderError: %v", err),
+		Log:  fmt.Sprintf("DecodeTxHeaderError: %v", err),
 	}
 }
 
 func DecodeAccountInfoError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeAccountInfoError),
-		Log: fmt.Sprintf("DecodeAccountInfoError: %v", err),
+		Log:  fmt.Sprintf("DecodeAccountInfoError: %v", err),
 	}
 }
 
 func ReTrieveTxError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeReTrieveTxError),
-		Log: fmt.Sprintf("ReTrieveTxError: %v", err),
+		Log:  fmt.Sprintf("ReTrieveTxError: %v", err),
 	}
 }
 
 func RequestStorageError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeRequestStorageError),
-		Log: fmt.Sprintf("RequestStorageError: %v", err),
+		Log:  fmt.Sprintf("RequestStorageError: %v", err),
 	}
 }
 
 func UpdateTxTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeUpdateTxTrieError),
-		Log: fmt.Sprintf("UpdateTxTrieError: can't update Transaction Trie, %v", err),
+		Log:  fmt.Sprintf("UpdateTxTrieError: can't update Transaction Trie, %v", err),
 	}
 }
 
 func UpdateAccTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeUpdateAccTrieError),
-		Log: fmt.Sprintf("UpdateAccTrieError: can't update Account Trie, %v", err),
+		Log:  fmt.Sprintf("UpdateAccTrieError: can't update Account Trie, %v", err),
 	}
 }
 
 func CommitTxTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeCommitTxTrieError),
-		Log: fmt.Sprintf("CommitTxTrieError: can't Commit Transaction Trie, %v", err),
+		Log:  fmt.Sprintf("CommitTxTrieError: can't Commit Transaction Trie, %v", err),
 	}
 }
 
 func CommitAccTrieError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeCommitAccTrieError),
-		Log: fmt.Sprintf("CommitAccTrieError: can't Commit Account Trie, %v", err),
+		Log:  fmt.Sprintf("CommitAccTrieError: can't Commit Account Trie, %v", err),
 	}
 }
 
 func EncodeAccountInfoError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeEncodeAccountInfoError),
-		Log: fmt.Sprintf("EncodeAccountInfoError: %v", err),
+		Log:  fmt.Sprintf("EncodeAccountInfoError: %v", err),
 	}
 }
 
 func InvalidFuncTypeError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeInvalidFuncType),
-		Log: fmt.Sprintf("InvalidFunctionType: %v", err),
+		Log:  fmt.Sprintf("InvalidFunctionType: %v", err),
 	}
 }
 
 func ExecContractError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeExecContractError),
-		Log: fmt.Sprintf("ExecContractError: %v", err),
+		Log:  fmt.Sprintf("ExecContractError: %v", err),
 	}
 }
 
 func InsufficientBalanceToTransfer(userName string) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeInsufficientBalanceToTransfer),
-		Log: fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
+		Log:  fmt.Sprintf("BalanceError: the %v's balance is insufficient", userName),
 	}
 }
 
 func BalanceOverflow(userName string) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeBalanceOverflow),
-		Log: fmt.Sprintf("BalanceError: the %v's balance overflowed", userName),
+		Log:  fmt.Sprintf("BalanceError: the %v's balance overflowed", userName),
 	}
 }
 
@@ -188,15 +187,21 @@ func UpdateBalanceOut(value *math.Uint256) *types.ResponseDeliverTx {
 func DecodeBalanceError() *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeBalanceError),
-		Log: "BalanceError: cannot decode from bytes",
+		Log:  "BalanceError: cannot decode from bytes",
 	}
 }
 
+func UnauthorizedError(key []byte) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeUnauthorizedError),
+		Log:  fmt.Sprintf("Cannot remove non-existent validator %X", key),
+	}
+}
 
-func CodeOK() ResponseCode {return codeOK}
-func CodeContractPanic() ResponseCode {return codeContractPanic}
-func CodeUpdateBalanceIn() ResponseCode {return codeUpdateBalanceIn}
-func CodeUpdateBalanceOut() ResponseCode {return codeUpdateBalanceOut}
-func CodeTODO() ResponseCode {return codeTODO}
-func CodeInvalidTxType() ResponseCode {return codeInvalidTxType}
-func CodeDecodeBytesError() ResponseCode {return codeDecodeBytesError}
+func CodeOK() ResponseCode               { return codeOK }
+func CodeContractPanic() ResponseCode    { return codeContractPanic }
+func CodeUpdateBalanceIn() ResponseCode  { return codeUpdateBalanceIn }
+func CodeUpdateBalanceOut() ResponseCode { return codeUpdateBalanceOut }
+func CodeTODO() ResponseCode             { return codeTODO }
+func CodeInvalidTxType() ResponseCode    { return codeInvalidTxType }
+func CodeDecodeBytesError() ResponseCode { return codeDecodeBytesError }
