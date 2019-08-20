@@ -3,7 +3,6 @@ package nsb
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -42,11 +41,11 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 		state:                      state,
 		logger:                     log.NewNopLogger(),
 		stateMap:                   stmp,
-		accMap:                     stmp.ArrangeSlot([]byte("acc:")),
-		txMap:                      stmp.ArrangeSlot([]byte("tx:")),
-		actionMap:                  stmp.ArrangeSlot([]byte("act:")),
-		validMerkleProofMap:        stmp.ArrangeSlot([]byte("vlm:")),
-		validOnchainMerkleProofMap: stmp.ArrangeSlot([]byte("vom:")),
+		accMap:                     stmp.ArrangeSlot(accMapSlot),
+		txMap:                      stmp.ArrangeSlot(txMapSlot),
+		actionMap:                  stmp.ArrangeSlot(actionMapSlot),
+		validMerkleProofMap:        stmp.ArrangeSlot(validMerkleProofMapSlot),
+		validOnchainMerkleProofMap: stmp.ArrangeSlot(validOnchainMerkleProofMapSlot),
 		statedb:                    statedb,
 	}, nil
 }
@@ -60,23 +59,21 @@ func (nsb *NSBApplication) Revert() error {
 	if err != nil {
 		return err
 	}
-	nsb.accMap = nsb.stateMap.ArrangeSlot([]byte("acc:"))
-	nsb.txMap = nsb.stateMap.ArrangeSlot([]byte("tx:"))
-	nsb.actionMap = nsb.stateMap.ArrangeSlot([]byte("act:"))
-	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vlm:"))
-	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vom:"))
+	nsb.accMap = nsb.stateMap.ArrangeSlot(accMapSlot)
+	nsb.txMap = nsb.stateMap.ArrangeSlot(txMapSlot)
+	nsb.actionMap = nsb.stateMap.ArrangeSlot(actionMapSlot)
+	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot(validMerkleProofMapSlot)
+	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot(validOnchainMerkleProofMapSlot)
 
 	return nil
 }
 
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
-		Data: fmt.Sprintf(
-			"{\"state_root\": \"%v\", \"height\":%v }",
-			hex.EncodeToString(nsb.state.StateRoot),
-			nsb.state.Height),
-		Version:    version.ABCIVersion,
-		AppVersion: NSBVersion.Uint64(),
+		Version:          version.ABCIVersion,
+		LastBlockAppHash: nsb.state.StateRoot,
+		LastBlockHeight:  nsb.state.Height,
+		AppVersion:       NSBVersion.Uint64(),
 	}
 }
 
