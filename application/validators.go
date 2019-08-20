@@ -83,7 +83,7 @@ func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.Respon
 		nsb.state.db.Set(key, value.Bytes())
 	}
 
-	// // we only update the changes array if we successfully updated the tree
+	// // TODO: we only update the changes array if we successfully updated the tree
 	nsb.ValUpdates = append(nsb.ValUpdates, v)
 	return types.ResponseDeliverTx{Code: uint32(response.CodeOK())}
 }

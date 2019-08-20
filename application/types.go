@@ -3,12 +3,13 @@ package nsb
 import (
 	"encoding/hex"
 	"fmt"
+
+	log "github.com/HyperServiceOne/NSB/log"
 	"github.com/HyperServiceOne/NSB/math"
 	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
-	"github.com/tendermint/tendermint/libs/log"
 )
 
 type NSBApplication struct {
@@ -22,7 +23,7 @@ type NSBApplication struct {
 	validOnchainMerkleProofMap *merkmap.MerkMap
 	statedb                    *leveldb.DB
 	ValUpdates                 []types.ValidatorUpdate
-	logger                     log.Logger
+	logger                     log.TendermintLogger
 }
 
 type NSBState struct {
