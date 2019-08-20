@@ -9,20 +9,20 @@ import (
 	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
 	dbm "github.com/tendermint/tm-db"
+
+	log "github.com/HyperServiceOne/NSB/log"
 )
 
-func NewNSBApplication(dbDir string) (*NSBApplication, error) {
+func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplication, error) {
 	name := "nsbstate"
 	db, err := dbm.NewGoLevelDB(name, dbDir)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("loading state...")
 	state := loadState(db)
-	fmt.Println(state.String())
+	logger.Info("loading state...", "state_root", state.StateRoot, "height", state.Height)
 
 	var stmp *merkmap.MerkMap
 	var statedb *leveldb.DB
@@ -38,7 +38,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 
 	return &NSBApplication{
 		state:                      state,
-		logger:                     log.NewNopLogger(),
+		logger:                     logger,
 		stateMap:                   stmp,
 		accMap:                     stmp.ArrangeSlot(accMapSlot),
 		txMap:                      stmp.ArrangeSlot(txMapSlot),
@@ -49,7 +49,7 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 	}, nil
 }
 
-func (nsb *NSBApplication) SetLogger(l log.Logger) {
+func (nsb *NSBApplication) SetLogger(l log.TendermintLogger) {
 	nsb.logger = l
 }
 
