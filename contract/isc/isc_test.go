@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"testing"
 
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/contract/isc/ISCState"
-	"github.com/HyperServiceOne/NSB/contract/isc/TxState"
-	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
-	"github.com/HyperServiceOne/NSB/localstorage"
-	"github.com/HyperServiceOne/NSB/math"
-	"github.com/HyperServiceOne/NSB/util"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/contract/isc/ISCState"
+	"github.com/HyperService-Consortium/NSB/contract/isc/TxState"
+	"github.com/HyperService-Consortium/NSB/contract/isc/transaction"
+	"github.com/HyperService-Consortium/NSB/localstorage"
+	"github.com/HyperService-Consortium/NSB/math"
+	"github.com/HyperService-Consortium/NSB/util"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

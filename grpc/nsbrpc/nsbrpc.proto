@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package nsbrpc;
 
-option go_package = "github.com/HyperServiceOne/NSB/grpc/nsbrpc";
+option go_package = "github.com/HyperService-Consortium/NSB/grpc/nsbrpc";
 
 message TransactionHeader {
     bytes src = 1;

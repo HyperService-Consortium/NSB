@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
-	"github.com/HyperServiceOne/NSB/merkmap/MerkMapError"
+	"github.com/HyperService-Consortium/NSB/merkmap/MerkMapError"
 	"github.com/Myriad-Dreamin/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
 )

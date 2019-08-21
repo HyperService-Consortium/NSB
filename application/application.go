@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/HyperServiceOne/NSB/application/response"
-	transactiontype "github.com/HyperServiceOne/NSB/application/transaction-type"
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	transactiontype "github.com/HyperService-Consortium/NSB/application/transaction-type"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/version"
 	dbm "github.com/tendermint/tm-db"
 
-	log "github.com/HyperServiceOne/NSB/log"
+	log "github.com/HyperService-Consortium/NSB/log"
 )
 
 func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplication, error) {

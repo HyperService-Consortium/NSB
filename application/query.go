@@ -1,7 +1,7 @@
 package nsb
 
 import (
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/tendermint/tendermint/abci/types"
 
 	// "encoding/hex"

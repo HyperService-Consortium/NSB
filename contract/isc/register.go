@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 
-	cmn "github.com/HyperServiceOne/NSB/common"
-	. "github.com/HyperServiceOne/NSB/common/contract_response"
-	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
-	"github.com/HyperServiceOne/NSB/util"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/contract/isc/transaction"
+	"github.com/HyperService-Consortium/NSB/util"
 )
 
 func MustUnmarshal(data []byte, load interface{}) {
