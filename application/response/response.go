@@ -29,6 +29,7 @@ const ( // base
 
 const ( // Decode
 	codeDecodeJsonError ResponseCode = 100 + iota
+	codeDecodeFAPairError
 	codeDecodeBytesError
 	codeDecodeTxHeaderError
 	codeDecodeAccountInfoError
@@ -48,12 +49,10 @@ const ( // Contract
 	codeExecContractError
 	codeInsufficientBalanceToTransfer
 	codeBalanceOverflow
+	codeConflictAddress
 )
 
 var (
-	ExecOK = &types.ResponseDeliverTx{
-		Code: uint32(codeOK),
-	}
 	DuplicateTxError = &types.ResponseDeliverTx{
 		Code: uint32(codeDuplicateTxError),
 		Log:  "DuplicateTxError: this transaction is already on the Transaction Trie",
@@ -66,11 +65,30 @@ var (
 		Code: uint32(codeInvalidTxInputFormat),
 		Log:  "InvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
 	}
+	InvalidTxInputFormatWrongFunctionName = &types.ResponseDeliverTx{
+		Code: uint32(codeInvalidTxInputFormat),
+		Log:  "InvalidTxInputFormat: the system function name must be in format of ContractName@FunctionName",
+	}
+	InvalidTxInputFormatTooShort = &types.ResponseDeliverTx{
+		Code: uint32(codeInvalidTxInputFormat),
+		Log:  "InvalidTxInputFormat: there should be a byte that tells which type this transaction is",
+	}
+
 	MissingContract = &types.ResponseDeliverTx{
 		Code: uint32(codeMissingContract),
 		Log:  "MissingContract: can't find this contract on the Account Trie. Is it deployed correctly?",
 	}
+	ConflictAddress = &types.ResponseDeliverTx{
+		Code: uint32(codeConflictAddress),
+		Log:  "ConflictAddress: the generating address is already on the Account Trie. Bad nonce?",
+	}
 )
+
+func ExecOK() *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeOK),
+	}
+}
 
 func DecodeJsonError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
@@ -90,6 +108,13 @@ func DecodeAccountInfoError(err error) *types.ResponseDeliverTx {
 	return &types.ResponseDeliverTx{
 		Code: uint32(codeDecodeAccountInfoError),
 		Log:  fmt.Sprintf("DecodeAccountInfoError: %v", err),
+	}
+}
+
+func DecodeFAPairError(err error) *types.ResponseDeliverTx {
+	return &types.ResponseDeliverTx{
+		Code: uint32(codeDecodeFAPairError),
+		Log:  fmt.Sprintf("DecodeFAPairError: %v", err),
 	}
 }
 

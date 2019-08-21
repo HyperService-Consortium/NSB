@@ -32,12 +32,12 @@ func MakeValSetChangeTx(pubkey types.PubKey, power int64) []byte {
 	return []byte(fmt.Sprintf("val:%X/%d", pubkey.Data, power))
 }
 
-func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
+func (nsb *NSBApplication) execValidatorTx(tx []byte) *types.ResponseDeliverTx {
 
 	// get the pubkey and power
 	pubKeyAndPower := strings.Split(string(tx), "/")
 	if len(pubKeyAndPower) != 2 {
-		return types.ResponseDeliverTx{
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeDecodeBytesError()),
 			Log:  fmt.Sprintf("Expected 'pubkey/power'. Got %v", pubKeyAndPower)}
 	}
@@ -46,7 +46,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	// decode the pubkey
 	pubkey, err := hex.DecodeString(pubkeyS)
 	if err != nil {
-		return types.ResponseDeliverTx{
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeDecodeBytesError()),
 			Log:  fmt.Sprintf("Pubkey (%s) is invalid hex", pubkeyS)}
 	}
@@ -54,7 +54,7 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	// decode the power
 	power, err := strconv.ParseInt(powerS, 10, 64)
 	if err != nil {
-		return types.ResponseDeliverTx{
+		return &types.ResponseDeliverTx{
 			Code: uint32(response.CodeDecodeBytesError()),
 			Log:  fmt.Sprintf("Power (%s) is not an int", powerS)}
 	}
@@ -63,19 +63,19 @@ func (nsb *NSBApplication) execValidatorTx(tx []byte) types.ResponseDeliverTx {
 	return nsb.updateValidator(types.Ed25519ValidatorUpdate(pubkey, int64(power)))
 }
 
-func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.ResponseDeliverTx {
+func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) *types.ResponseDeliverTx {
 	key := []byte("val:" + string(v.PubKey.Data))
 	if v.Power == 0 {
 		// remove validator
 		if !nsb.state.db.Has(key) {
-			return *response.UnauthorizedError(key)
+			return response.UnauthorizedError(key)
 		}
 		nsb.state.db.Delete(key)
 	} else {
 		// add or update validator
 		value := bytes.NewBuffer(make([]byte, 0))
 		if err := types.WriteMessage(&v, value); err != nil {
-			return types.ResponseDeliverTx{
+			return &types.ResponseDeliverTx{
 				Code: code.CodeTypeEncodingError,
 				Log:  fmt.Sprintf("Error encoding validator: %v", err),
 			}
@@ -85,5 +85,5 @@ func (nsb *NSBApplication) updateValidator(v types.ValidatorUpdate) types.Respon
 
 	// // TODO: we only update the changes array if we successfully updated the tree
 	nsb.ValUpdates = append(nsb.ValUpdates, v)
-	return types.ResponseDeliverTx{Code: uint32(response.CodeOK())}
+	return &types.ResponseDeliverTx{Code: uint32(response.CodeOK())}
 }

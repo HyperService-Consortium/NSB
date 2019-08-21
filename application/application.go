@@ -1,11 +1,11 @@
 package nsb
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 
 	"github.com/HyperServiceOne/NSB/application/response"
+	transactiontype "github.com/HyperServiceOne/NSB/application/transaction-type"
 	"github.com/HyperServiceOne/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
@@ -23,6 +23,7 @@ func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplicati
 	}
 	state := loadState(db)
 	logger.Info("loading state...", "state_root", state.StateRoot, "height", state.Height)
+	state.Reset()
 
 	var stmp *merkmap.MerkMap
 	var statedb *leveldb.DB
@@ -123,24 +124,23 @@ func (nsb *NSBApplication) CheckTx(types.RequestCheckTx) types.ResponseCheckTx {
 
 func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseDeliverTx {
 	nsb.logger.Info("DeliverTx")
-	bytesTx := bytes.Split(req.Tx, []byte("\x19"))
-	var ret types.ResponseDeliverTx
-	if len(bytesTx) != 2 {
-		return *response.InvalidTxInputFormatWrongx19
+
+	if len(req.Tx) < 1 {
+		return *response.InvalidTxInputFormatTooShort
 	}
-	switch string(bytesTx[0]) {
+	var ret *types.ResponseDeliverTx
+	switch req.Tx[0] {
+	case transactiontype.Validators: // nsb validators
+		ret = nsb.execValidatorTx(req.Tx[1:])
 
-	case "validators": // nsb validators
-		ret = nsb.execValidatorTx(bytesTx[1])
+	case transactiontype.SendTransaction: // transact contract methods
+		ret = nsb.parseFuncTransaction(req.Tx[1:])
 
-	case "sendTransaction": // transact contract methods
-		ret = *nsb.parseFuncTransaction(bytesTx[1])
+	case transactiontype.SystemCall: // transact system contract methods
+		ret = nsb.parseSystemFuncTransaction(req.Tx[1:])
 
-	case "systemCall": // transact system contract methods
-		ret = *nsb.parseSystemFuncTransaction(bytesTx[1])
-
-	case "createContract": // create on-chain contracts
-		ret = *nsb.parseCreateTransaction(bytesTx[1])
+	case transactiontype.CreateContract: // create on-chain contracts
+		ret = nsb.parseCreateTransaction(req.Tx[1:])
 
 	default:
 		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType())}
@@ -148,10 +148,10 @@ func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseD
 	if ret.Code != uint32(response.CodeOK()) {
 		err := nsb.Revert()
 		if err != nil {
-			fmt.Println(err)
+			nsb.logger.Error("Revert Error", "error", err)
 		}
 	}
-	return ret
+	return *ret
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
