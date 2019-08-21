@@ -2,12 +2,13 @@ package action
 
 import (
 	"errors"
-	"github.com/HyperServiceOne/NSB/action/ActionType"
+
 	"github.com/HyperServiceOne/NSB/util"
+	signaturetype "github.com/Myriad-Dreamin/go-uip/const/signature_type"
 )
 
 type Action struct {
-	Type      uint8  `json:"type"`
+	Type      uint32 `json:"type"`
 	Signature []byte `json:"signature"`
 	Content   []byte `json:"content"`
 }
@@ -16,7 +17,7 @@ var (
 	errShortLen   = errors.New("the length of bytes is too short")
 	errMissType   = errors.New("unknown type of action signature")
 	unknownAction = &Action{
-		Type:      ActionType.Unknown,
+		Type:      signaturetype.Unknown,
 		Signature: nil,
 		Content:   nil,
 	}
@@ -27,31 +28,31 @@ func Concat(aType uint8, signature, content []byte) []byte {
 }
 
 func (action *Action) Concat() []byte {
-	return util.ConcatBytes([]byte{action.Type}, action.Signature, action.Content)
+	return util.ConcatBytes(util.Uint32ToBytes(action.Type), action.Signature, action.Content)
 }
 
 func (action *Action) TryRecoverFromConcation(concatBytes []byte) (err error) {
-	if len(concatBytes) == 0 {
+	if len(concatBytes) < 4 {
 		action = unknownAction
 		return errShortLen
 	}
-	switch concatBytes[0] {
-	case ActionType.Secp256k1:
-		if len(concatBytes) < 66 {
+	switch util.BytesToUint32(concatBytes[0:4]) {
+	case signaturetype.Secp256k1:
+		if len(concatBytes) < 69 {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = ActionType.Secp256k1
-		action.Signature = concatBytes[1:66]
-		action.Content = concatBytes[66:]
-	case ActionType.Ed25519:
-		if len(concatBytes) < 65 {
+		action.Type = signaturetype.Secp256k1
+		action.Signature = concatBytes[4:69]
+		action.Content = concatBytes[69:]
+	case signaturetype.Ed25519:
+		if len(concatBytes) < 68 {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = ActionType.Ed25519
-		action.Signature = concatBytes[1:65]
-		action.Content = concatBytes[65:]
+		action.Type = signaturetype.Ed25519
+		action.Signature = concatBytes[4:68]
+		action.Content = concatBytes[68:]
 	default:
 		action = unknownAction
 		return errMissType
@@ -66,15 +67,15 @@ func TryRecoverFromConcation(concatBytes []byte) (action *Action, err error) {
 }
 
 func (action *Action) RecoverFromConcation(concatBytes []byte) {
-	switch concatBytes[0] {
-	case ActionType.Secp256k1:
-		action.Type = ActionType.Secp256k1
-		action.Signature = concatBytes[1:66]
-		action.Content = concatBytes[66:]
-	case ActionType.Ed25519:
-		action.Type = ActionType.Ed25519
-		action.Signature = concatBytes[1:65]
-		action.Content = concatBytes[65:]
+	switch util.BytesToUint32(concatBytes[0:4]) {
+	case signaturetype.Secp256k1:
+		action.Type = signaturetype.Secp256k1
+		action.Signature = concatBytes[4:69]
+		action.Content = concatBytes[69:]
+	case signaturetype.Ed25519:
+		action.Type = signaturetype.Ed25519
+		action.Signature = concatBytes[4:68]
+		action.Content = concatBytes[68:]
 	default:
 		action = unknownAction
 		return
@@ -88,22 +89,22 @@ func RecoverFromConcation(concatBytes []byte) (action *Action) {
 	return
 }
 
-func NewAction(aType uint8, signature, content []byte) (action *Action, err error) {
+func NewAction(aType uint32, signature, content []byte) (action *Action, err error) {
 	action = &Action{}
 	switch aType {
-	case ActionType.Secp256k1:
+	case signaturetype.Secp256k1:
 		if len(signature) != 65 {
 			return unknownAction, errShortLen
 		}
-		action.Type = ActionType.Secp256k1
+		action.Type = signaturetype.Secp256k1
 		action.Signature = signature
 		action.Content = content
 		return
-	case ActionType.Ed25519:
+	case signaturetype.Ed25519:
 		if len(signature) != 64 {
 			return unknownAction, errShortLen
 		}
-		action.Type = ActionType.Ed25519
+		action.Type = signaturetype.Ed25519
 		action.Signature = signature
 		action.Content = content
 		return
