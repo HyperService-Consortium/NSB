@@ -5,11 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	dbm "github.com/tendermint/tm-db"
 )
 
 func (st *NSBState) String() string {
 	return fmt.Sprintf("StateRoot: %v\nHeight: %d\n", hex.EncodeToString(st.StateRoot), st.Height)
+}
+
+func (st *NSBState) Reset() {
+	*st = NSBState{db: st.db}
 }
 
 func loadState(db dbm.DB) *NSBState {

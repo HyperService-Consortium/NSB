@@ -58,10 +58,9 @@ func (nsb *NSBApplication) execContractFuncs(
 	}
 }
 
-func (nsb *NSBApplication) createContracts(
-	contractName string,
-	contractEnv *cmn.ContractEnvironment,
-) (cb *cmn.ContractCallBackInfo) {
+func (nsb *NSBApplication) createContracts(contractEnv *cmn.ContractEnvironment) (
+	cb *cmn.ContractCallBackInfo,
+) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch r := r.(type) {
@@ -85,7 +84,7 @@ func (nsb *NSBApplication) createContracts(
 			}
 		}
 	}()
-	switch contractName {
+	switch contractEnv.FuncName {
 	case "isc":
 		return isc.CreateNewContract(contractEnv)
 	case "sdeam":

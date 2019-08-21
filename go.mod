@@ -23,11 +23,13 @@ replace (
 require (
 	4d63.com/gochecknoinits v0.0.0-20180528051558-14d5915061e5 // indirect
 	github.com/Myriad-Dreamin/go-mpt v1.1.0
-	github.com/Myriad-Dreamin/go-uip v0.0.0-20190808122118-7db5e79304ad
+	github.com/Myriad-Dreamin/go-uip v0.0.0-20190816135201-7a62525fcf76
 	github.com/alecthomas/gocyclo v0.0.0-20150208221726-aa8f8b160214 // indirect
 	github.com/alexflint/go-arg v1.0.0 // indirect
 	github.com/go-kit/kit v0.9.0
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
+	github.com/gogo/protobuf v1.2.1
+	github.com/golang/protobuf v1.3.2
 	github.com/gookit/color v1.1.10
 	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8 // indirect
 	github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb // indirect

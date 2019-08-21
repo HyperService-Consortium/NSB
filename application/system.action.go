@@ -26,9 +26,13 @@ type ArgsAddAction struct {
 	ISCAddress []byte `json:"1"`
 	Tid        uint64 `json:"2"`
 	Aid        uint64 `json:"3"`
-	Type       uint8  `json:"4"`
-	Content    []byte `json:"5"`
-	Signature  []byte `json:"6"`
+
+	// uip.Signature
+	Type      uint32 `json:"4"`
+	Signature []byte `json:"6"`
+
+	// the content to be signed
+	Content []byte `json:"5"`
 }
 
 type ArgsAddActions struct {

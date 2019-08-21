@@ -13,6 +13,8 @@ github.com/Myriad-Dreamin/go-rlp v1.0.1 h1:6ygY9VhxCNjD34q0nOmyqEATkHHh3vfr5yC+m
 github.com/Myriad-Dreamin/go-rlp v1.0.1/go.mod h1:zB5TOEH12Hi6px2FiJF9V8h3NWrSczcHt0tkz91DGIs=
 github.com/Myriad-Dreamin/go-uip v0.0.0-20190808122118-7db5e79304ad h1:0ydecakICkAf50L2IU7bFrl609XNJ6xGdy80hZwzC4k=
 github.com/Myriad-Dreamin/go-uip v0.0.0-20190808122118-7db5e79304ad/go.mod h1:5E/42Qaw+F8xhFUeXMTUQFOKUIEsyac0EkfcvrbOT4M=
+github.com/Myriad-Dreamin/go-uip v0.0.0-20190816135201-7a62525fcf76 h1:nqXgFa1lPB5QSWiMm+c1W5xLA7KnMOknvYAVQIh75gw=
+github.com/Myriad-Dreamin/go-uip v0.0.0-20190816135201-7a62525fcf76/go.mod h1:5E/42Qaw+F8xhFUeXMTUQFOKUIEsyac0EkfcvrbOT4M=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/alecthomas/gocyclo v0.0.0-20150208221726-aa8f8b160214 h1:YI/8G3uLbYyowJeOPVL6BMKe2wbL54h0FdEKmncU6lU=
@@ -93,6 +95,7 @@ github.com/google/gofuzz v1.0.0 h1:A8PeW59pxE9IoFRqBp37U+mSNaQoZ46F1f0f863XSXw=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/martian v2.1.0+incompatible/go.mod h1:9I4somxYTbIHy5NJKHRl3wXiIaQGbYVAs8BPL6v8lEs=
 github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
+github.com/google/protobuf v3.9.1+incompatible h1:8oCWqzcHmpI7oK4A2LT3qpYu6SEFRFDECpCtpCWumDU=
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/google-api-go-client v0.5.0/go.mod h1:8k5glujaEP+g9n7WNsDg8QP6cUVNI86fCNMcbazEtwE=
 github.com/gookit/color v1.1.10 h1:VdHboj7tNReSSIMdFTrLanp7NMYi7apKKn8OZmzNJGs=

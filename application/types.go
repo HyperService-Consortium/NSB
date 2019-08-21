@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	nsbrpc "github.com/HyperServiceOne/NSB/grpc/nsbrpc"
 	log "github.com/HyperServiceOne/NSB/log"
 	"github.com/HyperServiceOne/NSB/math"
 	"github.com/HyperServiceOne/NSB/merkmap"
@@ -39,10 +40,7 @@ type AccountInfo struct {
 	Name        []byte        `json:"name"`
 }
 
-type FAPair struct {
-	FuncName string `json:"function_name"`
-	Args     []byte `json:"args"`
-}
+type FAPair = nsbrpc.FAPair
 
 func (accInfo *AccountInfo) String() string {
 	return fmt.Sprintf(
