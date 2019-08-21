@@ -7,6 +7,7 @@ import (
 	"github.com/HyperServiceOne/NSB/application/response"
 	cmn "github.com/HyperServiceOne/NSB/common"
 	"github.com/HyperServiceOne/NSB/crypto"
+	"github.com/HyperServiceOne/NSB/localstorage"
 	"github.com/HyperServiceOne/NSB/util"
 	"github.com/tendermint/tendermint/abci/types"
 )
@@ -66,18 +67,31 @@ func actionKey(addr []byte, tid uint64, aid uint64) []byte {
 	return crypto.Sha512(addr, util.Uint64ToBytes(tid), util.Uint64ToBytes(aid))
 }
 
-func (nsb *NSBApplication) _addAction(args *ArgsAddAction) error {
+func (nsb *NSBApplication) _addAction(args *ArgsAddAction) *types.ResponseDeliverTx {
 	// TODO: check valid isc/tid/aid
+
+	conInfo, errInfo := nsb.extractAddress(args.ISCAddress)
+	if errInfo != nil {
+		return errInfo
+	}
+	storage, err := localstorage.NewLocalStorage(
+		args.ISCAddress,
+		conInfo.StorageRoot,
+		nsb.statedb,
+	)
+	//todo: storage
+	_ = storage
+
 	action, err := autil.NewAction(args.Type, args.Signature, args.Content)
 	if err != nil {
-		return err
+		return response.ExecContractError(err)
 	}
 	err = nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
 		action.Concat(),
 	)
 	if err != nil {
-		return err
+		return response.ExecContractError(err)
 	}
 	return nil
 }
@@ -85,7 +99,7 @@ func (nsb *NSBApplication) _addAction(args *ArgsAddAction) error {
 func (nsb *NSBApplication) addAction(args *ArgsAddAction) *types.ResponseDeliverTx {
 
 	if err := nsb._addAction(args); err != nil {
-		return response.ExecContractError(err)
+		return err
 	}
 
 	return &types.ResponseDeliverTx{
@@ -97,7 +111,7 @@ func (nsb *NSBApplication) addAction(args *ArgsAddAction) *types.ResponseDeliver
 func (nsb *NSBApplication) addActions(args *ArgsAddActions) *types.ResponseDeliverTx {
 	for _, batchArgs := range args.Args {
 		if err := nsb._addAction(&batchArgs); err != nil {
-			return response.ExecContractError(err)
+			return err
 		}
 	}
 	return &types.ResponseDeliverTx{
