@@ -1,8 +1,8 @@
 package transaction
 
-import . "github.com/HyperServiceOne/NSB/common/contract_response"
+import . "github.com/HyperService-Consortium/NSB/common/contract_response"
 import "encoding/json"
-import "github.com/HyperServiceOne/NSB/math"
+import "github.com/HyperService-Consortium/NSB/math"
 
 type TransactionIntent struct {
 	Fr          []byte              `json:"from"`

@@ -1,8 +1,8 @@
 package localstorage
 
 import (
-	"github.com/HyperServiceOne/NSB/crypto"
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

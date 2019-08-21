@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/HyperServiceOne/NSB/application/response"
+	"github.com/HyperService-Consortium/NSB/application/response"
 	"github.com/tendermint/tendermint/abci/example/code"
 	"github.com/tendermint/tendermint/abci/types"
 )

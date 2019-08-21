@@ -3,12 +3,12 @@ package nsb
 import (
 	"encoding/json"
 
-	autil "github.com/HyperServiceOne/NSB/action"
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/crypto"
-	"github.com/HyperServiceOne/NSB/localstorage"
-	"github.com/HyperServiceOne/NSB/util"
+	autil "github.com/HyperService-Consortium/NSB/action"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/localstorage"
+	"github.com/HyperService-Consortium/NSB/util"
 	"github.com/tendermint/tendermint/abci/types"
 )
 

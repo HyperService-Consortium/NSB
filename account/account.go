@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/HyperServiceOne/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/crypto"
 	eddsa "golang.org/x/crypto/ed25519"
 )
 

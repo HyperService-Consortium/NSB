@@ -1,4 +1,4 @@
-module github.com/HyperServiceOne/NSB
+module github.com/HyperService-Consortium/NSB
 
 replace (
 	cloud.google.com/go => github.com/GoogleCloudPlatform/google-cloud-go v0.39.0

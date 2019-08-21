@@ -3,8 +3,8 @@ package nsbnet
 import (
 	"flag"
 
-	abcinsb "github.com/HyperServiceOne/NSB/application"
-	log "github.com/HyperServiceOne/NSB/log"
+	abcinsb "github.com/HyperService-Consortium/NSB/application"
+	log "github.com/HyperService-Consortium/NSB/log"
 	abcicli "github.com/tendermint/tendermint/abci/client"
 	abcisrv "github.com/tendermint/tendermint/abci/server"
 	"github.com/tendermint/tendermint/abci/types"

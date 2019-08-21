@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	cmn "github.com/HyperServiceOne/NSB/common"
-	. "github.com/HyperServiceOne/NSB/common/contract_response"
-	"github.com/HyperServiceOne/NSB/contract/isc/ISCState"
-	TxState "github.com/HyperServiceOne/NSB/contract/isc/TxState"
-	"github.com/HyperServiceOne/NSB/contract/isc/transaction"
-	"github.com/HyperServiceOne/NSB/math"
-	"github.com/HyperServiceOne/NSB/util"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/contract/isc/ISCState"
+	TxState "github.com/HyperService-Consortium/NSB/contract/isc/TxState"
+	"github.com/HyperService-Consortium/NSB/contract/isc/transaction"
+	"github.com/HyperService-Consortium/NSB/math"
+	"github.com/HyperService-Consortium/NSB/util"
 )
 
 // func (nsb *NSBApplication) activeISC(byteJson []byte) (types.ResponseDeliverTx) {

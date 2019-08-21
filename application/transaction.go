@@ -6,16 +6,16 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/HyperServiceOne/NSB/account"
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/crypto"
-	"github.com/HyperServiceOne/NSB/localstorage"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/account"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/localstorage"
+	"github.com/HyperService-Consortium/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 	ten_cmn "github.com/tendermint/tendermint/libs/common"
 
-	nsbrpc "github.com/HyperServiceOne/NSB/grpc/nsbrpc"
+	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
 	"github.com/gogo/protobuf/proto"
 )
 

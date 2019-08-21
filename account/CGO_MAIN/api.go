@@ -2,7 +2,7 @@ package main
 
 import "C"
 import "unsafe"
-import wallet "github.com/HyperServiceOne/NSB/account"
+import wallet "github.com/HyperService-Consortium/NSB/account"
 
 //export CDLL_NewLevelDBHandler
 func CDLL_NewLevelDBHandler(dbpath *C.char) C.int {

@@ -3,9 +3,9 @@ package nsb
 import (
 	"fmt"
 
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 

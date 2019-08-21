@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/HyperServiceOne/NSB/account"
+	"github.com/HyperService-Consortium/NSB/account"
 	"github.com/syndtr/goleveldb/leveldb"
 	urcli "github.com/urfave/cli"
 	"os"

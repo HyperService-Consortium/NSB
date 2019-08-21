@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/HyperServiceOne/NSB/localstorage"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/localstorage"
+	"github.com/HyperService-Consortium/NSB/math"
 )
 
 type ContractEnvironment struct {

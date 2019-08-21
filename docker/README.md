@@ -14,10 +14,10 @@ rebuilding the image.
 
 ```
 root@kamiyoru:~/NSB/docker# make
-mkdir /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build
-cp /root/work/go/src/github.com/HyperServiceOne/NSB/docker/node/tendermint /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build
+mkdir /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build
+cp /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/node/tendermint /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build
 docker build --tag tendermint-nsb/node node
-mkdir: cannot create directory ‘/root/work/go/src/github.com/HyperServiceOne/NSB/docker/build’: File exists
+mkdir: cannot create directory ‘/root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build’: File exists
 Sending build context to Docker daemon  46.04MB
 Step 1/11 : FROM alpine:3.7
  ---> 6d1ef012b567
@@ -67,11 +67,11 @@ build and run a 4-node cluster with exposed port ip:26657
 
 ```bash
 root@kamiyoru:~/NSB/docker# make build
-if ! [ -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build/node0/config/genesis.json ]
+if ! [ -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build/node0/config/genesis.json ]
 then
-docker run --rm -v /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build:/tendermint:Z tendermint-nsb/node testnet --v 4 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
+docker run --rm -v /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build:/tendermint:Z tendermint-nsb/node testnet --v 4 --o . --populate-persistent-peers --starting-ip-address 192.167.233.2
 fi
-docker-compose -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/testnode.yml up
+docker-compose -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/testnode.yml up
 create app...
 loading state...
 StateRoot:
@@ -113,7 +113,7 @@ Start built cluster.
 
 ```bash
 root@kamiyoru:~/NSB/docker# make start
-docker-compose -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/testnode.yml start
+docker-compose -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/testnode.yml start
 Starting node1 ... done
 Starting node0 ... done
 Starting node3 ... done
@@ -124,7 +124,7 @@ Restart built cluster.
 
 ```bash
 root@kamiyoru:~/NSB/docker# make restart
-docker-compose -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/testnode.yml restart
+docker-compose -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/testnode.yml restart
 Restarting node2 ... done
 Restarting node0 ... done
 Restarting node1 ... done
@@ -135,7 +135,7 @@ Stop built cluster.
 
 ```bash
 root@kamiyoru:~/NSB/docker# make stop
-docker-compose -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/testnode.yml stop
+docker-compose -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/testnode.yml stop
 Stopping node0 ... done
 Stopping node2 ... done
 Stopping node1 ... done
@@ -146,7 +146,7 @@ Stopping node3 ... done
 
 ```bash
 root@kamiyoru:~/NSB/docker# make down
-docker-compose -f /root/work/go/src/github.com/HyperServiceOne/NSB/docker/testnode.yml down
+docker-compose -f /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/testnode.yml down
 Stopping node2 ... done
 Stopping node0 ... done
 Stopping node1 ... done
@@ -158,8 +158,8 @@ Removing node3 ... done
 Network nsb_net is external, skipping
 
 root@kamiyoru:~/NSB/docker# make clean
-rm -rf -r /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build/node*
-rm -rf -r /root/work/go/src/github.com/HyperServiceOne/NSB/docker/build/data*
+rm -rf -r /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build/node*
+rm -rf -r /root/work/go/src/github.com/HyperService-Consortium/NSB/docker/build/data*
 ```
 
 

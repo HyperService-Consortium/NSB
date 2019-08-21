@@ -3,7 +3,7 @@ package action
 import (
 	"errors"
 
-	"github.com/HyperServiceOne/NSB/util"
+	"github.com/HyperService-Consortium/NSB/util"
 	signaturetype "github.com/Myriad-Dreamin/go-uip/const/signature_type"
 )
 
