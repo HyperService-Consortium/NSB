@@ -2,6 +2,7 @@ package nsb
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -13,21 +14,27 @@ import (
 	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
 	log "github.com/HyperService-Consortium/NSB/log"
 	"github.com/HyperService-Consortium/NSB/math"
-	signaturer "github.com/Myriad-Dreamin/go-uip/signaturer"
+	signaturetype "github.com/HyperService-Consortium/go-uip/const/signature_type"
+	signaturer "github.com/HyperService-Consortium/go-uip/signaturer"
 	"github.com/gogo/protobuf/proto"
 	"github.com/tendermint/tendermint/abci/types"
+
+	ed25519 "golang.org/x/crypto/ed25519"
 )
 
 func TestCreateContract(t *testing.T) {
 
-	var pri, nonce, bytesBuf = make([]byte, 64), make([]byte, 32), make([]byte, 65536)
-	for idx := 0; idx < 64; idx++ {
+	var pri, nonce, bytesBuf = make([]byte, 32), make([]byte, 32), make([]byte, 65536)
+	for idx := 0; idx < 32; idx++ {
 		pri[idx] = uint8(idx)
 	}
-	var signer = signaturer.NewTendermintNSBSigner(pri)
+	var signer = signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(pri)))
 
 	var err error
-	var u, v = []byte{0, 0, 1}, []byte{0, 0, 2}
+	var uu, vv = signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(append(make([]byte, 31), 1)))), signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(append(make([]byte, 31), 2))))
+	var u, v = uu.GetPublicKey(), vv.GetPublicKey()
+	fmt.Println("main src...", hex.EncodeToString(u))
+
 	var iscOnwers = [][]byte{signer.GetPublicKey(), u, v}
 	var funds = []uint32{0, 0, 0}
 	var vesSig = []byte{0}
@@ -106,9 +113,69 @@ func TestCreateContract(t *testing.T) {
 		return
 	}
 
+	ret := nsb.DeliverTx(types.RequestDeliverTx{
+		Tx: bytesBuf[:1+len(b)],
+	})
+
+	fmt.Println(ret)
+
+	var argss = &ArgsAddAction{
+		ISCAddress: ret.Data,
+		Tid:        0,
+		Aid:        3,
+		Type:       signaturetype.Ed25519,
+		Signature:  uu.Sign([]byte("123")).Bytes(),
+		Content:    []byte("123"),
+	}
+	fap.FuncName = "system.action@addAction"
+	fap.Args, err = json.Marshal(argss)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	txHeader.Data, err = proto.Marshal(&fap)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	txHeader.Src = signer.GetPublicKey()
+
+	_, err = rand.Read(nonce)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// bytesBuf[0] = transactiontype.CreateContract
+	buf = bytes.NewBuffer(bytesBuf)
+	buf.Reset()
+
+	txHeader.Nonce = math.NewUint256FromBytes(nonce).Bytes()
+	txHeader.Value = math.NewUint256FromBytes([]byte{0}).Bytes()
+	buf.Reset()
+
+	buf.Write(txHeader.Src)
+	buf.Write(txHeader.Dst)
+	buf.Write(txHeader.Data)
+	buf.Write(txHeader.Value)
+	buf.Write(txHeader.Nonce)
+	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	b, err = proto.Marshal(&txHeader)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	bytesBuf[0] = transactiontype.SystemCall
+
+	copy(bytesBuf[1:], b)
+
 	fmt.Println(nsb.DeliverTx(types.RequestDeliverTx{
 		Tx: bytesBuf[:1+len(b)],
 	}))
+
 	var err2 error
 	err, err2 = nsb.Stop()
 	if err != nil {
