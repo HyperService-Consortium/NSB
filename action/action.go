@@ -4,7 +4,8 @@ import (
 	"errors"
 
 	"github.com/HyperService-Consortium/NSB/util"
-	signaturetype "github.com/Myriad-Dreamin/go-uip/const/signature_type"
+	signaturetype "github.com/HyperService-Consortium/go-uip/const/signature_type"
+	signaturer "github.com/HyperService-Consortium/go-uip/signaturer"
 )
 
 type Action struct {
@@ -113,7 +114,15 @@ func NewAction(aType uint32, signature, content []byte) (action *Action, err err
 	}
 }
 
-func (action *Action) Verify() bool {
-	// TODO: Verify
-	return true
+func (action *Action) Verify(address []byte) bool {
+	switch action.Type {
+	case signaturetype.Secp256k1:
+		// todo
+		return true
+	case signaturetype.Ed25519:
+
+		return new(signaturer.Ed25519Signaturer).Verify(address, action.Content, action.Signature)
+	default:
+		return false
+	}
 }

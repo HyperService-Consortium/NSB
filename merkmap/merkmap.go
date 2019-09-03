@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/HyperService-Consortium/NSB/merkmap/MerkMapError"
-	"github.com/Myriad-Dreamin/go-mpt"
+	"github.com/HyperService-Consortium/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

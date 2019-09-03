@@ -2,6 +2,7 @@ package nsb
 
 import (
 	"encoding/json"
+	"errors"
 
 	autil "github.com/HyperService-Consortium/NSB/action"
 	"github.com/HyperService-Consortium/NSB/application/response"
@@ -10,6 +11,9 @@ import (
 	"github.com/HyperService-Consortium/NSB/localstorage"
 	"github.com/HyperService-Consortium/NSB/util"
 	"github.com/tendermint/tendermint/abci/types"
+
+	txstate "github.com/HyperService-Consortium/NSB/contract/isc/TxState"
+	transaction "github.com/HyperService-Consortium/NSB/contract/isc/transaction"
 )
 
 /*
@@ -69,6 +73,15 @@ func actionKey(addr []byte, tid uint64, aid uint64) []byte {
 
 func (nsb *NSBApplication) _addAction(args *ArgsAddAction) *types.ResponseDeliverTx {
 	// TODO: check valid isc/tid/aid
+	if args.Aid >= txstate.Undefined {
+		return response.ExecContractError(errors.New("action index overflow"))
+	}
+
+	action, err := autil.NewAction(args.Type, args.Signature, args.Content)
+	if err != nil {
+		response.ExecContractError(err)
+		return response.ExecContractError(err)
+	}
 
 	conInfo, errInfo := nsb.extractAddress(args.ISCAddress)
 	if errInfo != nil {
@@ -79,13 +92,31 @@ func (nsb *NSBApplication) _addAction(args *ArgsAddAction) *types.ResponseDelive
 		conInfo.StorageRoot,
 		nsb.statedb,
 	)
-	//todo: storage
-	_ = storage
+	//todo: encapsulate storage operation
 
-	action, err := autil.NewAction(args.Type, args.Signature, args.Content)
+	txArr := storage.NewBytesArray("transactions")
+	if txArr.Length() <= args.Tid {
+		return response.ExecContractError(errors.New("transaction index overflow"))
+	}
+
+	txb := txArr.Get(args.Tid)
+	var tx transaction.TransactionIntent
+	err = json.Unmarshal(txb, &tx)
 	if err != nil {
 		return response.ExecContractError(err)
 	}
+
+	// if is src
+	if ((txstate.Instantiating ^ args.Aid) & 1) == 0 {
+		if action.Verify(tx.Fr) == false {
+			return response.ExecContractError(errors.New("validate failed"))
+		}
+	} else {
+		if action.Verify(tx.To) == false {
+			return response.ExecContractError(errors.New("validate failed"))
+		}
+	}
+
 	err = nsb.actionMap.TryUpdate(
 		actionKey(args.ISCAddress, args.Tid, args.Aid),
 		action.Concat(),

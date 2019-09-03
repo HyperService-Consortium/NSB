@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	signaturetype "github.com/Myriad-Dreamin/go-uip/const/signature_type"
+	signaturetype "github.com/HyperService-Consortium/go-uip/const/signature_type"
 )
 
 func TestSecp256k1(t *testing.T) {

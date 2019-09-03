@@ -11,4 +11,5 @@ const (
 	Open
 	Opened
 	Closed
+	Undefined
 )
