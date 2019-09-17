@@ -1,9 +1,8 @@
 package math
 
 import (
+	"errors"
 	"math/big"
-	// "encoding/binary"
-	"encoding/json"
 )
 
 // type Uint128 struct {
@@ -113,6 +112,12 @@ func (ui128 *Uint128) String() string {
 	return ui128.b.String()
 }
 
+func (ui128 *Uint128) Bytes() []byte {
+	var b, c = make([]byte, 16), ui128.b.Bytes()
+	copy(b[16-len(c):], c)
+	return b
+}
+
 func (ui128 *Uint128) Add(y *Uint128) bool {
 	ui128.b.Add(ui128.b, y.b)
 	if ui128.b.Bit(128) == 1 {
@@ -157,17 +162,41 @@ func (ui128 *Uint128) BitLen() int {
 // 	fmt.Println("here")
 // 	return ui128.b.Bytes(), nil
 // }
-
 func (ui128 *Uint128) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ui128.b.Bytes())
+	c, err := ui128.b.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	b := make([]byte, 2+len(c))
+	b[0] = '"'
+	b[len(c)+1] = '"'
+	copy(b[1:], c)
+	return b, nil
 }
 
 func (ui128 *Uint128) UnmarshalJSON(byteJson []byte) (err error) {
-	var bt []byte
-	err = json.Unmarshal(byteJson, &bt)
-	if err != nil {
-		return
+	if ui128.b == nil {
+		ui128.b = new(big.Int)
 	}
-	ui128.b = new(big.Int).SetBytes(bt)
+	if len(byteJson) >= 2 && byteJson[0] == byteJson[len(byteJson)-1] && byteJson[0] == '"' {
+		err = ui128.b.UnmarshalJSON(byteJson[1 : len(byteJson)-1])
+		if err != nil {
+			return err
+		}
+
+		if ui128.b.BitLen() > 128 {
+			return errors.New("overflow")
+		}
+		return nil
+	}
+	err = ui128.b.UnmarshalJSON(byteJson)
+	if err != nil {
+		return err
+	}
+
+	if ui128.b.BitLen() > 128 {
+		return errors.New("overflow")
+	}
 	return nil
+	return
 }
