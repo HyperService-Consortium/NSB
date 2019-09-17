@@ -1,6 +1,7 @@
 package math
 
 import (
+	"errors"
 	"math/big"
 )
 
@@ -148,14 +149,24 @@ func (ui256 *Uint256) UnmarshalJSON(byteJson []byte) (err error) {
 		ui256.b = new(big.Int)
 	}
 	if len(byteJson) >= 2 && byteJson[0] == byteJson[len(byteJson)-1] && byteJson[0] == '"' {
-		return ui256.b.UnmarshalJSON(byteJson[1 : len(byteJson)-1])
+		err = ui256.b.UnmarshalJSON(byteJson[1 : len(byteJson)-1])
+		if err != nil {
+			return err
+		}
+
+		if ui256.b.BitLen() > 256 {
+			return errors.New("overflow")
+		}
+		return nil
 	}
-	return ui256.b.UnmarshalJSON(byteJson)
-	// var bt []byte
-	// err = json.Unmarshal(byteJson, &bt)
-	// if err != nil {
-	// 	return
-	// }
-	// ui256.b = new(big.Int).SetBytes(bt)
-	// return nil
+	err = ui256.b.UnmarshalJSON(byteJson)
+	if err != nil {
+		return err
+	}
+
+	if ui256.b.BitLen() > 256 {
+		return errors.New("overflow")
+	}
+	return nil
+	return
 }
