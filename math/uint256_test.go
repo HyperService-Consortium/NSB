@@ -1,6 +1,9 @@
 package math
 
 import (
+	"bytes"
+	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -76,5 +79,55 @@ func TestUint256_G(t *testing.T) {
 
 func TestUint256_H(t *testing.T) {
 	var x = NewUint256FromBytes(nil)
-	fmt.Println(x);
+	fmt.Println(x)
+}
+
+type MyStruct struct {
+	R *Uint256
+	S *Uint256
+	V *Uint256
+}
+
+func TestUint256_I(t *testing.T) {
+	var ms MyStruct
+
+	ms.R = NewUint256FromBytes(nil)
+	ms.S = nil
+	ms.V = NewUint256FromBytes([]byte{1, 1, 1, 1, 1})
+	fmt.Println(ms)
+	bt, err := json.Marshal(ms)
+	fmt.Println(string(bt), err)
+	ms.R = nil
+	ms.S = nil
+	ms.V = nil
+	err = json.Unmarshal(bt, &ms)
+	fmt.Println(ms, err)
+}
+
+func TestUint256_J(t *testing.T) {
+	var ms MyStruct
+
+	ms.R = NewUint256FromBytes(nil)
+	var tt = bytes.NewBuffer(make([]byte, 0, 32))
+	binary.Write(tt, binary.BigEndian, int64(23333333))
+	fmt.Println(tt.Bytes())
+	ms.S = NewUint256FromBytes(tt.Bytes())
+	ms.V = NewUint256FromBytes([]byte{1, 1, 1, 2, 1})
+
+	fmt.Println(ms)
+	fmt.Println(ms.R.Bytes())
+	fmt.Println(ms.S.Bytes())
+	fmt.Println(ms.V.Bytes())
+
+	fmt.Println(NewUint256FromBytes(ms.R.Bytes()))
+	fmt.Println(NewUint256FromBytes(ms.S.Bytes()))
+	fmt.Println(NewUint256FromBytes(ms.V.Bytes()))
+
+	fmt.Println(ms.R.String())
+	fmt.Println(ms.S.String())
+	fmt.Println(ms.V.String())
+
+	fmt.Println(NewUint256FromString(ms.R.String(), 10))
+	fmt.Println(NewUint256FromString(ms.S.String(), 10))
+	fmt.Println(NewUint256FromString(ms.V.String(), 10))
 }
