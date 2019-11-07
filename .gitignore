@@ -12,10 +12,5 @@ nohup.out
 data/
 contract/isc/testdb/
 
-docker/build/node*
-docker/build/data*
-docker/build/-server/*
-docker/build/nsbstate.db/*
-docker/build/trienode.db/*
 .idea
 build

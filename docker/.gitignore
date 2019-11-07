@@ -1,0 +1,7 @@
+
+build/NSB
+build/node*
+build/data*
+build/-server/*
+build/nsbstate.db/*
+build/trienode.db/*
