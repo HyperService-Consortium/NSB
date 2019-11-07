@@ -7,9 +7,15 @@ BINARY=/usr/bin/tendermint
 ID=${ID:-0}
 LOG=${LOG:-tendermint.log}
 
-# cp /usr/bin/NSB /usr/bin/NSB${ID}
-nohup /usr/bin/NSB -db=$DB_DIR -server=$TCP_AD -port=$PORT &
+echo current ID=${ID}
+echo current LOG=${LOG}
 
+# cp /usr/bin/NSB /usr/bin/NSB${ID}
+if [ ! -f "/usr/bin/NSB" ]; then
+	echo "file /usr/bin/NSB not found"
+	exit 1
+fi
+nohup /usr/bin/NSB -db=$DB_DIR -server=$TCP_AD -port=$PORT &
 ##
 ## Assert linux binary
 ##
@@ -29,8 +35,10 @@ fi
 export TMHOME="/tendermint/node${ID}"
 
 if [ -d "`dirname ${TMHOME}/${LOG}`" ]; then
+  echo running "$BINARY" "$@" | tee "${TMHOME}/${LOG}"
   "$BINARY" "$@" | tee "${TMHOME}/${LOG}"
 else
+  echo running "$BINARY" "$@"
   "$BINARY" "$@"
 fi
 

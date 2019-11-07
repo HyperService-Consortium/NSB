@@ -17,3 +17,4 @@ docker/build/data*
 docker/build/-server/*
 docker/build/nsbstate.db/*
 docker/build/trienode.db/*
+.idea
