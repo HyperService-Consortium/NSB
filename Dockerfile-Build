@@ -5,5 +5,5 @@ RUN echo uname -a
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk add gcc && apk add musl-dev
 WORKDIR /build
-CMD ["/bin/sh"]# go build -o ./NSB
+CMD go build -o ./NSB
 # CMD echo build successfully
