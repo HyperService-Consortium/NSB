@@ -1,14 +1,18 @@
 # Makefile for the "localnode" docker image.
 
-CURPATH=$(shell pwd)
-BUILD=${CURPATH}/build
+
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+makefile_name := $(notdir $(mkfile_path))
+CURPATH := $(patsubst %/${makefile_name}, %, $(mkfile_path))
+BUILD=${CURPATH}/build/
 NODENAME=tendermint-nsb/node
 SILENT:= 
 COUNT=4
 FILE=testnode4.yml
 
 all:
-	mkdir ${BUILD}
+	mkdir -p ${BUILD}
+	echo ${CURPATH}/node/tendermint
 	cp ${CURPATH}/node/tendermint ${BUILD}	
 	docker build --tag ${NODENAME} node
 
