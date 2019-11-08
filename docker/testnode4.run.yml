@@ -9,12 +9,12 @@ services:
     environment:
       - PORT=:27667
       - DB_DIR=./data0/
-      - TCP_AD=tcp://192.167.233.2:27667
+      - TCP_AD=tcp://0.0.0.0:27667
       - ID=0
       - LOG=${LOG:-tendermint.log}
     volumes:
-      - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
-    command: node --rpc.laddr tcp://0.0.0.0:26657 --proxy_app=tcp://192.167.233.2:27667
+      - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
+    command: node --proxy_app=tcp://0.0.0.0:27667
     networks:
       nsb_net:
         ipv4_address: 192.167.233.2
@@ -28,11 +28,11 @@ services:
       - PORT=:27668
       - DB_DIR=./data1/
       - ID=1
-      - TCP_AD=tcp://192.167.233.3:27668
+      - TCP_AD=tcp://0.0.0.0:27668
       - LOG=${LOG:-tendermint.log}
     volumes:
-      - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
-    command: node --rpc.laddr tcp://0.0.0.0:26657 --proxy_app=tcp://192.167.233.3:27668
+      - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
+    command: node --proxy_app=tcp://0.0.0.0:27668
     networks:
       nsb_net:
         ipv4_address: 192.167.233.3
@@ -44,13 +44,13 @@ services:
       - DB_DIR=./data2/
       - PORT=:27669
       - ID=2
-      - TCP_AD=tcp://192.167.233.4:27669
+      - TCP_AD=tcp://0.0.0.0:27669
       - LOG=${LOG:-tendermint.log}
     ports:
       - "26661-26662:26656-26657"
     volumes:
-      - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
-    command: node --rpc.laddr tcp://0.0.0.0:26657 --proxy_app=tcp://192.167.233.4:27669
+      - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
+    command: node --proxy_app=tcp://0.0.0.0:27669
     networks:
       nsb_net:
         ipv4_address: 192.167.233.4
@@ -62,13 +62,13 @@ services:
       - PORT=:27670
       - DB_DIR=./data3/
       - ID=3
-      - TCP_AD=tcp://192.167.233.5:27670
+      - TCP_AD=tcp://0.0.0.0:27670
       - LOG=${LOG:-tendermint.log}
     ports:
       - "26663-26664:26656-26657"
     volumes:
-      - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
-    command: node --rpc.laddr tcp://0.0.0.0:26657 --proxy_app=tcp://192.167.233.5:27670
+      - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
+    command: node --proxy_app=tcp://0.0.0.0:27670
     networks:
       nsb_net:
         ipv4_address: 192.167.233.5
@@ -85,7 +85,7 @@ services:
         #    - ID=4
         #    - LOG=${LOG:-tendermint.log}
         #  volumes:
-        #    - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
+        #    - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
         #  command: node --proxy_app=tcp://192.167.233.6:27671
         #  networks:
         #    nsb_net:
@@ -103,7 +103,7 @@ services:
         #    - TCP_AD=tcp://192.167.233.7:27672
         #    - LOG=${LOG:-tendermint.log}
         #  volumes:
-        #    - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
+        #    - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
         #  command: node --proxy_app=tcp://192.167.233.7:27672
         #  networks:
         #    nsb_net:
@@ -121,7 +121,7 @@ services:
         #  ports:
         #    - "26669-26670:26656-26657"
         #  volumes:
-        #    - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
+        #    - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
         #  command: node --proxy_app=tcp://192.167.233.8:27673
         #  networks:
         #    nsb_net:
@@ -139,7 +139,7 @@ services:
         #  ports:
         #    - "26671-26672:26656-26657"
         #  volumes:
-        #    - /home/kamiyoru/work/gosrc/src/github.com/HyperService-Consortium/NSB/docker/build/:/tendermint:Z
+        #    - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
         #  command: node --proxy_app=tcp://192.167.233.9:27674
         #  networks:
         #    nsb_net:
