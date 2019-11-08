@@ -8,8 +8,8 @@ RUN apk update && \
 VOLUME /tendermint
 WORKDIR /tendermint
 EXPOSE 26656 26657
-ENTRYPOINT ["/bin/sh"]
-# ENTRYPOINT ["/usr/bin/wrapper.sh"]
+# ENTRYPOINT ["/bin/sh"]
+ENTRYPOINT ["/usr/bin/wrapper.sh"]
 
 STOPSIGNAL SIGTERM
 

@@ -1,71 +1,56 @@
+#!/usr/bin/env python3
+import os, shutil
+from pymake import require_cls, oqs, entry, pipe
 
-import sys
-
-# Minimum makefile impl github.com/Myriad-Dreamin/pymake
-made = set()
-__magic_module = sys.modules[__name__]
-
-
-def consume_makefile(method):
-    i = str(method)
-    print(i, made)
-    if i in made:
-        made.update(i)
-    else:
-        return method
-
-
-# object requirement
-def cr(attr: str):
-    # raise if not exists
-    def __get_object_attr(obj, *_): return getattr(obj, attr)
-    return __get_object_attr
-
-
-# object requirements
-def crs(*attrs): return map(cr, attrs)
-
-
-# for module makefile:
-# return function in module scope
-def find(preq):
-    return __magic_module.__dict__[preq] if preq in __magic_module.__dict__ else None
-
-
-def require(*targets):
-    def c(f):
-        def wrapper(*args, **kwargs):
-            for target in targets:
-                target = (getattr(target, '__name__', None) == '__get_object_attr' and target(*args, **kwargs)) or target
-                target = find(target) if isinstance(target, str) else target
-                consume_makefile(target)(*args, **kwargs) if callable(target) else None
-            return f(*args, **kwargs)
-        return wrapper
-    return c
-
-
-# for shadow everything
 class Makefile:
+    current_path = os.path.dirname(os.path.realpath(__file__))
+    build_path = os.path.join(current_path, 'build')
+    node_image_path = os.path.join(current_path, 'image')
+    nsb_file_path = os.path.join(build_path, 'NSB')
+    tendermint_file_path = os.path.join(build_path, 'tendermint')
+    node_name = 'tendermint-nsb/node'
+    count = 4
+    compose_file = os.path.join(current_path, 'testnode4.yml')
+    compose_run_file = os.path.join(current_path, 'testnode4.run.yml')
+    
+    @classmethod
+    @require_cls('nsb_source', 'tendermint')
+    def image(cls, *_):
+        pipe('docker build --tag %s node' % Makefile.node_name)
 
     @classmethod
-    @require('muf', *crs('start2'))
-    def start(cls, *_):
-        print("here2")
+    def nsb_source(cls, *_):
+        shutil.copy(Makefile.nsb_file_path, Makefile.node_image_path)
+
+    @classmethod
+    def tendermint(cls, *_):
+        os.makedirs(Makefile.build_path, exist_ok=True)
+        if not os.path.isfile(Makefile.tendermint_file_path):
+            pipe('curl -o %s -L https://github.com/HyperService-Consortium/NSB/releases/download/v0.7.4/tendermint-linux-v0.32.2-8ba8497a' % (Makefile.tendermint_file_path, ))
+
+    @classmethod
+    @require_cls('image', 'template')
+    def build(cls, *_):
+        os.makedirs(Makefile.build_path, exist_ok=True)
+        if not os.path.isfile(os.path.join(Makefile.build_path, 'node0/config/genesis.json')):
+            pipe('docker run --rm -v %s/:/tendermint:Z %s testnet --v %s --o . --populate-persistent-peers --starting-ip-address 192.167.233.2' %
+                (Makefile.build_path, Makefile.node_name, Makefile.count))
+        pipe('docker-compose -f %s up' % (Makefile.compose_run_file))
+
+    @classmethod
+    def template(cls, *_):
+        with open(Makefile.compose_file) as f:
+            s = f.read().replace('{{build}}', Makefile.build_path + '/')
+            with open(Makefile.compose_run_file, 'w') as o:
+                o.write(s)
 
     @classmethod
     def start2(cls, *_):
-        print("here3")
+        print(" ", end='')
 
     @classmethod
-    @require('muf', *crs('start', 'start2'))
     def all(cls, *_):
-        print("here")
+        print("!")
 
-
-def muf(*_):
-    print("QAQ")
-
-
-print(len(sys.argv), sys.argv)
-
-Makefile().all()
+if __name__ == '__main__':
+    entry(Makefile)
