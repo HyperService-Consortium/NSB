@@ -45,12 +45,37 @@ class Makefile:
                 o.write(s)
 
     @classmethod
-    def start2(cls, *_):
-        print(" ", end='')
+    @require_cls('template')
+    def down(cls, *_):
+	    pipe('docker-compose -f %s down' % (Makefile.compose_run_file)) 
+        
+    @classmethod
+    @require_cls('template')
+    def start(cls, *_):
+	    pipe('docker-compose -f %s start' % (Makefile.compose_run_file)) 
+        
+    @classmethod
+    @require_cls('template')
+    def stop(cls, *_):
+	    pipe('docker-compose -f %s stop' % (Makefile.compose_run_file)) 
 
     @classmethod
+    @require_cls('template')
+    def restart(cls, *_):
+	    pipe('docker-compose -f %s restart' % (Makefile.compose_run_file)) 
+
+
+    @classmethod
+    def clean(cls, *_):
+        pipe('rm -rf -r %s/node*' % (Makefile.build_path))
+        pipe('rm -rf -r %s/data*' % (Makefile.build_path))
+        pipe('rm -rf -r %s/nsbstate.db' % (Makefile.build_path))
+        pipe('rm -rf -r %s/trienode.db' % (Makefile.build_path))
+
+    @classmethod
+    @require_cls('build')
     def all(cls, *_):
-        print("!")
+        pass
 
 if __name__ == '__main__':
     entry(Makefile)
