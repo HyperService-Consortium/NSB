@@ -12,6 +12,8 @@ class Makefile:
     count = 4
     compose_file = os.path.join(current_path, 'testnode4.yml')
     compose_run_file = os.path.join(current_path, 'testnode4.run.yml')
+    compose_file0 = os.path.join(current_path, 'testnode.yml')
+    compose_run_file0 = os.path.join(current_path, 'testnode.run.yml')
     
     @classmethod
     @require_cls('nsb_source', 'tendermint')
@@ -38,10 +40,26 @@ class Makefile:
         pipe('docker-compose -f %s up' % (Makefile.compose_run_file))
 
     @classmethod
+    @require_cls('image', 'template0')
+    def build0(cls, *_):
+        os.makedirs(Makefile.build_path, exist_ok=True)
+        if not os.path.isfile(os.path.join(Makefile.build_path, 'node100/config/genesis.json')):
+            pipe('docker run --rm -v %s/:/tendermint:Z %s init --home /tendermint/node100' %
+                (Makefile.build_path, Makefile.node_name))
+        pipe('docker-compose -f %s up' % (Makefile.compose_run_file0))
+
+    @classmethod
     def template(cls, *_):
         with open(Makefile.compose_file) as f:
             s = f.read().replace('{{build}}', Makefile.build_path + '/')
             with open(Makefile.compose_run_file, 'w') as o:
+                o.write(s)
+
+    @classmethod
+    def template0(cls, *_):
+        with open(Makefile.compose_file0) as f:
+            s = f.read().replace('{{build}}', Makefile.build_path + '/')
+            with open(Makefile.compose_run_file0, 'w') as o:
                 o.write(s)
 
     @classmethod
@@ -62,8 +80,27 @@ class Makefile:
     @classmethod
     @require_cls('template')
     def restart(cls, *_):
-	    pipe('docker-compose -f %s restart' % (Makefile.compose_run_file)) 
+	    pipe('docker-compose -f %s restart' % (Makefile.compose_run_file))
 
+    @classmethod
+    @require_cls('template0')
+    def down0(cls, *_):
+	    pipe('docker-compose -f %s down' % (Makefile.compose_run_file0)) 
+        
+    @classmethod
+    @require_cls('template0')
+    def start0(cls, *_):
+	    pipe('docker-compose -f %s start' % (Makefile.compose_run_file0)) 
+        
+    @classmethod
+    @require_cls('template0')
+    def stop0(cls, *_):
+	    pipe('docker-compose -f %s stop' % (Makefile.compose_run_file0)) 
+
+    @classmethod
+    @require_cls('template0')
+    def restart0(cls, *_):
+	    pipe('docker-compose -f %s restart' % (Makefile.compose_run_file0)) 
 
     @classmethod
     def clean(cls, *_):
