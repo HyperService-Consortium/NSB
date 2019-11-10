@@ -2,7 +2,7 @@ module github.com/HyperService-Consortium/NSB
 
 go 1.12
 
-replace github.com/HyperService-Consortium/go-uip => github.com/HyperService-Consortium/go-uip v0.0.0-20191110010607-170d1d4af0a6
+replace github.com/HyperService-Consortium/go-uip => github.com/HyperService-Consortium/go-uip v0.0.0-20191110033748-af033b1fd3cf
 
 require (
 	github.com/HyperService-Consortium/go-mpt v1.1.1-0.20190903152503-b63ec8d75bd4

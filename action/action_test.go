@@ -14,12 +14,12 @@ func TestSecp256k1(t *testing.T) {
 		"\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x00",
 	)
 	content := make([]byte, 1, 1)
-	action, err := NewAction(uiptypes.SignatureUnderlyingType(aType), signature, content)
+	action, err := NewAction(uiptypes.SignatureTypeUnderlyingType(aType), signature, content)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if action.Type != uiptypes.SignatureUnderlyingType(aType) {
+	if action.Type != uiptypes.SignatureTypeUnderlyingType(aType) {
 		t.Errorf("actionType mismatch")
 		return
 	}
@@ -73,7 +73,7 @@ func TestSecp256k1_SHORTLEN(t *testing.T) {
 		"\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef",
 	)
 	content := make([]byte, 1, 1)
-	action, err := NewAction(uiptypes.SignatureUnderlyingType(aType), signature, content)
+	action, err := NewAction(uiptypes.SignatureTypeUnderlyingType(aType), signature, content)
 
 	if action != unknownAction {
 		t.Errorf("action mismatch")
@@ -91,12 +91,12 @@ func TestEd25519(t *testing.T) {
 		"\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef",
 	)
 	content := make([]byte, 1, 1)
-	action, err := NewAction(uiptypes.SignatureUnderlyingType(aType), signature, content)
+	action, err := NewAction(uiptypes.SignatureTypeUnderlyingType(aType), signature, content)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if action.Type != uiptypes.SignatureUnderlyingType(aType) {
+	if action.Type != uiptypes.SignatureTypeUnderlyingType(aType) {
 		t.Errorf("actionType mismatch")
 		return
 	}
@@ -149,7 +149,7 @@ func TestEd25519_SHORTLEN(t *testing.T) {
 		"\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd\xef\x01\x23\x45\x67\x89\xab\xcd",
 	)
 	content := make([]byte, 1, 1)
-	action, err := NewAction(uiptypes.SignatureUnderlyingType(aType), signature, content)
+	action, err := NewAction(uiptypes.SignatureTypeUnderlyingType(aType), signature, content)
 
 	if action != unknownAction {
 		t.Errorf("action mismatch")

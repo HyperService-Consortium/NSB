@@ -10,6 +10,8 @@ github.com/HyperService-Consortium/go-uip v0.0.0-20190903154116-be2a51bd91a6 h1:
 github.com/HyperService-Consortium/go-uip v0.0.0-20190903154116-be2a51bd91a6/go.mod h1:VqzWwaIMgwqueOgWZ+Csg1HsRt1dy/D/xnLLMVkjKoI=
 github.com/HyperService-Consortium/go-uip v0.0.0-20191110010607-170d1d4af0a6 h1:2fsLXP+1L9GhNXBylpIgv0CCMF3MLzcbseGLgJ3kKx0=
 github.com/HyperService-Consortium/go-uip v0.0.0-20191110010607-170d1d4af0a6/go.mod h1:VqzWwaIMgwqueOgWZ+Csg1HsRt1dy/D/xnLLMVkjKoI=
+github.com/HyperService-Consortium/go-uip v0.0.0-20191110033748-af033b1fd3cf h1:efTyFkkilDuBbcq8yrwIDomG/uG3RZYj0seaDRcPD3o=
+github.com/HyperService-Consortium/go-uip v0.0.0-20191110033748-af033b1fd3cf/go.mod h1:VqzWwaIMgwqueOgWZ+Csg1HsRt1dy/D/xnLLMVkjKoI=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=

@@ -10,7 +10,7 @@ import (
 )
 
 type Action struct {
-	Type      uiptypes.SignatureUnderlyingType `json:"type"`
+	Type      uiptypes.SignatureTypeUnderlyingType `json:"type"`
 	Signature []byte `json:"signature"`
 	Content   []byte `json:"content"`
 }
@@ -19,7 +19,7 @@ var (
 	errShortLen   = errors.New("the length of bytes is too short")
 	errMissType   = errors.New("unknown type of action signature")
 	unknownAction = &Action{
-		Type:      uiptypes.SignatureUnderlyingType(signaturetype.Unknown),
+		Type:      uiptypes.SignatureTypeUnderlyingType(signaturetype.Unknown),
 		Signature: nil,
 		Content:   nil,
 	}
@@ -44,7 +44,7 @@ func (action *Action) TryRecoverFromConcation(concatBytes []byte) (err error) {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = concatBytes[4:69]
 		action.Content = concatBytes[69:]
 	case signaturetype.Ed25519:
@@ -52,7 +52,7 @@ func (action *Action) TryRecoverFromConcation(concatBytes []byte) (err error) {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Ed25519)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = concatBytes[4:68]
 		action.Content = concatBytes[68:]
 	default:
@@ -71,11 +71,11 @@ func TryRecoverFromConcation(concatBytes []byte) (action *Action, err error) {
 func (action *Action) RecoverFromConcation(concatBytes []byte) {
 	switch uiptypes.SignatureType(util.BytesToUint32(concatBytes[0:4])) {
 	case signaturetype.Secp256k1:
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = concatBytes[4:69]
 		action.Content = concatBytes[69:]
 	case signaturetype.Ed25519:
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Ed25519)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = concatBytes[4:68]
 		action.Content = concatBytes[68:]
 	default:
@@ -98,7 +98,7 @@ func NewAction(aType uint32, signature, content []byte) (action *Action, err err
 		if len(signature) != 65 {
 			return unknownAction, errShortLen
 		}
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = signature
 		action.Content = content
 		return
@@ -106,7 +106,7 @@ func NewAction(aType uint32, signature, content []byte) (action *Action, err err
 		if len(signature) != 64 {
 			return unknownAction, errShortLen
 		}
-		action.Type = uiptypes.SignatureUnderlyingType(signaturetype.Ed25519)
+		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = signature
 		action.Content = content
 		return
