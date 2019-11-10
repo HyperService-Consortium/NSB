@@ -1,30 +1,29 @@
 package nsb
 
 import (
-	"bytes"
-	"encoding/binary"
-	"encoding/hex"
 	"errors"
 	"fmt"
 
-	"github.com/HyperServiceOne/NSB/application/response"
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	transactiontype "github.com/HyperService-Consortium/NSB/application/transaction-type"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/version"
 	dbm "github.com/tendermint/tm-db"
+
+	log "github.com/HyperService-Consortium/NSB/log"
 )
 
-func NewNSBApplication(dbDir string) (*NSBApplication, error) {
+func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplication, error) {
 	name := "nsbstate"
 	db, err := dbm.NewGoLevelDB(name, dbDir)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("loading state...")
 	state := loadState(db)
-	fmt.Println(state.String())
+	logger.Info("loading state...", "state_root", state.StateRoot, "height", state.Height)
+	state.Reset()
 
 	var stmp *merkmap.MerkMap
 	var statedb *leveldb.DB
@@ -40,18 +39,18 @@ func NewNSBApplication(dbDir string) (*NSBApplication, error) {
 
 	return &NSBApplication{
 		state:                      state,
-		logger:                     log.NewNopLogger(),
+		logger:                     logger,
 		stateMap:                   stmp,
-		accMap:                     stmp.ArrangeSlot([]byte("acc:")),
-		txMap:                      stmp.ArrangeSlot([]byte("tx:")),
-		actionMap:                  stmp.ArrangeSlot([]byte("act:")),
-		validMerkleProofMap:        stmp.ArrangeSlot([]byte("vlm:")),
-		validOnchainMerkleProofMap: stmp.ArrangeSlot([]byte("vom:")),
+		accMap:                     stmp.ArrangeSlot(accMapSlot),
+		txMap:                      stmp.ArrangeSlot(txMapSlot),
+		actionMap:                  stmp.ArrangeSlot(actionMapSlot),
+		validMerkleProofMap:        stmp.ArrangeSlot(validMerkleProofMapSlot),
+		validOnchainMerkleProofMap: stmp.ArrangeSlot(validOnchainMerkleProofMapSlot),
 		statedb:                    statedb,
 	}, nil
 }
 
-func (nsb *NSBApplication) SetLogger(l log.Logger) {
+func (nsb *NSBApplication) SetLogger(l log.TendermintLogger) {
 	nsb.logger = l
 }
 
@@ -60,76 +59,88 @@ func (nsb *NSBApplication) Revert() error {
 	if err != nil {
 		return err
 	}
-	nsb.accMap = nsb.stateMap.ArrangeSlot([]byte("acc:"))
-	nsb.txMap = nsb.stateMap.ArrangeSlot([]byte("tx:"))
-	nsb.actionMap = nsb.stateMap.ArrangeSlot([]byte("act:"))
-	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vlm:"))
-	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot([]byte("vom:"))
+	nsb.accMap = nsb.stateMap.ArrangeSlot(accMapSlot)
+	nsb.txMap = nsb.stateMap.ArrangeSlot(txMapSlot)
+	nsb.actionMap = nsb.stateMap.ArrangeSlot(actionMapSlot)
+	nsb.validMerkleProofMap = nsb.stateMap.ArrangeSlot(validMerkleProofMapSlot)
+	nsb.validOnchainMerkleProofMap = nsb.stateMap.ArrangeSlot(validOnchainMerkleProofMapSlot)
 
 	return nil
 }
 
 func (nsb *NSBApplication) Info(req types.RequestInfo) types.ResponseInfo {
 	return types.ResponseInfo{
-		Data: fmt.Sprintf(
-			"{\"state_root\": \"%v\", \"height\":%v }",
-			hex.EncodeToString(nsb.state.StateRoot),
-			nsb.state.Height),
-		Version:    version.ABCIVersion,
-		AppVersion: NSBVersion.Uint64(),
+		Version:          version.ABCIVersion,
+		LastBlockAppHash: nsb.state.StateRoot,
+		LastBlockHeight:  nsb.state.Height,
+		AppVersion:       NSBVersion.Uint64(),
 	}
 }
 
-// Save the validators in the merkle tree
+// InitChain Save the validators in the merkle tree
 func (nsb *NSBApplication) InitChain(req types.RequestInitChain) types.ResponseInitChain {
+	nsb.logger.Info("InitChain")
 	for _, v := range req.Validators {
 		r := nsb.updateValidator(v)
 		if r.IsErr() {
 			nsb.logger.Error("Error updating validators", "r", r)
 		}
 	}
-	return types.ResponseInitChain{}
+	return types.ResponseInitChain{
+		ConsensusParams: &types.ConsensusParams{
+			Block: &types.BlockParams{
+				MaxBytes: 66060288,
+				MaxGas:   1024,
+			},
+			Evidence: &types.EvidenceParams{
+				MaxAge: 100,
+			},
+			Validator: &types.ValidatorParams{
+				PubKeyTypes: []string{"ed25519"},
+			},
+		},
+		Validators: nsb.ValUpdates,
+	}
 }
 
 // Track the block hash and header information
 func (nsb *NSBApplication) BeginBlock(req types.RequestBeginBlock) types.ResponseBeginBlock {
 	// reset valset changes
-	fmt.Println("BeginBlock")
-	nsb.ValUpdates = make([]types.ValidatorUpdate, 0)
+	nsb.logger.Info("BeginBlock")
+	nsb.ValUpdates = nsb.ValUpdates[:0]
 	return types.ResponseBeginBlock{}
 }
 
 // Update the validator set
 func (nsb *NSBApplication) EndBlock(req types.RequestEndBlock) types.ResponseEndBlock {
-	fmt.Println("EndBlock")
+	nsb.logger.Info("EndBlock")
 	return types.ResponseEndBlock{ValidatorUpdates: nsb.ValUpdates}
 }
 
 func (nsb *NSBApplication) CheckTx(types.RequestCheckTx) types.ResponseCheckTx {
-	fmt.Println("CheckTx")
+	nsb.logger.Info("CheckTx")
 	return types.ResponseCheckTx{Code: 0}
 }
 
 func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseDeliverTx {
-	fmt.Println("DeliverTx")
-	bytesTx := bytes.Split(req.Tx, []byte("\x19"))
-	var ret types.ResponseDeliverTx
-	if len(bytesTx) != 2 {
-		return *response.InvalidTxInputFormatWrongx19
+	nsb.logger.Info("DeliverTx")
+
+	if len(req.Tx) < 1 {
+		return *response.InvalidTxInputFormatTooShort
 	}
-	switch string(bytesTx[0]) {
+	var ret *types.ResponseDeliverTx
+	switch req.Tx[0] {
+	case transactiontype.Validators: // nsb validators
+		ret = nsb.execValidatorTx(req.Tx[1:])
 
-	case "validators": // nsb validators
-		ret = nsb.execValidatorTx(bytesTx[1])
+	case transactiontype.SendTransaction: // transact contract methods
+		ret = nsb.parseFuncTransaction(req.Tx[1:])
 
-	case "sendTransaction": // transact contract methods
-		ret = *nsb.parseFuncTransaction(bytesTx[1])
+	case transactiontype.SystemCall: // transact system contract methods
+		ret = nsb.parseSystemFuncTransaction(req.Tx[1:])
 
-	case "systemCall": // transact system contract methods
-		ret = *nsb.parseSystemFuncTransaction(bytesTx[1])
-
-	case "createContract": // create on-chain contracts
-		ret = *nsb.parseCreateTransaction(bytesTx[1])
+	case transactiontype.CreateContract: // create on-chain contracts
+		ret = nsb.parseCreateTransaction(req.Tx[1:])
 
 	default:
 		return types.ResponseDeliverTx{Code: uint32(response.CodeInvalidTxType())}
@@ -137,17 +148,14 @@ func (nsb *NSBApplication) DeliverTx(req types.RequestDeliverTx) types.ResponseD
 	if ret.Code != uint32(response.CodeOK()) {
 		err := nsb.Revert()
 		if err != nil {
-			fmt.Println(err)
+			nsb.logger.Error("Revert Error", "error", err)
 		}
 	}
-	return ret
+	return *ret
 }
 
 func (nsb *NSBApplication) Commit() types.ResponseCommit {
-	fmt.Println("Commit")
-	// Using a memdb - just return the big endian size of the db
-	appHash := make([]byte, 32)
-	binary.PutVarint(appHash, nsb.state.Height)
+	nsb.logger.Info("Commit")
 	var err error
 
 	// accMap, txMap is the sub-Map of stateMap

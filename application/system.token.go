@@ -2,9 +2,10 @@ package nsb
 
 import (
 	"fmt"
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/math"
+
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 )
 
@@ -42,9 +43,8 @@ func (nsb *NSBApplication) TokenRigisteredMethod(
 
 func (nsb *NSBApplication) setBalance(accInfo *AccountInfo, value *math.Uint256) *types.ResponseDeliverTx {
 	accInfo.Balance = value
-	return response.ExecOK
+	return response.ExecOK()
 }
-
 
 func (nsb *NSBApplication) transfer(
 	frInfo *AccountInfo,
@@ -54,9 +54,9 @@ func (nsb *NSBApplication) transfer(
 
 	// resist frInfo == toInfo
 	if frInfo == toInfo {
-		return response.ExecOK
+		return response.ExecOK()
 	}
-	
+
 	checkErr := frInfo.Balance.Sub(value)
 	if checkErr {
 		return response.ExecContractError(fmt.Errorf("'from' account has no enough token to substract"))
@@ -65,5 +65,5 @@ func (nsb *NSBApplication) transfer(
 	if checkErr {
 		return response.ExecContractError(fmt.Errorf("'to' account's balance overflow"))
 	}
-	return response.ExecOK
+	return response.ExecOK()
 }

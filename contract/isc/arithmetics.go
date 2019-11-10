@@ -3,9 +3,9 @@ package isc
 import (
 	"encoding/json"
 
-	cmn "github.com/HyperServiceOne/NSB/common"
-	. "github.com/HyperServiceOne/NSB/common/contract_response"
-	"github.com/HyperServiceOne/NSB/math"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/math"
 )
 
 type ArgsSafeAdd struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 )
 
 type BytesArray struct {

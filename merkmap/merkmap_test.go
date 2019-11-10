@@ -3,7 +3,7 @@ package merkmap
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/Myriad-Dreamin/go-mpt"
+	"github.com/HyperService-Consortium/go-mpt"
 	"testing"
 )
 

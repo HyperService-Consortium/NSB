@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/math"
 	"testing"
 )
 

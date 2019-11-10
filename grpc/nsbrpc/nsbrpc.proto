@@ -1,0 +1,20 @@
+
+syntax = "proto3";
+
+package nsbrpc;
+
+option go_package = "github.com/HyperService-Consortium/NSB/grpc/nsbrpc";
+
+message TransactionHeader {
+    bytes src = 1;
+    bytes dst = 2;
+    bytes value = 3;
+    bytes nonce = 4;
+    bytes data = 5;
+    bytes signature = 6;
+}
+
+message FAPair {
+	string funcName = 1;
+	bytes args = 2;
+}

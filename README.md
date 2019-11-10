@@ -4,7 +4,7 @@ Tendermint implementation of the NetworkStatusBlockchain.
 
 #### Start Client: 
 
-Under /root/work/go/src/github.com/HyperserviceOne/NSB 
+Under /root/work/go/src/github.com/HyperService-Consortium/NSB 
 
 ```
 go run nsb_cli.go

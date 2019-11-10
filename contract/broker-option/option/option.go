@@ -3,9 +3,9 @@ package option
 import (
 	"fmt"
 	"encoding/hex"
-	"github.com/HyperServiceOne/NSB/math"
-	. "github.com/HyperServiceOne/NSB/common/contract_response"
-	cmn "github.com/HyperServiceOne/NSB/common"
+	"github.com/HyperService-Consortium/NSB/math"
+	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
 )
 
 type ValidBuyer struct {

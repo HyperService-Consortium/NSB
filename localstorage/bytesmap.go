@@ -1,7 +1,7 @@
 package localstorage
 
 import (
-	"github.com/HyperServiceOne/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 )
 
 type BytesMap struct {

@@ -1,8 +1,8 @@
 package localstorage
 
 import (
-	"github.com/HyperServiceOne/NSB/merkmap"
-	"github.com/HyperServiceOne/NSB/util"
+	"github.com/HyperService-Consortium/NSB/merkmap"
+	"github.com/HyperService-Consortium/NSB/util"
 )
 
 type Int64Map struct {

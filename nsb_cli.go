@@ -1,7 +1,7 @@
 package main
 
 import (
-	nsbnet "github.com/HyperServiceOne/NSB/net"
+	nsbnet "github.com/HyperService-Consortium/NSB/net"
 )
 
 func main() {

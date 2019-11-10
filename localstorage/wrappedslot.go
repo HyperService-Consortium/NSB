@@ -1,8 +1,8 @@
 package localstorage
 
 import (
-	"github.com/HyperServiceOne/NSB/util"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/util"
+	"github.com/HyperService-Consortium/NSB/math"
 )
 
 func (sto *LocalStorage) SetBytes(variName string, value []byte) {

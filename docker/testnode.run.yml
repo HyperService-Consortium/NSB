@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  node:
+    container_name: node
+    image: "tendermint-nsb/node"
+    ports:
+      - "26656-26657:26656-26657"
+    environment:
+      - PORT=:27667
+      - DB_DIR=./data100/
+      - TCP_AD=tcp://0.0.0.0:27667
+      - ID=100
+      - LOG=${LOG:-tendermint.log}
+    volumes:
+      - E:\project\go\src\github.com\HyperService-Consortium\NSB\docker\build/:/tendermint:Z
+    command: node --rpc.laddr=tcp://0.0.0.0:26657 --proxy_app=tcp://0.0.0.0:27667
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.233
+
+networks:
+  nsb_net:
+   # external: true
+   driver: bridge
+   ipam:
+     driver: default
+     config:
+     -
+       subnet: 192.167.232.0/22
+

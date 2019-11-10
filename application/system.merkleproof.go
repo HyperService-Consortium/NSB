@@ -6,13 +6,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/crypto"
-	"github.com/HyperServiceOne/NSB/util"
-	merkleprooftype "github.com/Myriad-Dreamin/go-uip/const/merkle-proof-type"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/util"
+	merkleprooftype "github.com/HyperService-Consortium/go-uip/const/merkle-proof-type"
 	"github.com/tendermint/tendermint/abci/types"
-	// "github.com/Myriad-Dreamin/go-mpt"
+	// "github.com/HyperService-Consortium/go-mpt"
 )
 
 /*

@@ -1,9 +1,8 @@
 package math
 
 import (
+	"errors"
 	"math/big"
-	// "encoding/binary"
-	"encoding/json"
 )
 
 type Uint256 struct {
@@ -59,7 +58,9 @@ func (ui256 *Uint256) String() string {
 }
 
 func (ui256 *Uint256) Bytes() []byte {
-	return ui256.b.Bytes()
+	var b, c = make([]byte, 32), ui256.b.Bytes()
+	copy(b[32-len(c):], c)
+	return b
 }
 
 func (ui256 *Uint256) Add(y *Uint256) bool {
@@ -132,15 +133,40 @@ func (ui256 *Uint256) BitLen() int {
 }
 
 func (ui256 *Uint256) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ui256.b.Bytes())
+	c, err := ui256.b.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	b := make([]byte, 2+len(c))
+	b[0] = '"'
+	b[len(c)+1] = '"'
+	copy(b[1:], c)
+	return b, nil
 }
 
 func (ui256 *Uint256) UnmarshalJSON(byteJson []byte) (err error) {
-	var bt []byte
-	err = json.Unmarshal(byteJson, &bt)
-	if err != nil {
-		return
+	if ui256.b == nil {
+		ui256.b = new(big.Int)
 	}
-	ui256.b = new(big.Int).SetBytes(bt)
+	if len(byteJson) >= 2 && byteJson[0] == byteJson[len(byteJson)-1] && byteJson[0] == '"' {
+		err = ui256.b.UnmarshalJSON(byteJson[1 : len(byteJson)-1])
+		if err != nil {
+			return err
+		}
+
+		if ui256.b.BitLen() > 256 {
+			return errors.New("overflow")
+		}
+		return nil
+	}
+	err = ui256.b.UnmarshalJSON(byteJson)
+	if err != nil {
+		return err
+	}
+
+	if ui256.b.BitLen() > 256 {
+		return errors.New("overflow")
+	}
 	return nil
+	return
 }

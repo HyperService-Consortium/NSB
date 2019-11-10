@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/math"
 )
 
 type ContractCallBackInfo struct {

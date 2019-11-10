@@ -4,8 +4,8 @@ import (
 	"testing"
 	"fmt"
 	"encoding/json"
-	"github.com/HyperServiceOne/NSB/contract/isc/merkleproof/MerkleProofType"
-	"github.com/HyperServiceOne/NSB/contract/isc/merkleproof/MerkleProofError"
+	"github.com/HyperService-Consortium/NSB/contract/isc/merkleproof/MerkleProofType"
+	"github.com/HyperService-Consortium/NSB/contract/isc/merkleproof/MerkleProofError"
 )
 
 

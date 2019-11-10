@@ -4,27 +4,53 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"strings"
 
-	"github.com/HyperServiceOne/NSB/account"
-	"github.com/HyperServiceOne/NSB/application/response"
-	cmn "github.com/HyperServiceOne/NSB/common"
-	"github.com/HyperServiceOne/NSB/crypto"
-	"github.com/HyperServiceOne/NSB/localstorage"
-	"github.com/HyperServiceOne/NSB/math"
+	"github.com/HyperService-Consortium/NSB/account"
+	"github.com/HyperService-Consortium/NSB/application/response"
+	cmn "github.com/HyperService-Consortium/NSB/common"
+	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/localstorage"
+	"github.com/HyperService-Consortium/NSB/math"
 	"github.com/tendermint/tendermint/abci/types"
 	ten_cmn "github.com/tendermint/tendermint/libs/common"
+
+	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
+	"github.com/gogo/protobuf/proto"
 )
 
 var (
 	ContractNameNotEqual = errors.New("the name of contract to call is mismatch with providing name")
 )
 
-func (nsb *NSBApplication) parseTxHeader(txHeaderJson []byte) (
+func (nsb *NSBApplication) parseTxHeader(txHeaderProtobuf []byte) (
 	*cmn.TransactionHeader,
 	*types.ResponseDeliverTx,
 ) {
-	byteInfo, err := nsb.txMap.TryGet(txHeaderJson)
+
+	var txHeaderRaw nsbrpc.TransactionHeader
+	err := proto.Unmarshal(txHeaderProtobuf, &txHeaderRaw)
+	if err != nil {
+		return nil, response.DecodeTxHeaderError(err)
+	}
+	if len(txHeaderRaw.Src) != 32 {
+		return nil, response.DecodeTxHeaderError(errorDecodeSrcAddress)
+	}
+	if len(txHeaderRaw.Dst) != 32 && len(txHeaderRaw.Dst) != 0 {
+		return nil, response.DecodeTxHeaderError(errorDecodeDstAddress)
+	}
+
+	var txHeader cmn.TransactionHeader
+	txHeader.Value = math.NewUint256FromBytes(txHeaderRaw.Value)
+	if txHeader.Value == nil {
+		return nil, response.DecodeTxHeaderError(errorDecodeUint256)
+	}
+	txHeader.Nonce = math.NewUint256FromBytes(txHeaderRaw.Nonce)
+	if txHeader.Nonce == nil {
+		return nil, response.DecodeTxHeaderError(errorDecodeUint256)
+	}
+
+	byteInfo, err := nsb.txMap.TryGet(txHeaderProtobuf)
 	// internal error
 	if err != nil {
 		return nil, response.ReTrieveTxError(err)
@@ -32,17 +58,17 @@ func (nsb *NSBApplication) parseTxHeader(txHeaderJson []byte) (
 	if byteInfo != nil {
 		return nil, response.DuplicateTxError
 	}
-	err = nsb.txMap.TryUpdate(txHeaderJson, []byte{1})
+	err = nsb.txMap.TryUpdate(txHeaderProtobuf, []byte{1})
 	// internal error
 	if err != nil {
 		return nil, response.UpdateTxTrieError(err)
 	}
 
-	var txHeader cmn.TransactionHeader
-	err = json.Unmarshal(txHeaderJson, &txHeader)
-	if err != nil {
-		return nil, response.DecodeTxHeaderError(err)
-	}
+	txHeader.From = txHeaderRaw.Src
+	txHeader.ContractAddress = txHeaderRaw.Dst
+	txHeader.Data = txHeaderRaw.Data
+	txHeader.Signature = txHeaderRaw.Signature
+
 	return &txHeader, nil
 }
 
@@ -68,68 +94,77 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 	return &accInfo, nil
 }
 
-func (nsb *NSBApplication) parseContractInfo(
+func (nsb *NSBApplication) extractAddress(contractAddress []byte) (
+	*AccountInfo,
+	*types.ResponseDeliverTx,
+) {
+	byteInfo, err := nsb.accMap.TryGet(contractAddress)
+	if err != nil {
+		return nil, response.ReTrieveTxError(err)
+	}
+	if byteInfo == nil {
+		return nil, response.MissingContract
+	} else {
+		var contractInfo AccountInfo
+		err = json.Unmarshal(byteInfo, &contractInfo)
+		if err != nil {
+			return nil, response.DecodeAccountInfoError(err)
+		}
+		return &contractInfo, nil
+	}
+}
+
+func (nsb *NSBApplication) createContractAccount(
 	txHeader *cmn.TransactionHeader,
-	contractName []byte,
-	createFlag bool,
+	contractName string,
 ) (
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	var contractInfo AccountInfo
-	if createFlag {
-		fmt.Println("creating", contractName)
-		txHeader.ContractAddress = []byte(account.NewAccount(txHeader.Signature, txHeader.Nonce.Bytes(), nsb.state.StateRoot).PublicKey)
+	nsb.logger.Info("creating", contractName)
+	txHeader.ContractAddress = []byte(account.NewAccount(txHeader.Signature, txHeader.Nonce.Bytes(), nsb.state.StateRoot).PublicKey)
 
-		contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
-		contractInfo.Name = contractName
-		// TODO: set CodeHash
-	} else {
-		byteInfo, err := nsb.accMap.TryGet(txHeader.ContractAddress)
-		if err != nil {
-			return nil, response.ReTrieveTxError(err)
-		}
-		if byteInfo == nil {
-			return nil, response.MissingContract
-		} else {
-			err = json.Unmarshal(byteInfo, &contractInfo)
-			if err != nil {
-				return nil, response.DecodeAccountInfoError(err)
-			}
-		}
+	// TODO: merk: TryGet -> TestExistence
+	byteInfo, err := nsb.accMap.TryGet(txHeader.ContractAddress)
+	if err != nil {
+		return nil, response.ExecContractError(err)
 	}
+	if byteInfo != nil {
+		return nil, response.ConflictAddress
+	}
+	var contractInfo AccountInfo
+	contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
+	contractInfo.Name = []byte(contractName)
+	// TODO: set CodeHash
 	return &contractInfo, nil
 }
 
-func (nsb *NSBApplication) parseFAPair(bytesPair []byte, createFlag bool) (
+func (nsb *NSBApplication) parseFAPair(bytesPair []byte) (
 	*FAPair,
 	*types.ResponseDeliverTx,
 ) {
 	var fap FAPair
-	if createFlag {
-		fap.Args = bytesPair
-	} else {
-		err := json.Unmarshal(bytesPair, &fap)
-		if err != nil {
-			return nil, response.DecodeAccountInfoError(err)
-		}
+	err := proto.Unmarshal(bytesPair, &fap)
+	if err != nil {
+		return nil, response.DecodeFAPairError(err)
 	}
-
 	return &fap, nil
 }
-func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFlag bool) (
+func (nsb *NSBApplication) prepareContractEnvironment(
+	bytesTx []byte, createFlag bool,
+) (
 	*cmn.ContractEnvironment,
 	*AccountInfo,
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	txHeader, errInfo := nsb.parseTxHeader(bytesTx[1])
+	txHeader, errInfo := nsb.parseTxHeader(bytesTx)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
 
 	var fap *FAPair
-	fap, errInfo = nsb.parseFAPair(txHeader.Data, createFlag)
+	fap, errInfo = nsb.parseFAPair(txHeader.Data)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
@@ -140,9 +175,12 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 		return nil, nil, nil, errInfo
 	}
 
-	contractName := bytesTx[0]
+	if createFlag {
+		conInfo, errInfo = nsb.createContractAccount(txHeader, fap.FuncName)
+	} else {
+		conInfo, errInfo = nsb.extractAddress(txHeader.ContractAddress)
+	}
 
-	conInfo, errInfo = nsb.parseContractInfo(txHeader, contractName, createFlag)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
@@ -178,13 +216,13 @@ func (nsb *NSBApplication) prepareContractEnvironment(bytesTx [][]byte, createFl
 	return &contractEnv, accInfo, conInfo, nil
 }
 
-func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte) (
+func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderProtobuf []byte) (
 	*cmn.TransactionHeader,
 	*AccountInfo,
 	*AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	txHeader, errInfo := nsb.parseTxHeader(txHeaderJson)
+	txHeader, errInfo := nsb.parseTxHeader(txHeaderProtobuf)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
 	}
@@ -203,7 +241,6 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderJson []byte)
 				return nil, nil, nil, errInfo
 			}
 		}
-
 	}
 
 	return txHeader, frInfo, toInfo, nil
@@ -279,12 +316,8 @@ func (nsb *NSBApplication) storeState(
 }
 
 func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDeliverTx {
-	bytesTx := bytes.Split(tx, []byte("\x18"))
-	if len(bytesTx) != 2 {
-		return response.InvalidTxInputFormatWrongx18
-	}
 
-	env, accInfo, conInfo, errInfo := nsb.prepareContractEnvironment(bytesTx, false)
+	env, accInfo, conInfo, errInfo := nsb.prepareContractEnvironment(tx, false)
 	if errInfo != nil {
 		return errInfo
 	}
@@ -305,7 +338,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 		if cb.Tags == nil {
 			Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
 				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+				Value: crypto.Keccak256([]byte("tx:"), tx),
 			}}
 		} else {
 			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags)+1)
@@ -317,7 +350,7 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
 				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+				Value: crypto.Keccak256([]byte("tx:"), tx),
 			})
 		}
 
@@ -339,19 +372,15 @@ func (nsb *NSBApplication) parseFuncTransaction(tx []byte) *types.ResponseDelive
 }
 
 func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeliverTx {
-	bytesTx := bytes.Split(tx, []byte("\x18"))
-	if len(bytesTx) != 2 {
-		return response.InvalidTxInputFormatWrongx18
-	}
 
-	env, accInfo, conInfo, errInfo := nsb.prepareContractEnvironment(bytesTx, true)
+	env, accInfo, conInfo, errInfo := nsb.prepareContractEnvironment(tx, true)
 	if errInfo != nil {
 		return errInfo
 	}
 
-	fmt.Println(accInfo, conInfo)
+	nsb.logger.Info("parsed", "src", accInfo.String(), "dst", conInfo.String())
 
-	cb := nsb.createContracts(string(bytesTx[0]), env)
+	cb := nsb.createContracts(env)
 
 	var Tags []ten_cmn.KVPair
 	if cb.CodeResponse == uint32(response.CodeOK()) {
@@ -368,7 +397,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		if cb.Tags == nil {
 			Tags = []ten_cmn.KVPair{ten_cmn.KVPair{
 				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+				Value: crypto.Keccak256([]byte("tx:"), tx),
 			}}
 		} else {
 			Tags = make([]ten_cmn.KVPair, 0, len(cb.Tags)+1)
@@ -380,7 +409,7 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 			}
 			Tags = append(Tags, ten_cmn.KVPair{
 				Key:   []byte("TransactionHash"),
-				Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+				Value: crypto.Keccak256([]byte("tx:"), tx),
 			})
 		}
 	}
@@ -401,23 +430,24 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 }
 
 func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.ResponseDeliverTx {
-	bytesTx := bytes.Split(tx, []byte("\x18"))
-	if len(bytesTx) != 2 {
-		return response.InvalidTxInputFormatWrongx18
-	}
 
-	env, frInfo, toInfo, errInfo := nsb.prepareSystemContractEnvironment(bytesTx[1])
+	env, frInfo, toInfo, errInfo := nsb.prepareSystemContractEnvironment(tx)
 	if errInfo != nil {
 		return errInfo
 	}
 
 	var fap *FAPair
-	fap, errInfo = nsb.parseFAPair(env.Data, false)
+	fap, errInfo = nsb.parseFAPair(env.Data)
 	if errInfo != nil {
 		return errInfo
 	}
+	env.Data = nil
+	names := strings.Split(fap.FuncName, "@")
+	if len(names) != 2 {
+		return response.InvalidTxInputFormatWrongFunctionName
+	}
 
-	cb := nsb.systemCall(string(bytesTx[0]), env, frInfo, toInfo, fap.FuncName, fap.Args)
+	cb := nsb.systemCall(names[0], env, frInfo, toInfo, names[1], fap.Args)
 
 	if cb.Code == uint32(response.CodeOK()) {
 		bt, err := json.Marshal(frInfo)
@@ -448,7 +478,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 					Type: "systemCall",
 					Attributes: []ten_cmn.KVPair{ten_cmn.KVPair{
 						Key:   []byte("TransactionHash"),
-						Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+						Value: crypto.Keccak256([]byte("tx:"), tx),
 					}},
 				},
 			}
@@ -457,7 +487,7 @@ func (nsb *NSBApplication) parseSystemFuncTransaction(tx []byte) *types.Response
 				Type: "systemCall",
 				Attributes: []ten_cmn.KVPair{ten_cmn.KVPair{
 					Key:   []byte("TransactionHash"),
-					Value: crypto.Keccak256([]byte("tx:"), bytesTx[1]),
+					Value: crypto.Keccak256([]byte("tx:"), tx),
 				}},
 			})
 		}

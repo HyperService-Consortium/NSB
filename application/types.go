@@ -3,12 +3,14 @@ package nsb
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/HyperServiceOne/NSB/math"
-	"github.com/HyperServiceOne/NSB/merkmap"
+
+	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
+	log "github.com/HyperService-Consortium/NSB/log"
+	"github.com/HyperService-Consortium/NSB/math"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
-	"github.com/tendermint/tendermint/libs/log"
 )
 
 type NSBApplication struct {
@@ -22,7 +24,7 @@ type NSBApplication struct {
 	validOnchainMerkleProofMap *merkmap.MerkMap
 	statedb                    *leveldb.DB
 	ValUpdates                 []types.ValidatorUpdate
-	logger                     log.Logger
+	logger                     log.TendermintLogger
 }
 
 type NSBState struct {
@@ -38,10 +40,7 @@ type AccountInfo struct {
 	Name        []byte        `json:"name"`
 }
 
-type FAPair struct {
-	FuncName string `json:"function_name"`
-	Args     []byte `json:"args"`
-}
+type FAPair = nsbrpc.FAPair
 
 func (accInfo *AccountInfo) String() string {
 	return fmt.Sprintf(
