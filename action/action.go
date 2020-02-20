@@ -2,7 +2,7 @@ package action
 
 import (
 	"errors"
-	"github.com/HyperService-Consortium/go-uip/uiptypes"
+	"github.com/HyperService-Consortium/go-uip/uip"
 
 	"github.com/HyperService-Consortium/NSB/util"
 	signaturetype "github.com/HyperService-Consortium/go-uip/const/signature_type"
@@ -10,7 +10,7 @@ import (
 )
 
 type Action struct {
-	Type      uiptypes.SignatureTypeUnderlyingType `json:"type"`
+	Type      uip.SignatureTypeUnderlyingType `json:"type"`
 	Signature []byte `json:"signature"`
 	Content   []byte `json:"content"`
 }
@@ -19,7 +19,7 @@ var (
 	errShortLen   = errors.New("the length of bytes is too short")
 	errMissType   = errors.New("unknown type of action signature")
 	unknownAction = &Action{
-		Type:      uiptypes.SignatureTypeUnderlyingType(signaturetype.Unknown),
+		Type:      uip.SignatureTypeUnderlyingType(signaturetype.Unknown),
 		Signature: nil,
 		Content:   nil,
 	}
@@ -38,13 +38,13 @@ func (action *Action) TryRecoverFromConcation(concatBytes []byte) (err error) {
 		action = unknownAction
 		return errShortLen
 	}
-	switch uiptypes.SignatureType(util.BytesToUint32(concatBytes[0:4])) {
+	switch uip.SignatureType(util.BytesToUint32(concatBytes[0:4])) {
 	case signaturetype.Secp256k1:
 		if len(concatBytes) < 69 {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = concatBytes[4:69]
 		action.Content = concatBytes[69:]
 	case signaturetype.Ed25519:
@@ -52,7 +52,7 @@ func (action *Action) TryRecoverFromConcation(concatBytes []byte) (err error) {
 			action = unknownAction
 			return errShortLen
 		}
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = concatBytes[4:68]
 		action.Content = concatBytes[68:]
 	default:
@@ -69,13 +69,13 @@ func TryRecoverFromConcation(concatBytes []byte) (action *Action, err error) {
 }
 
 func (action *Action) RecoverFromConcation(concatBytes []byte) {
-	switch uiptypes.SignatureType(util.BytesToUint32(concatBytes[0:4])) {
+	switch uip.SignatureType(util.BytesToUint32(concatBytes[0:4])) {
 	case signaturetype.Secp256k1:
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = concatBytes[4:69]
 		action.Content = concatBytes[69:]
 	case signaturetype.Ed25519:
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = concatBytes[4:68]
 		action.Content = concatBytes[68:]
 	default:
@@ -93,12 +93,12 @@ func RecoverFromConcation(concatBytes []byte) (action *Action) {
 
 func NewAction(aType uint32, signature, content []byte) (action *Action, err error) {
 	action = &Action{}
-	switch uiptypes.SignatureType(aType) {
+	switch uip.SignatureType(aType) {
 	case signaturetype.Secp256k1:
 		if len(signature) != 65 {
 			return unknownAction, errShortLen
 		}
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Secp256k1)
 		action.Signature = signature
 		action.Content = content
 		return
@@ -106,7 +106,7 @@ func NewAction(aType uint32, signature, content []byte) (action *Action, err err
 		if len(signature) != 64 {
 			return unknownAction, errShortLen
 		}
-		action.Type = uiptypes.SignatureTypeUnderlyingType(signaturetype.Ed25519)
+		action.Type = uip.SignatureTypeUnderlyingType(signaturetype.Ed25519)
 		action.Signature = signature
 		action.Content = content
 		return
@@ -116,7 +116,7 @@ func NewAction(aType uint32, signature, content []byte) (action *Action, err err
 }
 
 func (action *Action) Verify(address []byte) bool {
-	switch uiptypes.SignatureType(action.Type) {
+	switch uip.SignatureType(action.Type) {
 	case signaturetype.Secp256k1:
 		// todo
 		return true

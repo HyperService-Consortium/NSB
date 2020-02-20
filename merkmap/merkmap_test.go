@@ -27,19 +27,18 @@ func TestSlotfromBytes(t *testing.T) {
 	fmt.Println(merkmap)
 	merkmap.TryUpdate([]byte("key"), []byte("value"))
 	var bt []byte
-	var rt trie.Hash
 	bt, err = merkmap.TryGet([]byte("key"))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	fmt.Println(bt)
-	rt, err = merkmap.Commit(nil)
+	bt, err = merkmap.Commit(nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(hex.EncodeToString(rt[:]))
+	fmt.Println(hex.EncodeToString(bt[:]))
 }
 
 func TestMapfromDB(t *testing.T) {
@@ -50,17 +49,16 @@ func TestMapfromDB(t *testing.T) {
 	}
 	defer merkmap.Close()
 	var bt []byte
-	var rt trie.Hash
 	bt, err = merkmap.TryGet([]byte("key"))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	fmt.Println(bt)
-	rt, err = merkmap.Commit(nil)
+	bt, err = merkmap.Commit(nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(hex.EncodeToString(rt[:]))
+	fmt.Println(hex.EncodeToString(bt[:]))
 }

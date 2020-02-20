@@ -5,7 +5,7 @@ import (
 	_ "bytes"
 	"errors"
 	"fmt"
-	"github.com/HyperService-Consortium/go-uip/uiptypes"
+	"github.com/HyperService-Consortium/go-uip/uip"
 
 	"github.com/HyperService-Consortium/NSB/application/response"
 	cmn "github.com/HyperService-Consortium/NSB/common"
@@ -100,7 +100,7 @@ func validateMerkleProofKey(typeId uint16, rootHash, key []byte) []byte {
 func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsValidateMerkleProof
 	MustUnmarshal(bytesArgs, &args)
-	switch uiptypes.MerkleProofType(args.Type) {
+	switch uip.MerkleProofType(args.Type) {
 	case merkleprooftype.SimpleMerkleTreeUsingSha256, merkleprooftype.SimpleMerkleTreeUsingSha512:
 		return nsb.validateSimpleMerkleTree(args.Proof, args.Key, args.Type)
 	case merkleprooftype.MerklePatriciaTrieUsingKeccak256:

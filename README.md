@@ -59,7 +59,7 @@ nsbcli.exe wallet show --db ./kvstore --wn Alice
 Under path/to/NSB/bin
 ```
 py -3
->>> exec(open("./main.py").read())
+exec(open("./main.py").read())
 ```
 
 #### Load Wallet to python
@@ -68,25 +68,25 @@ alice = kvdb.load_wallet("Alice")
 ```
 #### Show Wallet Address
 ```python
->>> alice.address(0).hex()
+alice.address(0).hex()
 '5699c73fb5b13dcb860c147dbfe57dd34d5758807f9abe355b38499ba4c93a85'
 ```
 
 #### create signature
 ```python
->>> alice.sign(b"signature").hex()
+alice.sign(b"signature").hex()
 'fcb106038f05d03e688ce852323ebc73adf998864206b10f5d3d2beabe4005c3d49aff40620d8f7e08a1cb896d5c77c9f4f0175853b01dbf4355ebc1799aeb0c'
 ```
 
 #### Set RPC host
 ```python
->>> admin.set_rpc_host("http://127.0.0.1:27667")
-http://127.0.0.1:27667
+admin.set_rpc_host("http://127.0.0.1:27667")
+"http://127.0.0.1:27667"
 ```
 
 #### test
 ```python
->>> cli.abci_info()
+cli.abci_info()
 {
     "id": "",
     "jsonrpc": "2.0",

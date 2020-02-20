@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/HyperService-Consortium/go-uip/uip"
+	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"math/rand"
 	"testing"
 
@@ -28,10 +30,23 @@ func TestCreateContract(t *testing.T) {
 	for idx := 0; idx < 32; idx++ {
 		pri[idx] = uint8(idx)
 	}
-	var signer = signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(pri)))
+	var signer, err = signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(pri)))
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-	var err error
-	var uu, vv = signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(append(make([]byte, 31), 1)))), signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(append(make([]byte, 31), 2))))
+	uu, err := signaturer.NewTendermintNSBSigner(
+		ed25519.NewKeyFromSeed(append(make([]byte, 31), 1)))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	vv, err := signaturer.NewTendermintNSBSigner([]byte(ed25519.NewKeyFromSeed(append(make([]byte, 31), 2))))
+	if err != nil {
+		t.Error(err)
+		return
+	}
 	var u, v = uu.GetPublicKey(), vv.GetPublicKey()
 	fmt.Println("main src...", hex.EncodeToString(u))
 
@@ -90,7 +105,12 @@ func TestCreateContract(t *testing.T) {
 	buf.Write(txHeader.Data)
 	buf.Write(txHeader.Value)
 	buf.Write(txHeader.Nonce)
-	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	signature, err := signer.Sign(buf.Bytes())
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	txHeader.Signature = signature.Bytes()
 	b, err := proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
@@ -123,8 +143,8 @@ func TestCreateContract(t *testing.T) {
 		ISCAddress: ret.Data,
 		Tid:        0,
 		Aid:        3,
-		Type:       signaturetype.Ed25519,
-		Signature:  uu.Sign([]byte("123")).Bytes(),
+		Type:       uint32(signaturetype.Ed25519),
+		Signature:  sugar.HandlerError(uu.Sign([]byte("123"))).(uip.Signature).Bytes(),
 		Content:    []byte("123"),
 	}
 	fap.FuncName = "system.action@addAction"
@@ -161,7 +181,7 @@ func TestCreateContract(t *testing.T) {
 	buf.Write(txHeader.Data)
 	buf.Write(txHeader.Value)
 	buf.Write(txHeader.Nonce)
-	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	txHeader.Signature = sugar.HandlerError(signer.Sign(buf.Bytes())).(uip.Signature).Bytes()
 	b, err = proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
@@ -194,9 +214,11 @@ func TestSetBalance(t *testing.T) {
 	for idx := 0; idx < 64; idx++ {
 		pri[idx] = uint8(idx)
 	}
-	var signer = signaturer.NewTendermintNSBSigner(pri)
+	var signer, err = signaturer.NewTendermintNSBSigner(pri)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	var err error
 	var args = &ArgsTransfer{
 		Value: math.NewUint256FromBytes([]byte{1}),
 	}
@@ -238,7 +260,11 @@ func TestSetBalance(t *testing.T) {
 	buf.Write(txHeader.Data)
 	buf.Write(txHeader.Value)
 	buf.Write(txHeader.Nonce)
-	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	txHeader.Signature = sugar.HandlerError(signer.Sign(buf.Bytes())).(uip.Signature).Bytes()
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	b, err := proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
@@ -282,9 +308,11 @@ func TestTransfer(t *testing.T) {
 	for idx := 0; idx < 64; idx++ {
 		pri[idx] = uint8(idx)
 	}
-	var signer = signaturer.NewTendermintNSBSigner(pri)
+	var signer, err = signaturer.NewTendermintNSBSigner(pri)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	var err error
 	var args = &ArgsTransfer{
 		Value: math.NewUint256FromBytes([]byte{1}),
 	}
@@ -326,7 +354,7 @@ func TestTransfer(t *testing.T) {
 	buf.Write(txHeader.Data)
 	buf.Write(txHeader.Value)
 	buf.Write(txHeader.Nonce)
-	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	txHeader.Signature = sugar.HandlerError(signer.Sign(buf.Bytes())).(uip.Signature).Bytes()
 	b, err := proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
@@ -392,7 +420,7 @@ func TestTransfer(t *testing.T) {
 	buf.Write(txHeader.Data)
 	buf.Write(txHeader.Value)
 	buf.Write(txHeader.Nonce)
-	txHeader.Signature = signer.Sign(buf.Bytes()).Bytes()
+	txHeader.Signature = sugar.HandlerError(signer.Sign(buf.Bytes())).(uip.Signature).Bytes()
 	b, err = proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
