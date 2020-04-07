@@ -1,10 +1,10 @@
 package merkmap
 
 import (
-	"fmt"
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"github.com/HyperService-Consortium/NSB/merkmap/MerkMapError"
 	"github.com/HyperService-Consortium/go-mpt"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -17,14 +17,12 @@ type MerkMap struct {
 	lastRoot []byte
 }
 
-
 type ProofJson struct {
 	Proof [][]byte `json:"proof"`
-	Key []byte `json:"key"`
-	Value []byte `json:"value"`
-	Log string `json:"log"`
+	Key   []byte   `json:"key"`
+	Value []byte   `json:"value"`
+	Log   string   `json:"log"`
 }
-
 
 func concatBytes(dat ...[]byte) []byte {
 	var buff bytes.Buffer
@@ -46,6 +44,8 @@ func NewMerkMapFromDB(db *leveldb.DB, rtHash interface{}, slot interface{}) (mp 
 		rootHash = trie.BytesToHash(rtHash.([]byte))
 	case [32]byte:
 		rootHash = trie.BytesToHash(rtHash.([]byte)[:])
+	case trie.Hash:
+		rootHash = rtHash.(trie.Hash)
 	default:
 		return nil, MerkMapError.UnrecognizedType
 	}
@@ -160,7 +160,6 @@ func (mp *MerkMap) MakeErrorProofFromString(str string) string {
 	return string(bt)
 }
 
-
 func (mp *MerkMap) Revert() (err error) {
 	mp.merk, err = trie.NewTrie(trie.BytesToHash(mp.lastRoot), mp.db)
 	return
@@ -169,10 +168,12 @@ func (mp *MerkMap) Revert() (err error) {
 func (mp *MerkMap) Commit(cb trie.LeafCallback) (root []byte, err error) {
 	var rt trie.Hash
 	rt, err = mp.merk.Commit(cb)
+	if err != nil {
+		return nil, err
+	}
 	mp.lastRoot = rt.Bytes()
 	return mp.lastRoot, err
 }
-
 
 // dont use this function if its db handler comes from outside
 func (mp *MerkMap) Close() error {
