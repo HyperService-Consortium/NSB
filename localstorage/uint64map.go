@@ -11,7 +11,7 @@ type Uint64Map struct {
 
 func (sto *LocalStorage) NewUint64Map(mapName string) *Uint64Map {
 	return &Uint64Map{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 

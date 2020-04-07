@@ -6,14 +6,14 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-type CommitEvent func()()
+type CommitEvent func()
 
 type LocalStorage struct {
 	accountAddress []byte
 	statedb        *leveldb.DB
 	variSlotMap    *merkmap.MerkMap
 	slotMapCache   map[string]*merkmap.MerkMap
-	events []CommitEvent
+	events         []CommitEvent
 }
 
 func NewLocalStorage(accountAddress []byte, storageRoot interface{}, db *leveldb.DB) (*LocalStorage, error) {
@@ -30,7 +30,7 @@ func NewLocalStorage(accountAddress []byte, storageRoot interface{}, db *leveldb
 	}, nil
 }
 
-func (sto *LocalStorage) makeStorageSlot(slotName string) *merkmap.MerkMap {
+func (sto *LocalStorage) MakeStorageSlot(slotName string) *merkmap.MerkMap {
 	if slotMap, ok := sto.slotMapCache[slotName]; ok {
 		return slotMap
 	}
@@ -40,15 +40,15 @@ func (sto *LocalStorage) makeStorageSlot(slotName string) *merkmap.MerkMap {
 }
 
 func (sto *LocalStorage) tryUpdate(slotName string, map_offset []byte, value []byte) error {
-	return sto.makeStorageSlot(slotName).TryUpdate(map_offset, value)
+	return sto.MakeStorageSlot(slotName).TryUpdate(map_offset, value)
 }
 
 func (sto *LocalStorage) tryGet(slotName string, map_offset []byte) ([]byte, error) {
-	return sto.makeStorageSlot(slotName).TryGet(map_offset)
+	return sto.MakeStorageSlot(slotName).TryGet(map_offset)
 }
 
 func (sto *LocalStorage) tryDelete(slotName string, map_offset []byte) error {
-	return sto.makeStorageSlot(slotName).TryDelete(map_offset)
+	return sto.MakeStorageSlot(slotName).TryDelete(map_offset)
 }
 
 func (sto *LocalStorage) Commit() (root []byte, err error) {

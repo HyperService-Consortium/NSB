@@ -4,26 +4,26 @@ import (
 	"github.com/HyperService-Consortium/NSB/merkmap"
 )
 
-type ToBytesHelper func(interface{})([]byte)
-type FromBytesHelper func([]byte)(interface{})
+type ToBytesHelper func(interface{}) []byte
+type FromBytesHelper func([]byte) interface{}
 
 type GeneralMap struct {
-	merk *merkmap.MerkMap
-	leftToBytesHelperFunc ToBytesHelper
-	rightToBytesHelperFunc ToBytesHelper
+	merk                     *merkmap.MerkMap
+	leftToBytesHelperFunc    ToBytesHelper
+	rightToBytesHelperFunc   ToBytesHelper
 	rightFromBytesHelperFunc FromBytesHelper
 }
 
 func (sto *LocalStorage) NewGeneralMap(
 	mapName string,
-	leftToBytesHelperFunc func(interface{})([]byte),
-	rightToBytesHelperFunc func(interface{})([]byte),
-	rightFromBytesHelperFunc func([]byte)(interface{}),
+	leftToBytesHelperFunc func(interface{}) []byte,
+	rightToBytesHelperFunc func(interface{}) []byte,
+	rightFromBytesHelperFunc func([]byte) interface{},
 ) *GeneralMap {
 	return &GeneralMap{
-		merk: sto.makeStorageSlot(mapName),
-		leftToBytesHelperFunc: leftToBytesHelperFunc,
-		rightToBytesHelperFunc: rightToBytesHelperFunc,
+		merk:                     sto.MakeStorageSlot(mapName),
+		leftToBytesHelperFunc:    leftToBytesHelperFunc,
+		rightToBytesHelperFunc:   rightToBytesHelperFunc,
 		rightFromBytesHelperFunc: rightFromBytesHelperFunc,
 	}
 }

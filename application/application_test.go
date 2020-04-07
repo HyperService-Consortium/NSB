@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/HyperService-Consortium/go-uip/op-intent/parser/instruction"
 	"github.com/HyperService-Consortium/go-uip/uip"
 	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"math/rand"
@@ -12,7 +13,6 @@ import (
 
 	transactiontype "github.com/HyperService-Consortium/NSB/application/transaction-type"
 	isc "github.com/HyperService-Consortium/NSB/contract/isc"
-	"github.com/HyperService-Consortium/NSB/contract/isc/transaction"
 	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
 	log "github.com/HyperService-Consortium/NSB/log"
 	"github.com/HyperService-Consortium/NSB/math"
@@ -51,16 +51,20 @@ func TestCreateContract(t *testing.T) {
 	fmt.Println("main src...", hex.EncodeToString(u))
 
 	var iscOnwers = [][]byte{signer.GetPublicKey(), u, v}
-	var funds = []uint32{0, 0, 0}
+	var funds = []uint64{0, 0, 0}
 	var vesSig = []byte{0}
-	var transactionIntents = []*transaction.TransactionIntent{
-		&transaction.TransactionIntent{
-			Fr:   u,
-			To:   v,
-			Seq:  math.NewUint256FromHexString("10"),
-			Amt:  math.NewUint256FromHexString("10"),
-			Meta: []byte{0},
-		},
+
+	var txBuf = bytes.NewBuffer(nil)
+	sugar.HandlerError0(instruction.EncodeInstruction(&instruction.TransactionIntent{
+		Src: u,
+		Dst: v,
+		//Seq:  math.NewUint256FromHexString("10"),
+		Amt:  "10",
+		Meta: []byte{0},
+	}, txBuf))
+
+	var transactionIntents = [][]byte{
+		txBuf.Bytes(),
 	}
 	var args = &isc.ArgsCreateNewContract{
 		IscOwners:          iscOnwers,

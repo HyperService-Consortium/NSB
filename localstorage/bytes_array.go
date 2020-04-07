@@ -15,7 +15,7 @@ type BytesArray struct {
 
 func (sto *LocalStorage) NewBytesArray(arrName string) *BytesArray {
 	barr := &BytesArray{
-		merk:                       sto.makeStorageSlot(arrName),
+		merk:                       sto.MakeStorageSlot(arrName),
 		length:                     sto.GetUint64(arrName),
 		__x_fast_bytes_interpreter: []byte{0, 0, 0, 0, 0, 0, 0, 0},
 	}

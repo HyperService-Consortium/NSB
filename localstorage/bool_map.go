@@ -10,7 +10,7 @@ type BoolMap struct {
 
 func (sto *LocalStorage) NewBoolMap(mapName string) *BoolMap {
 	return &BoolMap{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 
