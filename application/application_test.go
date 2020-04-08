@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/HyperService-Consortium/go-uip/op-intent/parser/instruction"
+	"github.com/HyperService-Consortium/go-uip/op-intent/instruction"
 	"github.com/HyperService-Consortium/go-uip/uip"
 	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"math/rand"

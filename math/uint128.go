@@ -1,7 +1,7 @@
 package math
 
 import (
-	"github.com/HyperService-Consortium/go-uip/math"
+	"github.com/HyperService-Consortium/go-uip/lib/math"
 	"math/big"
 )
 

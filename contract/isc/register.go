@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/HyperService-Consortium/go-uip/isc"
-	"github.com/HyperService-Consortium/go-uip/op-intent/parser/instruction"
+	"github.com/HyperService-Consortium/go-uip/op-intent/instruction"
 	"github.com/HyperService-Consortium/go-uip/uip"
 
 	cmn "github.com/HyperService-Consortium/NSB/common"

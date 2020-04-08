@@ -6,7 +6,7 @@ import (
 	. "github.com/HyperService-Consortium/NSB/common/contract_response"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/HyperService-Consortium/go-uip/isc"
-	"github.com/HyperService-Consortium/go-uip/op-intent/lexer"
+	opintent "github.com/HyperService-Consortium/go-uip/op-intent"
 	"github.com/HyperService-Consortium/go-uip/storage"
 	"github.com/HyperService-Consortium/go-uip/uip"
 	"github.com/Myriad-Dreamin/gvm"
@@ -82,7 +82,7 @@ func (c context) Address() []byte {
 func (c context) GetExternalStorageAt(chainID uip.ChainID, typeID uip.TypeID,
 	contractAddress uip.ContractAddress, pos []byte, description []byte) (gvm.Ref, error) {
 	// todo
-	return (*lexer.Int256)(big.NewInt(1)), nil
+	return (*opintent.Uint256)(big.NewInt(1)), nil
 }
 
 func (iscc *ISC) GetOwners() *cmn.ContractCallBackInfo {
