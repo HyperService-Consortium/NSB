@@ -8,17 +8,17 @@ import (
 )
 
 type ArgsCreateNewContract struct {
-	Delegates       [][]byte        `json:"1"`
-	District        string          `json:"2"`
-	TotalVotes      *math.Uint256   `json:"3"`
+	Delegates  [][]byte      `json:"1"`
+	District   string        `json:"2"`
+	TotalVotes *math.Uint256 `json:"3"`
 }
 
 type ArgsAddDelegate struct {
-	NewDelegate	[]byte			`json:"1"`
+	NewDelegate []byte `json:"1"`
 }
 
 type ArgsRemoveDelegate struct {
-	RemovedDelegate	  []byte		`json:"1"`
+	RemovedDelegate []byte `json:"1"`
 }
 
 func MustUnmarshal(data []byte, load interface{}) {
@@ -28,7 +28,7 @@ func MustUnmarshal(data []byte, load interface{}) {
 	}
 }
 
-func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
+func RegisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var delegate = &Delegate{env: contractEnvironment}
 	switch contractEnvironment.FuncName {
 	case "Vote":
@@ -40,12 +40,10 @@ func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 	}
 }
 
-
-func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
+func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
 
 	var delegate = &Delegate{env: contractEnvironment}
 	return delegate.NewContract(args.Delegates, args.District, args.TotalVotes)
 }
-

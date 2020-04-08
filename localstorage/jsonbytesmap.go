@@ -11,7 +11,7 @@ type JsonBytesMap struct {
 
 func (sto *LocalStorage) NewJsonBytesMap(mapName string) *JsonBytesMap {
 	return &JsonBytesMap{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 

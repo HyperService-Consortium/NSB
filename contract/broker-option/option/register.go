@@ -2,31 +2,27 @@ package option
 
 import (
 	"encoding/json"
-	"github.com/HyperService-Consortium/NSB/math"
-	. "github.com/HyperService-Consortium/NSB/common/contract_response"
 	cmn "github.com/HyperService-Consortium/NSB/common"
+	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/math"
 )
 
 type Option struct {
 	env *cmn.ContractEnvironment
 }
 
-
 type ArgsCreateNewContract struct {
 	Owner       []byte        `json:"owner"`
 	StrikePrice *math.Uint256 `json:"strike_price"`
 }
 
-
 type ArgsUpdateStake struct {
 	Value *math.Uint256 `json:"1"`
 }
 
-
 type ArgsBuyOption struct {
 	Proposal *math.Uint256 `json:"1"`
 }
-
 
 func MustUnmarshal(data []byte, load interface{}) {
 	err := json.Unmarshal(data, load)
@@ -35,7 +31,7 @@ func MustUnmarshal(data []byte, load interface{}) {
 	}
 }
 
-func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
+func RegisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var option = &Option{env: contractEnvironment}
 
 	switch contractEnvironment.FuncName {
@@ -54,8 +50,7 @@ func RigisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 	}
 }
 
-
-func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) (*cmn.ContractCallBackInfo) {
+func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
 

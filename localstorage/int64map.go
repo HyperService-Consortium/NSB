@@ -11,7 +11,7 @@ type Int64Map struct {
 
 func (sto *LocalStorage) NewInt64Map(mapName string) *Int64Map {
 	return &Int64Map{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 
@@ -20,7 +20,7 @@ func (i64map *Int64Map) Set(map_offset int64, value []byte) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
 
 func (i64map *Int64Map) Get(map_offset int64) []byte {
@@ -36,5 +36,5 @@ func (i64map *Int64Map) Delete(map_offset int64) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }

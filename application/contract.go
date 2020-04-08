@@ -41,15 +41,15 @@ func (nsb *NSBApplication) execContractFuncs(
 
 	switch contractName {
 	case "isc":
-		return isc.RigisteredMethod(contractEnv)
+		return isc.RegisteredMethod(contractEnv)
 	case "sdeam":
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeTODO()),
 		} // sdeam.RegistedMethod(byteJson)
 	case "option":
-		return opt.RigisteredMethod(contractEnv)
+		return opt.RegisteredMethod(contractEnv)
 	case "delegate":
-		return dlg.RigisteredMethod(contractEnv)
+		return dlg.RegisteredMethod(contractEnv)
 	default:
 		return &cmn.ContractCallBackInfo{
 			CodeResponse: uint32(response.CodeInvalidTxType()),

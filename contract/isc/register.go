@@ -1,8 +1,12 @@
 package isc
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/HyperService-Consortium/go-uip/isc"
+	"github.com/HyperService-Consortium/go-uip/op-intent/instruction"
+	"github.com/HyperService-Consortium/go-uip/uip"
 
 	cmn "github.com/HyperService-Consortium/NSB/common"
 	. "github.com/HyperService-Consortium/NSB/common/contract_response"
@@ -17,15 +21,11 @@ func MustUnmarshal(data []byte, load interface{}) {
 	}
 }
 
-type ISC struct {
-	env *cmn.ContractEnvironment
-}
-
 type ArgsCreateNewContract struct {
-	IscOwners          [][]byte                         `json:"isc_owners"`
-	Funds              []uint32                         `json:"required_funds"`
-	VesSig             []byte                           `json:"ves_signature"`
-	TransactionIntents []*transaction.TransactionIntent `json:"transaction_intents"`
+	IscOwners          [][]byte `json:"isc_owners"`
+	Funds              []uint64 `json:"required_funds"`
+	VesSig             []byte   `json:"ves_signature"`
+	TransactionIntents [][]byte `json:"transaction_intents"`
 }
 
 type ArgsUpdateTxInfo struct {
@@ -55,37 +55,89 @@ type ArgsInsuranceClaim struct {
 func CreateNewContract(contractEnvironment *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	var args ArgsCreateNewContract
 	MustUnmarshal(contractEnvironment.Args, &args)
-	var iscc = &ISC{env: contractEnvironment}
-	return iscc.NewContract(args.IscOwners, args.Funds, args.VesSig, args.TransactionIntents)
+	var instance = NewISC(contractEnvironment)
+	resp := instance.NewContract(args.IscOwners,
+		args.Funds, decodeInstructions(args.TransactionIntents), args.TransactionIntents)
+	if isc.IsOK(resp) {
+		err := instance.Commit()
+		if err != nil {
+			panic(err)
+		}
+	}
+	return handleResponse(resp)
 }
 
-func RigisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
-	var iscc = &ISC{env: env}
-	switch env.FuncName {
-	case "UpdateTxInfo":
-		var args ArgsUpdateTxInfo
-		MustUnmarshal(env.Args, &args)
-		return iscc.UpdateTxInfo(args.Tid, args.TransactionIntent)
-	case "UpdateTxFr":
-		var args ArgsUpdateTxFr
-		MustUnmarshal(env.Args, &args)
-		return iscc.UpdateTxFr(args.Tid, args.Fr)
+func decodeInstructions(bs [][]byte) []uip.Instruction {
+	var (
+		b   = bytes.NewReader(nil)
+		is  = make([]uip.Instruction, len(bs))
+		err error
+	)
+	for i := range bs {
+		b.Reset(bs[i])
+		is[i], err = instruction.DecodeInstruction(b)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return is
+}
+
+func handleResponse(resp isc.Response) *cmn.ContractCallBackInfo {
+	if isc.IsOK(resp) {
+		resp := resp.(*isc.ResponseData)
+		return &cmn.ContractCallBackInfo{
+			CodeResponse: CodeOK(),
+			Data:         resp.Data,
+			Value:        resp.Value,
+			OutFlag:      resp.OutFlag,
+		}
+	} else {
+		resp := resp.(*isc.ResponseError)
+		return &cmn.ContractCallBackInfo{
+			CodeResponse: uint32(resp.Code),
+			Log:          resp.Err,
+		}
+	}
+}
+func RegisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
+	var instance = NewISC(env)
+	resp := registeredMethod(instance)
+	if isc.IsOK(resp) {
+		err := instance.Commit()
+		if err != nil {
+			panic(err)
+		}
+	}
+	return handleResponse(resp)
+}
+
+func registeredMethod(instance *ISC) isc.Response {
+	switch instance.env.FuncName {
+	//case "UpdateTxInfo":
+	//	var args ArgsUpdateTxInfo
+	//	MustUnmarshal(instance.env.Args, &args)
+	//	return iscc.UpdateTxInfo(args.Tid, args.TransactionIntent)
+	//case "UpdateTxFr":
+	//	var args ArgsUpdateTxFr
+	//	MustUnmarshal(instance.env.Args, &args)
+	//	return iscc.UpdateTxFr(args.Tid, args.Fr)
 	case "FreezeInfo":
 		var args ArgsFreezeInfo
-		MustUnmarshal(env.Args, &args)
-		return iscc.FreezeInfo(args.Tid)
+		MustUnmarshal(instance.env.Args, &args)
+		return instance.FreezeInfo(args.Tid)
 	case "UserAck":
 		var args ArgsUserAck
-		MustUnmarshal(env.Args, &args)
-		return iscc.UserAck(args.Address, args.Signature)
+		MustUnmarshal(instance.env.Args, &args)
+		return instance.UserAck(args.Address, args.Signature)
 	case "InsuranceClaim":
-		return iscc.InsuranceClaim(util.BytesToUint64(env.Args[0:8]), util.BytesToUint64(env.Args[8:16]))
+		return instance.InsuranceClaim(util.BytesToUint64(instance.env.Args[0:8]), util.BytesToUint64(instance.env.Args[8:16]))
 	case "SettleContract":
-		if env.Args != nil {
-			return ExecContractError(errors.New("this function must have no input"))
+		if instance.env.Args != nil {
+			panic(ExecContractError(errors.New("this function must have no input")))
 		}
-		return iscc.SettleContract()
+		return instance.SettleContract()
 	default:
-		return InvalidFunctionType(env.FuncName)
+		panic(InvalidFunctionType(instance.env.FuncName))
 	}
 }

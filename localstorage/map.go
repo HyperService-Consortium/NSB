@@ -14,7 +14,7 @@ type Map struct {
 
 func (sto *LocalStorage) NewMap(mapName string) *Map {
 	return &Map{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 

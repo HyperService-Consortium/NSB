@@ -3,6 +3,7 @@ package nsb
 import (
 	"encoding/json"
 	"errors"
+	TxState "github.com/HyperService-Consortium/go-uip/const/transaction_state_type"
 
 	autil "github.com/HyperService-Consortium/NSB/action"
 	"github.com/HyperService-Consortium/NSB/application/response"
@@ -12,7 +13,6 @@ import (
 	"github.com/HyperService-Consortium/NSB/util"
 	"github.com/tendermint/tendermint/abci/types"
 
-	txstate "github.com/HyperService-Consortium/NSB/contract/isc/TxState"
 	transaction "github.com/HyperService-Consortium/NSB/contract/isc/transaction"
 )
 
@@ -73,7 +73,7 @@ func actionKey(addr []byte, tid uint64, aid uint64) []byte {
 
 func (nsb *NSBApplication) _addAction(args *ArgsAddAction) *types.ResponseDeliverTx {
 	// TODO: check valid isc/tid/aid
-	if args.Aid >= txstate.Undefined {
+	if args.Aid > TxState.Closed {
 		return response.ExecContractError(errors.New("action index overflow"))
 	}
 
@@ -107,7 +107,7 @@ func (nsb *NSBApplication) _addAction(args *ArgsAddAction) *types.ResponseDelive
 	}
 
 	// if is src
-	if ((txstate.Instantiating ^ args.Aid) & 1) == 0 {
+	if ((TxState.Instantiating ^ args.Aid) & 1) == 0 {
 		if action.Verify(tx.Fr) == false {
 			return response.ExecContractError(errors.New("validate failed"))
 		}

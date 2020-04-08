@@ -10,7 +10,7 @@ type StringMap struct {
 
 func (sto *LocalStorage) NewStringMap(mapName string) *StringMap {
 	return &StringMap{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 
@@ -19,7 +19,7 @@ func (smap *StringMap) Set(map_offset string, value []byte) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
 
 func (smap *StringMap) Get(map_offset string) []byte {

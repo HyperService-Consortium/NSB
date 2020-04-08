@@ -10,7 +10,7 @@ type BytesMap struct {
 
 func (sto *LocalStorage) NewBytesMap(mapName string) *BytesMap {
 	return &BytesMap{
-		merk: sto.makeStorageSlot(mapName),
+		merk: sto.MakeStorageSlot(mapName),
 	}
 }
 
@@ -19,7 +19,7 @@ func (bmap *BytesMap) Set(map_offset []byte, value []byte) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
 
 func (bmap *BytesMap) Get(map_offset []byte) []byte {
@@ -35,5 +35,5 @@ func (bmap *BytesMap) Delete(map_offset []byte) {
 	if err != nil {
 		panic(err)
 	}
-	return 
+	return
 }
