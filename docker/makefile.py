@@ -18,6 +18,7 @@ class Makefile:
     @classmethod
     @require_cls('nsb_source', 'tendermint')
     def image(cls, *_):
+        pipe('cp build/NSB node/NSB')
         pipe('docker build --tag %s node' % Makefile.node_name)
 
     @classmethod

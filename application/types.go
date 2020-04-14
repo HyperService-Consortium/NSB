@@ -1,12 +1,9 @@
 package nsb
 
 import (
-	"encoding/hex"
-	"fmt"
-
+	system_merkle_proof "github.com/HyperService-Consortium/NSB/contract/system/merkle-proof"
 	nsbrpc "github.com/HyperService-Consortium/NSB/grpc/nsbrpc"
 	log "github.com/HyperService-Consortium/NSB/log"
-	"github.com/HyperService-Consortium/NSB/math"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
@@ -25,6 +22,10 @@ type NSBApplication struct {
 	statedb                    *leveldb.DB
 	ValUpdates                 []types.ValidatorUpdate
 	logger                     log.TendermintLogger
+
+	system struct {
+		merkleProof *system_merkle_proof.Contract
+	}
 }
 
 type NSBState struct {
@@ -33,21 +34,4 @@ type NSBState struct {
 	Height    int64  `json:"height"`
 }
 
-type AccountInfo struct {
-	Balance     *math.Uint256 `json:"balance"`
-	CodeHash    []byte        `json:"code_hash"`
-	StorageRoot []byte        `json:"storage_root"`
-	Name        []byte        `json:"name"`
-}
-
 type FAPair = nsbrpc.FAPair
-
-func (accInfo *AccountInfo) String() string {
-	return fmt.Sprintf(
-		"Balance: %v\nodeHash: %v\nStorageRoot: %v, name:%v\n",
-		accInfo.Balance.String(),
-		hex.EncodeToString(accInfo.CodeHash),
-		hex.EncodeToString(accInfo.StorageRoot),
-		string(accInfo.Name),
-	)
-}

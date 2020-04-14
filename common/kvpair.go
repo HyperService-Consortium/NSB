@@ -8,7 +8,7 @@ type KVPair interface {
 }
 
 type KVPairInstance struct {
-	key []byte
+	key   []byte
 	value []byte
 }
 
@@ -20,10 +20,9 @@ func (kv *KVPairInstance) Value() []byte {
 	return kv.value
 }
 
-
 func MakeKVPair(key []byte, value []byte) KVPair {
 	return &KVPairInstance{
-		key: key,
+		key:   key,
 		value: value,
 	}
 }

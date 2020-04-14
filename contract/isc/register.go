@@ -112,6 +112,10 @@ func RegisteredMethod(env *cmn.ContractEnvironment) *cmn.ContractCallBackInfo {
 	return handleResponse(resp)
 }
 
+type GetPCReply struct {
+	PC uint64 `json:"pc"`
+}
+
 func registeredMethod(instance *ISC) isc.Response {
 	switch instance.env.FuncName {
 	//case "UpdateTxInfo":
@@ -137,6 +141,16 @@ func registeredMethod(instance *ISC) isc.Response {
 			panic(ExecContractError(errors.New("this function must have no input")))
 		}
 		return instance.SettleContract()
+	case "GetPC":
+		// todo move to upstream
+		return (&isc.ResponseData{}).Param(&GetPCReply{
+			PC: instance.Storage.GetPC(),
+		})
+	case "GetMuPC":
+		// todo move to upstream
+		return (&isc.ResponseData{}).Param(&GetPCReply{
+			PC: instance.Storage.GetMuPC(),
+		})
 	default:
 		panic(InvalidFunctionType(instance.env.FuncName))
 	}

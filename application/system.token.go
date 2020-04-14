@@ -2,6 +2,7 @@ package nsb
 
 import (
 	"fmt"
+	"github.com/HyperService-Consortium/NSB/util"
 
 	"github.com/HyperService-Consortium/NSB/application/response"
 	cmn "github.com/HyperService-Consortium/NSB/common"
@@ -22,33 +23,33 @@ type ArgsTransfer struct {
 
 func (nsb *NSBApplication) TokenRigisteredMethod(
 	env *cmn.TransactionHeader,
-	frInfo *AccountInfo,
-	toInfo *AccountInfo,
+	frInfo *cmn.AccountInfo,
+	toInfo *cmn.AccountInfo,
 	funcName string,
 	args []byte,
 ) *types.ResponseDeliverTx {
 	switch funcName {
 	case "setBalance":
 		var uargs ArgsSetBalance
-		MustUnmarshal(args, &uargs)
+		util.MustUnmarshal(args, &uargs)
 		return nsb.setBalance(frInfo, uargs.Value)
 	case "transfer":
 		var uargs ArgsTransfer
-		MustUnmarshal(args, &uargs)
+		util.MustUnmarshal(args, &uargs)
 		return nsb.transfer(frInfo, toInfo, uargs.Value)
 	default:
-		return response.InvalidFuncTypeError(MethodMissing)
+		return response.InvalidFuncTypeError(response.MethodMissing)
 	}
 }
 
-func (nsb *NSBApplication) setBalance(accInfo *AccountInfo, value *math.Uint256) *types.ResponseDeliverTx {
+func (nsb *NSBApplication) setBalance(accInfo *cmn.AccountInfo, value *math.Uint256) *types.ResponseDeliverTx {
 	accInfo.Balance = value
 	return response.ExecOK()
 }
 
 func (nsb *NSBApplication) transfer(
-	frInfo *AccountInfo,
-	toInfo *AccountInfo,
+	frInfo *cmn.AccountInfo,
+	toInfo *cmn.AccountInfo,
 	value *math.Uint256,
 ) *types.ResponseDeliverTx {
 

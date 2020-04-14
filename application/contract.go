@@ -106,8 +106,8 @@ func (nsb *NSBApplication) createContracts(contractEnv *cmn.ContractEnvironment)
 func (nsb *NSBApplication) systemCall(
 	contractName string,
 	env *cmn.TransactionHeader,
-	frInfo *AccountInfo,
-	toInfo *AccountInfo,
+	frInfo *cmn.AccountInfo,
+	toInfo *cmn.AccountInfo,
 	funcName string,
 	args []byte,
 ) (cb *types.ResponseDeliverTx) {
@@ -139,7 +139,7 @@ func (nsb *NSBApplication) systemCall(
 	case "system.action":
 		return nsb.ActionRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.merkleproof":
-		return nsb.MerkleProofRigisteredMethod(env, frInfo, toInfo, funcName, args)
+		return nsb.system.merkleProof.RegisteredMethod(env, frInfo, toInfo, funcName, args)
 	case "system.token":
 		return nsb.TokenRigisteredMethod(env, frInfo, toInfo, funcName, args)
 	default:
@@ -149,3 +149,8 @@ func (nsb *NSBApplication) systemCall(
 		}
 	}
 }
+
+/*
+ * storage := validMerkleProofMap
+ * storage2 := validOnchainMerkleProofMap
+ */
