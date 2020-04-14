@@ -73,7 +73,7 @@ func (nsb *NSBApplication) parseTxHeader(txHeaderProtobuf []byte) (
 }
 
 func (nsb *NSBApplication) parseAccInfo(addr []byte) (
-	*AccountInfo,
+	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	byteInfo, err := nsb.accMap.TryGet(addr)
@@ -81,7 +81,7 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 		return nil, response.ReTrieveTxError(err)
 	}
 
-	var accInfo AccountInfo
+	var accInfo cmn.AccountInfo
 	if byteInfo != nil {
 		err = json.Unmarshal(byteInfo, &accInfo)
 		if err != nil {
@@ -95,7 +95,7 @@ func (nsb *NSBApplication) parseAccInfo(addr []byte) (
 }
 
 func (nsb *NSBApplication) extractAddress(contractAddress []byte) (
-	*AccountInfo,
+	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	byteInfo, err := nsb.accMap.TryGet(contractAddress)
@@ -105,7 +105,7 @@ func (nsb *NSBApplication) extractAddress(contractAddress []byte) (
 	if byteInfo == nil {
 		return nil, response.MissingContract
 	} else {
-		var contractInfo AccountInfo
+		var contractInfo cmn.AccountInfo
 		err = json.Unmarshal(byteInfo, &contractInfo)
 		if err != nil {
 			return nil, response.DecodeAccountInfoError(err)
@@ -118,7 +118,7 @@ func (nsb *NSBApplication) createContractAccount(
 	txHeader *cmn.TransactionHeader,
 	contractName string,
 ) (
-	*AccountInfo,
+	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	nsb.logger.Info("creating", contractName)
@@ -132,7 +132,7 @@ func (nsb *NSBApplication) createContractAccount(
 	if byteInfo != nil {
 		return nil, response.ConflictAddress
 	}
-	var contractInfo AccountInfo
+	var contractInfo cmn.AccountInfo
 	contractInfo.Balance = math.NewUint256FromBytes([]byte{0})
 	contractInfo.Name = []byte(contractName)
 	// TODO: set CodeHash
@@ -154,8 +154,8 @@ func (nsb *NSBApplication) prepareContractEnvironment(
 	bytesTx []byte, createFlag bool,
 ) (
 	*cmn.ContractEnvironment,
-	*AccountInfo,
-	*AccountInfo,
+	*cmn.AccountInfo,
+	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	txHeader, errInfo := nsb.parseTxHeader(bytesTx)
@@ -169,7 +169,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(
 		return nil, nil, nil, errInfo
 	}
 
-	var accInfo, conInfo *AccountInfo
+	var accInfo, conInfo *cmn.AccountInfo
 	accInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
@@ -218,8 +218,8 @@ func (nsb *NSBApplication) prepareContractEnvironment(
 
 func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderProtobuf []byte) (
 	*cmn.TransactionHeader,
-	*AccountInfo,
-	*AccountInfo,
+	*cmn.AccountInfo,
+	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
 	txHeader, errInfo := nsb.parseTxHeader(txHeaderProtobuf)
@@ -227,7 +227,7 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderProtobuf []b
 		return nil, nil, nil, errInfo
 	}
 
-	var frInfo, toInfo *AccountInfo
+	var frInfo, toInfo *cmn.AccountInfo
 	frInfo, errInfo = nsb.parseAccInfo(txHeader.From)
 	if errInfo != nil {
 		return nil, nil, nil, errInfo
@@ -249,8 +249,8 @@ func (nsb *NSBApplication) prepareSystemContractEnvironment(txHeaderProtobuf []b
 func (nsb *NSBApplication) modifyState(
 	cb *cmn.ContractCallBackInfo,
 	env *cmn.ContractEnvironment,
-	accInfo *AccountInfo,
-	conInfo *AccountInfo,
+	accInfo *cmn.AccountInfo,
+	conInfo *cmn.AccountInfo,
 ) *types.ResponseDeliverTx {
 	if cb.Value == nil {
 		return nil
@@ -282,8 +282,8 @@ func (nsb *NSBApplication) modifyState(
 
 func (nsb *NSBApplication) storeState(
 	env *cmn.ContractEnvironment,
-	accInfo *AccountInfo,
-	conInfo *AccountInfo,
+	accInfo *cmn.AccountInfo,
+	conInfo *cmn.AccountInfo,
 ) *types.ResponseDeliverTx {
 	var err error
 	conInfo.StorageRoot, err = env.Storage.Commit()

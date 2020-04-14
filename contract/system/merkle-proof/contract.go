@@ -1,30 +1,21 @@
-package nsb
+package system_merkle_proof
 
 import (
 	"bytes"
-	_ "bytes"
 	"errors"
 	"fmt"
-	"github.com/HyperService-Consortium/go-uip/uip"
-
 	"github.com/HyperService-Consortium/NSB/application/response"
-	cmn "github.com/HyperService-Consortium/NSB/common"
 	"github.com/HyperService-Consortium/NSB/crypto"
+	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/HyperService-Consortium/NSB/util"
 	merkleprooftype "github.com/HyperService-Consortium/go-uip/const/merkle-proof-type"
 	"github.com/tendermint/tendermint/abci/types"
-	// "github.com/HyperService-Consortium/go-mpt"
 )
-
-/*
- * storage := validMerkleProofMap
- * storage2 := validOnchainMerkleProofMap
- */
 
 var (
 	bytesOne                      = []byte{1}
 	unrecognizedMerkleProofType   = errors.New("unknown merkle proof type")
-	evenlenSimpleMerkleProofError = errors.New(
+	evenLenSimpleMerkleProofError = errors.New(
 		"MerkleProofError: simple merkle proof must have an odd number of hash nodes",
 	)
 	wrongMerkleTreeHash = errors.New(
@@ -54,7 +45,7 @@ var (
 )
 
 func errithNode(i int) error {
-	return errors.New(fmt.Sprintf("Wrong proof on %v-th node", i))
+	return fmt.Errorf("wrong proof on %v-th node", i)
 }
 
 type ArgsValidateMerkleProof struct {
@@ -74,33 +65,31 @@ type MPTMerkleProof struct {
 	HashChain [][]byte `json:"h"`
 }
 
-func (nsb *NSBApplication) MerkleProofRigisteredMethod(
-	env *cmn.TransactionHeader,
-	frInfo *AccountInfo,
-	toInfo *AccountInfo,
-	funcName string,
-	args []byte,
-) *types.ResponseDeliverTx {
-	switch funcName {
-	case "validateMerkleProof":
-		return nsb.validateMerkleProof(args)
-	case "getMerkleProof":
-		return nsb.getMerkleProof(args)
-	case "addBlockCheck":
-		return nsb.addBlockCheck(args)
-	default:
-		return response.InvalidFuncTypeError(MethodMissing)
-	}
+type Contract struct {
+	validMerkleProofMap        *merkmap.MerkMap
+	validOnChainMerkleProofMap *merkmap.MerkMap
+}
+
+type ValidMerkleProofMap merkmap.MerkMap
+type ValidOnChainMerkleProofMap merkmap.MerkMap
+
+func NewContract(
+	validMerkleProofMap *ValidMerkleProofMap,
+	validOnChainMerkleProofMap *ValidOnChainMerkleProofMap) *Contract {
+	return &Contract{
+		validMerkleProofMap:        (*merkmap.MerkMap)(validMerkleProofMap),
+		validOnChainMerkleProofMap: (*merkmap.MerkMap)(validOnChainMerkleProofMap)}
 }
 
 func validateMerkleProofKey(typeId uint16, rootHash, key []byte) []byte {
 	return crypto.Sha512([]byte{uint8(typeId & 0xff), uint8(typeId >> 8)}, rootHash, key)
 }
 
-func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
+func (nsb *Contract) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsValidateMerkleProof
-	MustUnmarshal(bytesArgs, &args)
-	switch uip.MerkleProofType(args.Type) {
+	util.MustUnmarshal(bytesArgs, &args)
+	switch //noinspection GoRedundantConversion
+	merkleprooftype.Type(args.Type) {
 	case merkleprooftype.SimpleMerkleTreeUsingSha256, merkleprooftype.SimpleMerkleTreeUsingSha512:
 		return nsb.validateSimpleMerkleTree(args.Proof, args.Key, args.Type)
 	case merkleprooftype.MerklePatriciaTrieUsingKeccak256:
@@ -112,15 +101,15 @@ func (nsb *NSBApplication) validateMerkleProof(bytesArgs []byte) *types.Response
 	}
 }
 
-func (nsb *NSBApplication) validateSimpleMerkleTree(
+func (nsb *Contract) validateSimpleMerkleTree(
 	Proof []byte,
 	Key []byte,
 	hfType uint16,
 ) *types.ResponseDeliverTx {
 	var jsonProof SimpleMerkleProof
-	MustUnmarshal(Proof, &jsonProof)
+	util.MustUnmarshal(Proof, &jsonProof)
 	if (len(jsonProof.HashChain) & 1) == 0 {
-		return response.ExecContractError(evenlenSimpleMerkleProofError)
+		return response.ExecContractError(evenLenSimpleMerkleProofError)
 	}
 
 	// var hf crypto.HashFunc
@@ -156,14 +145,14 @@ func (nsb *NSBApplication) validateSimpleMerkleTree(
 	}
 }
 
-func (nsb *NSBApplication) validateMerklePatriciaTrie(
+func (nsb *Contract) validateMerklePatriciaTrie(
 	Proof []byte,
 	Key []byte,
 	Value []byte,
 	hfType uint16,
 ) *types.ResponseDeliverTx {
 	var jsonProof MPTMerkleProof
-	MustUnmarshal(Proof, &jsonProof)
+	util.MustUnmarshal(Proof, &jsonProof)
 
 	// var hf crypto.HashFunc
 	// switch hfType{
@@ -281,11 +270,11 @@ func merkleProofKey(chainID uint64, blockID []byte, RtType uint8) []byte {
 	return crypto.Sha512(util.Uint64ToBytes(chainID), blockID, []byte{RtType})
 }
 
-func (nsb *NSBApplication) addBlockCheck(bytesArgs []byte) *types.ResponseDeliverTx {
+func (nsb *Contract) addBlockCheck(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsAddBlockCheck
-	MustUnmarshal(bytesArgs, &args)
+	util.MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/blockid
-	err := nsb.validOnchainMerkleProofMap.TryUpdate(
+	err := nsb.validOnChainMerkleProofMap.TryUpdate(
 		merkleProofKey(args.ChainID, args.BlockID, args.RtType),
 		args.RootHash,
 	)
@@ -311,11 +300,11 @@ type ArgsGetMerkleProof struct {
 	// Value []byte `json:"7"`
 }
 
-func (nsb *NSBApplication) getMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
+func (nsb *Contract) getMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsGetMerkleProof
-	MustUnmarshal(bytesArgs, &args)
+	util.MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
-	bt, err := nsb.validOnchainMerkleProofMap.TryGet(
+	bt, err := nsb.validOnChainMerkleProofMap.TryGet(
 		merkleProofKey(args.ChainID, args.BlockID, args.RtType),
 	)
 	if err != nil {

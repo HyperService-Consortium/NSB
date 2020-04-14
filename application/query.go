@@ -1,6 +1,7 @@
 package nsb
 
 import (
+	"github.com/HyperService-Consortium/NSB/common"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/tendermint/tendermint/abci/types"
 
@@ -96,7 +97,7 @@ func (nsb *NSBApplication) getAccInfo(paras []byte, height int64) string {
 	if err != nil || bytesInfo == nil {
 		return "the account is not on this AccTrie"
 	}
-	var accInfo AccountInfo
+	var accInfo common.AccountInfo
 	err = json.Unmarshal(bytesInfo, &accInfo)
 	if err != nil {
 		return err.Error()

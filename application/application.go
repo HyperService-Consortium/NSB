@@ -3,6 +3,7 @@ package nsb
 import (
 	"errors"
 	"fmt"
+	system_merkle_proof "github.com/HyperService-Consortium/NSB/contract/system/merkle-proof"
 
 	"github.com/HyperService-Consortium/NSB/application/response"
 	transactiontype "github.com/HyperService-Consortium/NSB/application/transaction-type"
@@ -37,7 +38,7 @@ func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplicati
 		return nil, err
 	}
 
-	return &NSBApplication{
+	app := &NSBApplication{
 		state:                      state,
 		logger:                     logger,
 		stateMap:                   stmp,
@@ -47,7 +48,13 @@ func NewNSBApplication(logger log.TendermintLogger, dbDir string) (*NSBApplicati
 		validMerkleProofMap:        stmp.ArrangeSlot(validMerkleProofMapSlot),
 		validOnchainMerkleProofMap: stmp.ArrangeSlot(validOnchainMerkleProofMapSlot),
 		statedb:                    statedb,
-	}, nil
+	}
+
+	app.system.merkleProof = system_merkle_proof.NewContract(
+		(*system_merkle_proof.ValidMerkleProofMap)(app.validMerkleProofMap),
+		(*system_merkle_proof.ValidOnChainMerkleProofMap)(app.validOnchainMerkleProofMap))
+
+	return app, nil
 }
 
 func (nsb *NSBApplication) SetLogger(l log.TendermintLogger) {

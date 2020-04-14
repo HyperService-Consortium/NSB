@@ -1,6 +1,7 @@
 package response
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/HyperService-Consortium/NSB/math"
@@ -57,14 +58,6 @@ var (
 		Code: uint32(codeDuplicateTxError),
 		Log:  "DuplicateTxError: this transaction is already on the Transaction Trie",
 	}
-	InvalidTxInputFormatWrongx18 = &types.ResponseDeliverTx{
-		Code: uint32(codeInvalidTxInputFormat),
-		Log:  "InvalidInputFormat: mismatch of format (TransactionHeader\\x18Transaction)",
-	}
-	InvalidTxInputFormatWrongx19 = &types.ResponseDeliverTx{
-		Code: uint32(codeInvalidTxInputFormat),
-		Log:  "InvalidInputFormat: mismatch of format (TransactionHeader\\x19Transaction)",
-	}
 	InvalidTxInputFormatWrongFunctionName = &types.ResponseDeliverTx{
 		Code: uint32(codeInvalidTxInputFormat),
 		Log:  "InvalidTxInputFormat: the system function name must be in format of ContractName@FunctionName",
@@ -82,6 +75,7 @@ var (
 		Code: uint32(codeConflictAddress),
 		Log:  "ConflictAddress: the generating address is already on the Account Trie. Bad nonce?",
 	}
+	MethodMissing = errors.New("no corresponding function")
 )
 
 func ExecOK() *types.ResponseDeliverTx {

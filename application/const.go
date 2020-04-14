@@ -23,7 +23,6 @@ var (
 )
 
 var (
-	MethodMissing         = errors.New("no corresponding function")
 	errorDecodeUint256    = errors.New("the value and nonce should be in length of 32")
 	errorDecodeSrcAddress = errors.New("the src address should be in length of 32")
 	errorDecodeDstAddress = errors.New("the dst address should be in length of 32 or 0")

@@ -20,13 +20,6 @@ import (
  * storage := actionMap
  */
 
-func MustUnmarshal(data []byte, load interface{}) {
-	err := json.Unmarshal(data, &load)
-	if err != nil {
-		panic(response.DecodeJsonError(err))
-	}
-}
-
 type ArgsAddAction struct {
 	ISCAddress []byte `json:"1"`
 	Tid        uint64 `json:"2"`
@@ -46,24 +39,24 @@ type ArgsAddActions struct {
 
 func (nsb *NSBApplication) ActionRigisteredMethod(
 	env *cmn.TransactionHeader,
-	frInfo *AccountInfo,
-	toInfo *AccountInfo,
+	frInfo *cmn.AccountInfo,
+	toInfo *cmn.AccountInfo,
 	funcName string,
 	args []byte,
 ) *types.ResponseDeliverTx {
 	switch funcName {
 	case "addAction":
 		var argsAddAction ArgsAddAction
-		MustUnmarshal(args, &argsAddAction)
+		util.MustUnmarshal(args, &argsAddAction)
 		return nsb.addAction(&argsAddAction)
 	case "getAction":
 		return nsb.getAction(args)
 	case "addActions":
 		var argsAddActions ArgsAddActions
-		MustUnmarshal(args, &argsAddActions)
+		util.MustUnmarshal(args, &argsAddActions)
 		return nsb.addActions(&argsAddActions)
 	default:
-		return response.InvalidFuncTypeError(MethodMissing)
+		return response.InvalidFuncTypeError(response.MethodMissing)
 	}
 }
 
@@ -161,7 +154,7 @@ type ArgsGetAction struct {
 
 func (nsb *NSBApplication) getAction(bytesArgs []byte) *types.ResponseDeliverTx {
 	var args ArgsGetAction
-	MustUnmarshal(bytesArgs, &args)
+	util.MustUnmarshal(bytesArgs, &args)
 	// TODO: check valid isc/tid/aid
 	bt, err := nsb.actionMap.TryGet(actionKey(args.ISCAddress, args.Tid, args.Aid))
 	if err != nil {
