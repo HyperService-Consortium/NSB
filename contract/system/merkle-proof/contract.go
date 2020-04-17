@@ -2,14 +2,23 @@ package system_merkle_proof
 
 import (
 	"bytes"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/HyperService-Consortium/NSB/application/response"
 	"github.com/HyperService-Consortium/NSB/crypto"
+	ethclient "github.com/HyperService-Consortium/NSB/lib/eth-client"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/HyperService-Consortium/NSB/util"
 	merkleprooftype "github.com/HyperService-Consortium/go-uip/const/merkle-proof-type"
+	"github.com/HyperService-Consortium/go-uip/const/value_type"
+	"github.com/HyperService-Consortium/go-uip/uip"
+	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"github.com/tendermint/tendermint/abci/types"
+	"github.com/tidwall/gjson"
+	"math/big"
+	"strconv"
 )
 
 var (
@@ -81,8 +90,93 @@ func NewContract(
 		validOnChainMerkleProofMap: (*merkmap.MerkMap)(validOnChainMerkleProofMap)}
 }
 
-func validateMerkleProofKey(typeId uint16, rootHash, key []byte) []byte {
+func (nsb *Contract) GetTransactionProof(
+	chainID uip.ChainID, blockID uip.BlockID, color []byte) (uip.MerkleProof, error) {
+	//return
+	panic("todo")
+}
+
+func validateMerkleProofKey(typeId uip.TypeID, rootHash, key []byte) []byte {
 	return crypto.Sha512([]byte{uint8(typeId & 0xff), uint8(typeId >> 8)}, rootHash, key)
+}
+
+func GetMerkleProofType(chainID uip.ChainID) (merkleprooftype.Type, error) {
+	return merkleprooftype.SecureMerklePatriciaTrieUsingKeccak256, nil
+}
+
+const (
+	testHost = "121.89.200.234:8545"
+)
+
+var (
+	ValueNotExists = errors.New("value not exists")
+)
+
+func (nsb *Contract) GetStorageAt(
+	chainID uip.ChainID, typeID uip.TypeID,
+	contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
+	mt, err := GetMerkleProofType(chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	switch mt {
+	case merkleprooftype.SecureMerklePatriciaTrieUsingKeccak256:
+		// chainID
+		eth := ethclient.NewEthClient(testHost)
+
+		b := sugar.HandlerError(eth.
+			GetBlockByTag(ethclient.TagLatest, false)).([]byte)
+		res := gjson.ParseBytes(b)
+
+		blockNumber := sugar.HandlerError(
+			strconv.ParseUint(res.Get("number").String()[2:], 16, 64)).(uint64)
+
+		proof, err := eth.GetProofByNumberSR(
+			"0x"+hex.EncodeToString(contractAddress), []byte(
+				fmt.Sprintf(`["0x%v"]`, hex.EncodeToString(pos))), blockNumber)
+		if err != nil {
+			return nil, err
+		}
+
+		var reply ethclient.EthereumGetProofReply
+		err = json.Unmarshal(proof, &reply)
+		if err != nil {
+			return nil, err
+		}
+		if len(reply.StorageProofs) == 0 {
+			return nil, errors.New("storage proof length 0")
+		}
+
+		value, err := util.ConvertBytes(reply.StorageProofs[0].Value)
+		if err != nil {
+			return nil, err
+		}
+
+		return ethereumStorageBytesToValue(value, typeID)
+
+		// hfType -> mt
+		// jsonProof.RootHash -> eth.getProof(contractAddress, [], "latest")
+		// Key -> pos
+
+		//err := nsb.validMerkleProofMap.TryUpdate(
+		//	validateMerkleProofKey(hfType, jsonProof.RootHash, Key),
+		//	util.ConcatBytes(bytesOne, Value),
+		//)
+
+	}
+
+	return nil, errors.New("bad merkle proof type")
+}
+
+func ethereumStorageBytesToValue(value []byte, id uip.TypeID) (uip.Variable, error) {
+	switch id {
+	case value_type.Uint256, value_type.Uint128, value_type.Int128, value_type.Int256:
+		return uip.VariableImpl{
+			Type: id, Value: big.NewInt(0).SetBytes(value)}, nil
+	default:
+		return nil, errors.New("todo")
+	}
 }
 
 func (nsb *Contract) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {

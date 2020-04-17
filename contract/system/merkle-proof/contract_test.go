@@ -5,8 +5,12 @@ import (
 	"github.com/HyperService-Consortium/NSB/localstorage"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	trie "github.com/HyperService-Consortium/go-mpt"
+	"github.com/HyperService-Consortium/go-uip/const/value_type"
+	"github.com/HyperService-Consortium/go-uip/uip"
+	"github.com/stretchr/testify/assert"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tendermint/tendermint/abci/types"
+	"math/big"
 	"reflect"
 	"testing"
 )
@@ -88,6 +92,34 @@ func TestContract_validateMerkleProof(t *testing.T) {
 			}
 			if got := nsb.validateMerkleProof(tt.args.bytesArgs); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("validateMerkleProof() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_ethereumStorageBytesToValue(t *testing.T) {
+	type args struct {
+		value []byte
+		id    uip.TypeID
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    uip.Variable
+		wantErr bool
+	}{
+		{name: "uint256", args: args{[]byte{16}, value_type.Uint256},
+			want: uip.VariableImpl{Type: value_type.Uint256, Value: big.NewInt(16)}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ethereumStorageBytesToValue(tt.args.value, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ethereumStorageBytesToValue() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !assert.EqualValues(t, tt.want, got) {
+				t.Errorf("ethereumStorageBytesToValue() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

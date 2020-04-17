@@ -1,11 +1,14 @@
 package isc
 
 import (
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/HyperService-Consortium/NSB/common"
 	merkle_proof "github.com/HyperService-Consortium/go-uip/const/merkle-proof-type"
 	TxState "github.com/HyperService-Consortium/go-uip/const/transaction_state_type"
+	"github.com/HyperService-Consortium/go-uip/const/value_type"
 	error2 "github.com/HyperService-Consortium/go-uip/errorn"
 	"github.com/HyperService-Consortium/go-uip/isc"
 	opintent "github.com/HyperService-Consortium/go-uip/op-intent"
@@ -14,6 +17,7 @@ import (
 	"github.com/HyperService-Consortium/go-uip/uip"
 	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"github.com/stretchr/testify/assert"
+	"math/big"
 	"testing"
 )
 
@@ -21,14 +25,6 @@ var user0 = []byte{1}
 
 func encodeInstructions(is []uip.Instruction) (bs [][]byte) {
 	return sugar.HandlerError(instruction.EncodeInstructions(is)).([][]byte)
-}
-
-type StorageKey struct {
-	chainID         uip.ChainID
-	typeID          uip.TypeID
-	contractAddress string
-	pos             string
-	description     string
 }
 
 var c2 = obj{
@@ -242,15 +238,14 @@ func TestIfScenario_IfYes(t *testing.T) {
 	doTransaction(t, instance, uint64(2))
 	//3 if-op.goto.if 3
 	//4 op5 1
-	doTransaction(t, instance, uint64(4))
+	//doTransaction(t, instance, uint64(4))
 	//5 if-op.goto.else 2
-	// todo
 	//6 op3 1
-	//doTransaction(t, instance, uint64(6))
+	doTransaction(t, instance, uint64(6))
 	////7 op4.cna 0
-	//doTransaction(t, instance, uint64(7))
+	doTransaction(t, instance, uint64(7))
 	////8 op4.cnb 0
-	//doTransaction(t, instance, uint64(8))
+	doTransaction(t, instance, uint64(8))
 	//9 loop.loopBegin 3
 	//10 op6 1
 	for i := 0; i < 5; i++ {
@@ -321,6 +316,54 @@ func doTransaction(t *testing.T, instance *ISC, pc uint64) {
 	commit(t, instance)
 }
 
+type StorageKey struct {
+	chainID         uip.ChainID
+	typeID          uip.TypeID
+	contractAddress string
+	pos             string
+	description     string
+}
+
+type storageImpl struct {
+	externalStorage map[StorageKey]uip.Variable
+}
+
+func (c *storageImpl) GetTransactionProof(chainID uip.ChainID, blockID uip.BlockID, color []byte) (uip.MerkleProof, error) {
+	panic("implement me")
+}
+
+func (c *storageImpl) GetStorageAt(chainID uip.ChainID, typeID uip.TypeID,
+	contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
+	if c.externalStorage == nil {
+		c.externalStorage = make(map[StorageKey]uip.Variable)
+	}
+	if x, ok := c.externalStorage[StorageKey{
+		chainID:         chainID,
+		typeID:          typeID,
+		contractAddress: string(contractAddress),
+		pos:             string(pos),
+		description:     string(description),
+	}]; ok {
+		return x, nil
+	} else {
+		return nil, errors.New("no found")
+	}
+}
+
+func (c *storageImpl) ProvideExternalStorageAt(chainID uip.ChainID, typeID uip.TypeID,
+	contractAddress uip.ContractAddress, pos []byte, description []byte, ref uip.Variable) {
+	if c.externalStorage == nil {
+		c.externalStorage = make(map[StorageKey]uip.Variable)
+	}
+	c.externalStorage[StorageKey{
+		chainID:         chainID,
+		typeID:          typeID,
+		contractAddress: string(contractAddress),
+		pos:             string(pos),
+		description:     string(description),
+	}] = ref
+}
+
 func BranchIfTest0(env *common.ContractEnvironment, ifOrNot bool) {
 	//"left": obj{
 	//	"type": "uint256",
@@ -330,17 +373,17 @@ func BranchIfTest0(env *common.ContractEnvironment, ifOrNot bool) {
 	//		"pos":      "00",
 	//	},
 	//},
-	//var l0 *lexer.Uint256
+	var l0 uip.Variable
 	//
-	//if ifOrNot {
-	//	l0 = (*lexer.Uint256)(big.NewInt(2))
-	//} else {
-	//	l0 = (*lexer.Uint256)(big.NewInt(1))
-	//}
-	//env.ProvideExternalStorageAt(
-	//	uip.ChainIDUnderlyingType(c2["domain"].(int)), value_type.Uint256,
-	//	sugar.HandlerError(hex.DecodeString(c2["address"].(string)[2:])).([]byte), []byte{0}, []byte("num_count"),
-	//	l0)
+	if ifOrNot {
+		l0 = uip.VariableImpl{Type: value_type.Uint256, Value: big.NewInt(2)}
+	} else {
+		l0 = uip.VariableImpl{Type: value_type.Uint256, Value: big.NewInt(1)}
+	}
+	env.BN.(*storageImpl).ProvideExternalStorageAt(
+		uip.ChainIDUnderlyingType(c2["domain"].(int)), value_type.Uint256,
+		sugar.HandlerError(hex.DecodeString(c2["address"].(string)[2:])).([]byte), []byte{0}, []byte("num_count"),
+		l0)
 	//	"right": obj{
 	//	"type": "uint256",
 	//	"value": obj{
@@ -349,10 +392,10 @@ func BranchIfTest0(env *common.ContractEnvironment, ifOrNot bool) {
 	//		"pos":      "01",
 	//	},
 	//},
-	//env.ProvideExternalStorageAt(
-	//	uip.ChainIDUnderlyingType(c2["domain"].(int)), value_type.Uint256,
-	//	sugar.HandlerError(hex.DecodeString(c2["address"].(string)[2:])).([]byte), []byte{1}, []byte("totalVotes"),
-	//	(*lexer.Uint256)(big.NewInt(1)))
+	env.BN.(*storageImpl).ProvideExternalStorageAt(
+		uip.ChainIDUnderlyingType(c2["domain"].(int)), value_type.Uint256,
+		sugar.HandlerError(hex.DecodeString(c2["address"].(string)[2:])).([]byte), []byte{1}, []byte("totalVotes"),
+		uip.VariableImpl{Type: value_type.Uint256, Value: big.NewInt(1)})
 	//	"sign": "Greater",
 }
 

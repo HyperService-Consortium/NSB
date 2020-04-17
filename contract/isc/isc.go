@@ -6,11 +6,9 @@ import (
 	. "github.com/HyperService-Consortium/NSB/common/contract_response"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/HyperService-Consortium/go-uip/isc"
-	opintent "github.com/HyperService-Consortium/go-uip/op-intent"
 	"github.com/HyperService-Consortium/go-uip/storage"
 	"github.com/HyperService-Consortium/go-uip/uip"
 	"github.com/Myriad-Dreamin/gvm"
-	"math/big"
 )
 
 type ISC struct {
@@ -79,10 +77,29 @@ func (c context) Address() []byte {
 	return c.env.ContractAddress
 }
 
+type impl struct {
+	v uip.Variable
+}
+
+func (i impl) GetGVMType() gvm.RefType {
+	return gvm.RefType(i.v.GetType())
+}
+
+func (i impl) Unwrap() interface{} {
+	return i.v.GetValue()
+}
+
+func (i impl) Encode() ([]byte, error) {
+	panic("implement me")
+}
+
 func (c context) GetExternalStorageAt(chainID uip.ChainID, typeID uip.TypeID,
 	contractAddress uip.ContractAddress, pos []byte, description []byte) (gvm.Ref, error) {
-	// todo
-	return (*opintent.Uint256)(big.NewInt(1)), nil
+	v, err := c.env.BN.GetStorageAt(chainID, typeID, contractAddress, pos, description)
+	if err != nil {
+		return nil, err
+	}
+	return impl{v}, nil
 }
 
 func (iscc *ISC) GetOwners() *cmn.ContractCallBackInfo {

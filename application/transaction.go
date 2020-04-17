@@ -201,6 +201,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(
 		FuncName:        fap.FuncName,
 		Args:            fap.Args,
 		Value:           txHeader.Value,
+		BN:              nsb.system.merkleProof,
 	}
 	contractEnv.Storage, err = localstorage.NewLocalStorage(
 		txHeader.ContractAddress,
