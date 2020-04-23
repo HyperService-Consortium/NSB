@@ -167,7 +167,7 @@ func TestEthClient_GetProofByNumberSR(t *testing.T) {
 	sugar.HandlerError0(json.Unmarshal(b, &reply))
 	proof := sugar.HandlerError(
 		util.ConvertBytesSlice(reply.AccountProof)).([][]byte)
-	pv := sugar.HandlerError(prover.GetMerkleProofValueWithValidate(
+	pv := sugar.HandlerError(prover.GetMerkleProofValueWithValidateMPTSecure(
 		sugar.HandlerError(util.ConvertBytes(sr)).([]byte), proof,
 		hex.EncodeToString(crypto.Keccak256(
 			(sugar.HandlerError(hex.DecodeString(
