@@ -9,9 +9,11 @@ github.com/HyperService-Consortium/go-mpt v1.1.1-0.20190903152503-b63ec8d75bd4 h
 github.com/HyperService-Consortium/go-mpt v1.1.1-0.20190903152503-b63ec8d75bd4/go.mod h1:tYeCvWyIQt4xuaLANWvVi3kvTIuAe6FmyC2G6A8mBIM=
 github.com/HyperService-Consortium/go-rlp v1.0.1-0.20190903144357-b5693c05a6b8 h1:KBmZ/AwlF/iKvbQwGL6+09bbZHzksJFr/6tjKzX29ME=
 github.com/HyperService-Consortium/go-rlp v1.0.1-0.20190903144357-b5693c05a6b8/go.mod h1:f6lLuGRJua3AHgMk4m6XvsF64GFlr5ekGeb2n+ymYfQ=
-github.com/HyperService-Consortium/go-uip v0.0.0-20200408075657-d2425491ab24 h1:nHye1ubP60qilAWv7ZfB6B2vScImQoAHw+a9XzlXgLo=
-github.com/HyperService-Consortium/go-uip v0.0.0-20200408075657-d2425491ab24/go.mod h1:lTOAVepEPTDAf5lrTOWbQBj1q6ajUrZsU62l9rd6OeU=
+github.com/HyperService-Consortium/go-uip v0.0.0-20200423085134-7f1d4a0ec024 h1:alMRu57p9SQpl9DUfjWsJFGBfGrdLbD/HJgpCodZNDc=
+github.com/HyperService-Consortium/go-uip v0.0.0-20200423085134-7f1d4a0ec024/go.mod h1:S3ElKnCcwBXDpNc7IGQaqYuG0QsWDBiTtxAi1R0u0wk=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
+github.com/Myriad-Dreamin/catcher v0.0.0-20200420161430-cac3d6888160 h1:paRKO17afDO/9ggrEtSxj29cZShIfZb7nvS/ZoI1hnw=
+github.com/Myriad-Dreamin/catcher v0.0.0-20200420161430-cac3d6888160/go.mod h1:r/qjbfeMATBV1EDCW5JfhZienzpuBs+uoajopypA6gs=
 github.com/Myriad-Dreamin/go-parse-package v1.0.1/go.mod h1:kb2R+hypYiYQm3D4JqY/IuI4GG9cdh735vW/AMJyFgE=
 github.com/Myriad-Dreamin/gvm v1.0.2 h1:h2vALOU+X1CYiOBdSSrOI/bs7tRBF9PfAMTtdiWucIE=
 github.com/Myriad-Dreamin/gvm v1.0.2/go.mod h1:s/IIw20tyOGuO5cOqLnQLUYZ+47unK/EsoQZz04nOxI=
