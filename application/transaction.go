@@ -121,7 +121,7 @@ func (nsb *NSBApplication) createContractAccount(
 	*cmn.AccountInfo,
 	*types.ResponseDeliverTx,
 ) {
-	nsb.logger.Info("creating", contractName)
+	nsb.logger.Info("creating", "contractName", contractName)
 	txHeader.ContractAddress = []byte(account.NewAccount(txHeader.Signature, txHeader.Nonce.Bytes(), nsb.state.StateRoot).PublicKey)
 
 	// TODO: merk: TryGet -> TestExistence
@@ -201,6 +201,7 @@ func (nsb *NSBApplication) prepareContractEnvironment(
 		FuncName:        fap.FuncName,
 		Args:            fap.Args,
 		Value:           txHeader.Value,
+		BN:              nsb.system.merkleProof,
 	}
 	contractEnv.Storage, err = localstorage.NewLocalStorage(
 		txHeader.ContractAddress,
@@ -378,7 +379,9 @@ func (nsb *NSBApplication) parseCreateTransaction(tx []byte) *types.ResponseDeli
 		return errInfo
 	}
 
-	nsb.logger.Info("parsed", "src", accInfo.String(), "dst", conInfo.String())
+	nsb.logger.Info("parsed", "src", accInfo.Name, "src_balance", accInfo.Balance,
+		"dst", conInfo.Name, "dst_balance", conInfo.Balance,
+	)
 
 	cb := nsb.createContracts(env)
 

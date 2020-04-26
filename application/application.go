@@ -199,11 +199,11 @@ type Proof struct {
 }
 */
 func (nsb *NSBApplication) Query(req types.RequestQuery) (ret types.ResponseQuery) {
-	ret.Code = uint32(response.CodeOK())
 	ret.Key = req.Data
 	ret.Value = []byte(req.Path)
+	ret.Height = nsb.state.Height
 	ret.Log = fmt.Sprintf("asking not Prove key: %v, value %v", req.Data, req.Path)
-	ret.Info = nsb.QueryIndex(&req)
+	ret.Code, ret.Info = nsb.QueryIndex(&req)
 	return
 }
 

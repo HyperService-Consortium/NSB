@@ -3,7 +3,9 @@ package util
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"fmt"
+	"strings"
 )
 
 func BytesToBytes(bt []byte) []byte {
@@ -98,4 +100,26 @@ func ConcatBytes(dat ...[]byte) []byte {
 		totlen += len(btdat)
 	}
 	return buff.Next(totlen)
+}
+
+func ConvertBytes(node string) ([]byte, error) {
+	if strings.HasPrefix(node, "0x") {
+		return hex.DecodeString(node[2:])
+	} else {
+		return hex.DecodeString(node)
+	}
+}
+
+func ConvertBytesSlice(proof []string) (ret [][]byte, err error) {
+	if len(proof) == 0 {
+		return [][]byte{}, nil
+	}
+	ret = make([][]byte, len(proof))
+	for i := range proof {
+		ret[i], err = ConvertBytes(proof[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return
 }

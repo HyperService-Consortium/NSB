@@ -142,13 +142,11 @@ func registeredMethod(instance *ISC) isc.Response {
 		}
 		return instance.SettleContract()
 	case "GetPC":
-		// todo move to upstream
-		return (&isc.ResponseData{}).Param(&GetPCReply{
+		return isc.Reply().Param(&GetPCReply{
 			PC: instance.Storage.GetPC(),
 		})
 	case "GetMuPC":
-		// todo move to upstream
-		return (&isc.ResponseData{}).Param(&GetPCReply{
+		return isc.Reply().Param(&GetPCReply{
 			PC: instance.Storage.GetMuPC(),
 		})
 	default:

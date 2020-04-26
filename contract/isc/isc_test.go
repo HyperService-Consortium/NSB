@@ -48,6 +48,7 @@ func createRoot(t *testing.T, b, c []byte) *cmn.ContractEnvironment {
 		Storage:         storage,
 		From:            b,
 		ContractAddress: c,
+		BN:              &storageImpl{},
 	}
 	return env
 }
