@@ -29,7 +29,7 @@ const ( // base
 )
 
 const ( // Decode
-	codeDecodeJsonError ResponseCode = 100 + iota
+	codeDecodeJsonError ResponseCode = 1000 + iota
 	codeDecodeFAPairError
 	codeDecodeBytesError
 	codeDecodeTxHeaderError
@@ -38,19 +38,25 @@ const ( // Decode
 )
 
 const ( // Transaction
-	codeInvalidTxInputFormat ResponseCode = 200 + iota
+	codeInvalidTxInputFormat ResponseCode = 2000 + iota
 	codeInvalidTxType
 	codeReTrieveTxError
 	codeDuplicateTxError
 )
 
 const ( // Contract
-	codeContractPanic ResponseCode = 300 + iota
+	codeContractPanic ResponseCode = 3000 + iota
 	codeInvalidFuncType
 	codeExecContractError
 	codeInsufficientBalanceToTransfer
 	codeBalanceOverflow
 	codeConflictAddress
+)
+
+const ( // Query
+	CodeAccountNotFound ResponseCode = 4000 + iota
+	CodeProofError
+	CodeUnknownQueryType
 )
 
 var (
