@@ -30,6 +30,9 @@ func main() {
 	if len(*host) == 0 {
 		log.Fatal("host path empty")
 	}
+	if len(*address) == 0 {
+		log.Fatal("address path empty")
+	}
 
 	content, err := ioutil.ReadFile(*codePath)
 	if err != nil {
@@ -51,12 +54,12 @@ func main() {
 			Value string `json:"value"`
 		}{
 			From: *address,
-			Data: string(content) +
-				formatAddress(*address) +
-				"0000000000000000000000000000000000000000000000000000000000000001",
+			Data: string(content),
+			//formatAddress(*address) +
+			//"0000000000000000000000000000000000000000000000000000000000000001",
 			Gas: "0x" +
 				strconv.FormatInt(8000000, 16),
-			Value: "0x10",
+			//Value: "0x10",
 		})).([]byte)))
 
 	fmt.Println(res)

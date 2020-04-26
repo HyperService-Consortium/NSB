@@ -1,11 +1,13 @@
 package system_merkle_proof
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/HyperService-Consortium/NSB/crypto"
 	ethclient "github.com/HyperService-Consortium/NSB/lib/eth-client"
 	"github.com/HyperService-Consortium/NSB/util"
 	"github.com/HyperService-Consortium/go-uip/const/value_type"
@@ -31,9 +33,9 @@ func (eth ethStorageHandler) GetTransactionProof(blockID uip.BlockID, color []by
 	panic("implement me")
 }
 
-func (eth ethStorageHandler) getStorageBytes(contractAddress []byte, tag uint64, pos []byte) ([]byte, error) {
+func (eth ethStorageHandler) getRawProof(contractAddress []byte, tag uint64, pos []byte) (
+	_ []byte, err error) {
 	var b []byte
-	var err error
 	if tag == 0 {
 		b, err = eth.handler.GetBlockByTag(ethclient.TagLatest, false)
 	} else {
@@ -49,9 +51,25 @@ func (eth ethStorageHandler) getStorageBytes(contractAddress []byte, tag uint64,
 		return nil, err
 	}
 
-	proof, err := eth.handler.GetProofByNumberSR(
-		"0x"+hex.EncodeToString(contractAddress), []byte(
-			fmt.Sprintf(`["0x%v"]`, hex.EncodeToString(pos))), blockNumber)
+	return eth.handler.GetProofByNumberSR(
+		"0x"+hex.EncodeToString(contractAddress), pos, blockNumber)
+}
+
+func (eth ethStorageHandler) getStorageBytes(contractAddress []byte, tag uint64, pos []byte) ([]byte, error) {
+	values, err := eth.getStorageBytesSlice(
+		contractAddress, tag, []byte(fmt.Sprintf(`["0x%s"]`, hex.EncodeToString(pos))))
+	if err != nil {
+		return nil, err
+	}
+	if len(values) != 1 {
+		return nil, fmt.Errorf("bad length of proving values, want 1, got %v", len(values))
+	}
+	return values[0], nil
+}
+
+func (eth ethStorageHandler) getStorageBytesSlice(
+	contractAddress []byte, tag uint64, posSlice []byte) ([][]byte, error) {
+	proof, err := eth.getRawProof(contractAddress, tag, posSlice)
 	if err != nil {
 		return nil, err
 	}
@@ -61,15 +79,46 @@ func (eth ethStorageHandler) getStorageBytes(contractAddress []byte, tag uint64,
 	if err != nil {
 		return nil, err
 	}
-	if len(reply.StorageProofs) == 0 {
-		return nil, errors.New("storage proof length 0")
-	}
 
-	value, err := util.ConvertBytes(reply.StorageProofs[0].Value)
+	var values = make([][]byte, len(reply.StorageProofs))
+	for i := range values {
+		values[i], err = util.ConvertBytes(reply.StorageProofs[i].Value)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return values, nil
+}
+
+func (eth ethStorageHandler) getStorageBytesSliceByStringSlice(
+	contractAddress []byte, tag uint64, posSlice []string) ([][]byte, error) {
+	b, err := json.Marshal(posSlice)
 	if err != nil {
 		return nil, err
 	}
-	return value, nil
+	return eth.getStorageBytesSlice(contractAddress, tag, b)
+}
+
+func extendTo32(value []byte) (dst []byte) {
+	dst = make([]byte, 32)
+	copy(dst[32-len(value):], value)
+	return
+}
+
+func add1InPlace(value []byte) (dst []byte) {
+	dst = value
+	for i := 31; i >= 0; i-- {
+		if dst[i] == 255 {
+			dst[i] = 0
+			if i == 0 {
+				return nil
+			}
+		} else {
+			dst[i]++
+			return
+		}
+	}
+	return
 }
 
 func (eth ethStorageHandler) GetStorageAt(typeID uip.TypeID, contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
@@ -89,21 +138,39 @@ func (eth ethStorageHandler) GetStorageAt(typeID uip.TypeID, contractAddress uip
 	if err != nil {
 		return nil, err
 	}
+	if len(value) < 32 {
+		value = extendTo32(value)
+	}
 
 	if typeID == value_type.String || typeID == value_type.Bytes {
-		if len(value) != 0 {
+		if len(value) < 32 {
 			return nil, errors.New("no enough bytes to get string or bytes")
 		}
 		if (value[31] & 1) != 0 {
-			//todo
-			return nil, errors.New("todo: big string/bytes")
+			offset = value[31] >> 1
+			pos = extendTo32(pos)
+			slot := crypto.Keccak256(pos)
+			slotSize := (offset + 31) >> 5
+			var reqs = make([]string, slotSize)
+			slotSize--
+			for i := uint8(0); i < slotSize; i++ {
+				reqs[i] = "0x" + hex.EncodeToString(slot)
+				add1InPlace(slot)
+			}
+			reqs[slotSize] = "0x" + hex.EncodeToString(slot)
+			values, err := eth.getStorageBytesSliceByStringSlice(contractAddress, 0, reqs)
+			if err != nil {
+				return nil, err
+			}
+			value = bytes.Join(values, nil)
 		} else {
 			offset = value[31] >> 1
-			if int(offset) < len(value) {
-				return nil, fmt.Errorf("string/bytes len(%v) less than len(value) (%v)", offset, len(value))
-			}
-			value = value[:offset]
 		}
+		if int(offset) > len(value) {
+			return nil, fmt.Errorf("string/bytes len(%v) greater than len(value) (%v)", offset, len(value))
+		}
+		value = value[:offset]
+		offset = 0
 	}
 
 	if offset != 0 {
@@ -199,8 +266,10 @@ func ethereumStorageBytesToValue(value []byte, id uip.TypeID) (uip.Variable, err
 	case value_type.Bytes:
 		return uip.VariableImpl{Value: value, Type: value_type.Bytes}, nil
 	case value_type.Unknown:
-		if len(value) != 0 {
-			return nil, fmt.Errorf("can not convert %v to unknown type", hex.EncodeToString(value))
+		for i := range value {
+			if value[i] != 0 {
+				return nil, fmt.Errorf("can not convert %v to unknown type", hex.EncodeToString(value))
+			}
 		}
 		return uip.VariableImpl{Value: nil, Type: value_type.Unknown}, nil
 	default:

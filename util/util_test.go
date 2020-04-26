@@ -1,6 +1,7 @@
 package util
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -39,5 +40,31 @@ func TestUtil(t *testing.T) {
 	if int3 != BytesToInt64(Int64ToBytes(int3)) {
 		t.Error("no equal")
 		return
+	}
+}
+
+func TestConvertBytes(t *testing.T) {
+	type args struct {
+		node string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []byte
+		wantErr bool
+	}{
+		{name: "odd_length", args: args{"0x0"}, want: []byte{0}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertBytes(tt.args.node)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertBytes() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvertBytes() got = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }

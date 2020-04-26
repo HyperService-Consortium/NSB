@@ -104,10 +104,12 @@ func ConcatBytes(dat ...[]byte) []byte {
 
 func ConvertBytes(node string) ([]byte, error) {
 	if strings.HasPrefix(node, "0x") {
-		return hex.DecodeString(node[2:])
-	} else {
-		return hex.DecodeString(node)
+		node = node[2:]
 	}
+	if len(node)&1 == 1 {
+		node = "0" + node
+	}
+	return hex.DecodeString(node)
 }
 
 func ConvertBytesSlice(proof []string) (ret [][]byte, err error) {
