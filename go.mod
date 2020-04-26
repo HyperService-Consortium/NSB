@@ -8,6 +8,7 @@ require (
 	github.com/HyperService-Consortium/go-mpt v1.1.1-0.20190903152503-b63ec8d75bd4
 	github.com/HyperService-Consortium/go-rlp v1.0.1-0.20190903144357-b5693c05a6b8
 	github.com/HyperService-Consortium/go-uip v0.0.0-20200423085134-7f1d4a0ec024
+	github.com/Myriad-Dreamin/catcher v0.0.0-20200420161430-cac3d6888160
 	github.com/Myriad-Dreamin/gvm v1.0.2
 	github.com/Myriad-Dreamin/minimum-lib v0.0.0-20200117225041-ec905257618d
 	github.com/Myriad-Dreamin/mydrest v1.0.1
