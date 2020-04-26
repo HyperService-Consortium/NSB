@@ -120,7 +120,13 @@ func GetMerkleProofValueWithValidateNSBMPT(currentHash []byte, hashChain [][]byt
 					"bad nibble: %v (depth %v, proof depth %v)",
 					keyByte, len(key)-keyBuf.Len(), proofDepth-len(hashChain))
 			}
-			currentHash = n.Children[keyByte].(trie.HashNode)
+			ch := n.Children[keyByte]
+			if ch == nil {
+				return nil, fmt.Errorf(
+					"hash not exists (index: %v, depth %v)",
+					keyByte, len(key)-keyBuf.Len())
+			}
+			currentHash = ch.(trie.HashNode)
 		case *trie.ShortNode:
 			for idx := 0; idx < len(n.Key); idx++ {
 				keyByte, err = keyBuf.ReadByte()
