@@ -2,23 +2,18 @@ package system_merkle_proof
 
 import (
 	"bytes"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/HyperService-Consortium/NSB/application/response"
 	"github.com/HyperService-Consortium/NSB/crypto"
-	ethclient "github.com/HyperService-Consortium/NSB/lib/eth-client"
+	dns_client "github.com/HyperService-Consortium/NSB/lib/dns-client"
 	"github.com/HyperService-Consortium/NSB/merkmap"
 	"github.com/HyperService-Consortium/NSB/util"
+	ChainType "github.com/HyperService-Consortium/go-uip/const/chain_type"
 	merkleprooftype "github.com/HyperService-Consortium/go-uip/const/merkle-proof-type"
-	"github.com/HyperService-Consortium/go-uip/const/value_type"
 	"github.com/HyperService-Consortium/go-uip/uip"
-	"github.com/Myriad-Dreamin/minimum-lib/sugar"
 	"github.com/tendermint/tendermint/abci/types"
-	"github.com/tidwall/gjson"
-	"math/big"
-	"strconv"
+	"os"
 )
 
 var (
@@ -27,35 +22,10 @@ var (
 	evenLenSimpleMerkleProofError = errors.New(
 		"MerkleProofError: simple merkle proof must have an odd number of hash nodes",
 	)
-	wrongMerkleTreeHash = errors.New(
-		"MerkleProofError: fail to match the given hash value",
-	)
-	mptNodesConsumed = errors.New(
-		"MerkleProofError: the hash chain is too short to match the key",
-	)
-	keyConsumed = errors.New(
-		"MerkleProofError: the key is too short to match the hash chain",
-	)
-	wrongValue = errors.New(
-		"MerkleProofError: the key does not match the value",
-	)
-	runeDecodeError = errors.New(
-		"MerkleProofError: can not decode rune from key buffer",
-	)
-	unrecognizedHashFuncType = errors.New(
-		"unknown hash function type",
-	)
-	firstPartMerkleProofMissing = errors.New(
-		"can't find the proof of key-value existing on the merkle tree",
-	)
 	secondPartMerkleProofMismatch = errors.New(
 		"the root hash is required to prove or wrong",
 	)
 )
-
-func errithNode(i int) error {
-	return fmt.Errorf("wrong proof on %v-th node", i)
-}
 
 type ArgsValidateMerkleProof struct {
 	Type     uint16 `json:"1"`
@@ -90,6 +60,13 @@ func NewContract(
 		validOnChainMerkleProofMap: (*merkmap.MerkMap)(validOnChainMerkleProofMap)}
 }
 
+//todo: move
+type StorageHandler interface {
+	// blockID + color decide an only transaction on chain with id chainID
+	GetTransactionProof(blockID uip.BlockID, color []byte) (uip.MerkleProof, error)
+	GetStorageAt(typeID uip.TypeID, contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error)
+}
+
 func (nsb *Contract) GetTransactionProof(
 	chainID uip.ChainID, blockID uip.BlockID, color []byte) (uip.MerkleProof, error) {
 	//return
@@ -100,83 +77,32 @@ func validateMerkleProofKey(typeId uip.TypeID, rootHash, key []byte) []byte {
 	return crypto.Sha512([]byte{uint8(typeId & 0xff), uint8(typeId >> 8)}, rootHash, key)
 }
 
-func GetMerkleProofType(chainID uip.ChainID) (merkleprooftype.Type, error) {
-	return merkleprooftype.SecureMerklePatriciaTrieUsingKeccak256, nil
+func GetStorageHandler(chainID uip.ChainID) (StorageHandler, error) {
+	dns := dns_client.NewDNSClient(os.Getenv("UIP_CHAIN_DNS"))
+	info, err := dns.GetChainInfo(chainID)
+	if err != nil {
+		return nil, err
+	}
+	switch info.ChainType {
+	case ChainType.Ethereum:
+		return newEthereumStorageHandler(chainID, info.Domain), nil
+	case ChainType.TendermintNSB:
+		return newTendermintNSBStorageHandler(info.Domain), nil
+	}
+
+	return nil, fmt.Errorf("unsupport chain type: %v", info.ChainType)
 }
 
-const (
-	testHost = "121.89.200.234:8545"
-)
-
-var (
-	ValueNotExists = errors.New("value not exists")
-)
+//121.89.200.234:8545
 
 func (nsb *Contract) GetStorageAt(
 	chainID uip.ChainID, typeID uip.TypeID,
 	contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
-	mt, err := GetMerkleProofType(chainID)
+	handler, err := GetStorageHandler(chainID)
 	if err != nil {
 		return nil, err
 	}
-
-	switch mt {
-	case merkleprooftype.SecureMerklePatriciaTrieUsingKeccak256:
-		// chainID
-		eth := ethclient.NewEthClient(testHost)
-
-		b := sugar.HandlerError(eth.
-			GetBlockByTag(ethclient.TagLatest, false)).([]byte)
-		res := gjson.ParseBytes(b)
-
-		blockNumber := sugar.HandlerError(
-			strconv.ParseUint(res.Get("number").String()[2:], 16, 64)).(uint64)
-
-		proof, err := eth.GetProofByNumberSR(
-			"0x"+hex.EncodeToString(contractAddress), []byte(
-				fmt.Sprintf(`["0x%v"]`, hex.EncodeToString(pos))), blockNumber)
-		if err != nil {
-			return nil, err
-		}
-
-		var reply ethclient.EthereumGetProofReply
-		err = json.Unmarshal(proof, &reply)
-		if err != nil {
-			return nil, err
-		}
-		if len(reply.StorageProofs) == 0 {
-			return nil, errors.New("storage proof length 0")
-		}
-
-		value, err := util.ConvertBytes(reply.StorageProofs[0].Value)
-		if err != nil {
-			return nil, err
-		}
-
-		return ethereumStorageBytesToValue(value, typeID)
-
-		// hfType -> mt
-		// jsonProof.RootHash -> eth.getProof(contractAddress, [], "latest")
-		// Key -> pos
-
-		//err := nsb.validMerkleProofMap.TryUpdate(
-		//	validateMerkleProofKey(hfType, jsonProof.RootHash, Key),
-		//	util.ConcatBytes(bytesOne, Value),
-		//)
-
-	}
-
-	return nil, errors.New("bad merkle proof type")
-}
-
-func ethereumStorageBytesToValue(value []byte, id uip.TypeID) (uip.Variable, error) {
-	switch id {
-	case value_type.Uint256, value_type.Uint128, value_type.Int128, value_type.Int256:
-		return uip.VariableImpl{
-			Type: id, Value: big.NewInt(0).SetBytes(value)}, nil
-	default:
-		return nil, errors.New("todo")
-	}
+	return handler.GetStorageAt(typeID, contractAddress, pos, description)
 }
 
 func (nsb *Contract) validateMerkleProof(bytesArgs []byte) *types.ResponseDeliverTx {
