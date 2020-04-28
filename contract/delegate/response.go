@@ -1,5 +1,9 @@
 package delegate
 
 const (
-	codeOK = 0
+	CodeOK = 0
+)
+const (
+	CodeOverflow = iota + 24000
+	CodeUnderflow
 )

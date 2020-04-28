@@ -27,6 +27,19 @@ func encodeInstructions(is []uip.Instruction) (bs [][]byte) {
 	return sugar.HandlerError(instruction.EncodeInstructions(is)).([][]byte)
 }
 
+func closeDB() {
+
+	if __x_ldb != nil {
+		sugar.HandlerError0(__x_ldb.Close())
+		__x_ldb = nil
+	}
+}
+
+func TestMain(m *testing.M) {
+	m.Run()
+	closeDB()
+}
+
 var c2 = obj{
 	"contractName": "c2",
 	"domain":       2,

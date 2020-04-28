@@ -4,73 +4,81 @@ import (
 	"encoding/hex"
 	"fmt"
 	cmn "github.com/HyperService-Consortium/NSB/common"
-	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/common/contract_response"
 	"github.com/HyperService-Consortium/NSB/math"
 )
 
-var count int = 0
-
-const NIN_PROPOSAL_COUNT = 5;
+const MIN_PROPOSAL_COUNT = 5
 
 type Delegate struct {
 	env *cmn.ContractEnvironment
 }
 
-func (delegate *Delegate) NewContract(_delegates [][]byte, district string, totalVotes *math.Uint256)(*cmn.ContractCallBackInfo){
+func (delegate *Delegate) NewContract(_delegates [][]byte, district string, totalVotes *math.Uint256) *cmn.ContractCallBackInfo {
 
-	delegate.env.Storage.NewBytesMap("isDelegate")
-	delegate.env.Storage.NewInt64Map("delegates")
-	for i,x:= range _delegates{
-		AssertFalse(len(x)==0,"delegate is not null" )
-		delegate.env.Storage.NewBytesMap("isDelegate").Set(x,[]byte("true"))
-		delegate.env.Storage.NewInt64Map("delegates").Set(int64(i),x)
-		count += 1
+	isDelegate := delegate.IsDelegate()
+	delegates := delegate.Delegates()
+	for _, x := range _delegates {
+		response.AssertFalse(len(x) == 0, "delegate is not null")
+		isDelegate.Set(x, true)
+		delegates.Append(x)
+	}
+	if totalVotes == nil {
+		totalVotes = math.NewUint256FromBytes([]byte{0})
 	}
 
-	delegate.env.Storage.SetBytes("totalVotes", totalVotes.Bytes())
-	delegate.env.Storage.SetString("district", district)
+	delegate.SetTotalVotes(totalVotes)
+	delegate.SetDistrict(district)
 
 	return &cmn.ContractCallBackInfo{
-		CodeResponse: uint32(codeOK),
+		CodeResponse: uint32(CodeOK),
 		Info: fmt.Sprintf(
 			"create success , this contract is deploy at %v",
 			hex.EncodeToString(delegate.env.ContractAddress),
 		),
+		Data: delegate.env.ContractAddress,
 	}
 }
 
-func (delegate *Delegate) Vote() (*cmn.ContractCallBackInfo){
-	cher:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
-	AssertTrue(string(cher)=="true", "delegate Only")
-
-	str:= delegate.env.Storage.NewBytesMap("isDelegateVoted").Get(delegate.env.From)
-	if string(str)== "false"{
-		delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("true"))
-		totalVotes := math.NewUint256FromBytes(delegate.env.Storage.GetBytes("totalVotes"))
-		totalVotes.Add(math.NewUint256FromString("1", 10))
-		delegate.env.Storage.SetBytes("totalVotes", totalVotes.Bytes())
+func (delegate *Delegate) Vote() *cmn.ContractCallBackInfo {
+	response.AssertTrue(delegate.IsDelegate().Get(delegate.env.From), "delegate Only")
+	isDelegateVoted := delegate.IsDelegateVoted()
+	if !isDelegateVoted.Get(delegate.env.From) {
+		isDelegateVoted.Set(delegate.env.From, true)
+		v, overflowed := math.AddUint256(math.NewUint256FromString("1", 10), delegate.GetTotalVotes())
+		if overflowed {
+			return &cmn.ContractCallBackInfo{
+				CodeResponse: uint32(CodeOverflow),
+				Log:          "totalVotes overflow",
+			}
+		}
+		delegate.SetTotalVotes(v)
 	}
 
 	return &cmn.ContractCallBackInfo{
-		CodeResponse: uint32(codeOK),
-		Info: fmt.Sprintf(
-			"Total votes is now %v",
-			hex.EncodeToString(delegate.env.Storage.GetBytes("totalVotes")),
-		),
+		CodeResponse: uint32(CodeOK),
+		Data:         delegate.GetTotalVotes().Bytes(),
 	}
 }
 
-func (delegate *Delegate) ResetVote() (*cmn.ContractCallBackInfo){
-	cher:= delegate.env.Storage.NewBytesMap("isDelegate").Get(delegate.env.From)
-	AssertTrue(string(cher)=="true", "delegate Only")
+func (delegate *Delegate) ResetVote() *cmn.ContractCallBackInfo {
+	response.AssertTrue(delegate.IsDelegate().Get(delegate.env.From), "delegate Only")
+	isDelegateVoted := delegate.IsDelegateVoted()
 
-	delegate.env.Storage.NewBytesMap("isDelegateVoted").Set(delegate.env.From,[]byte("false"))
+	if isDelegateVoted.Get(delegate.env.From) {
+		isDelegateVoted.Set(delegate.env.From, false)
+		v, overflowed := math.SubUint256(delegate.GetTotalVotes(), math.NewUint256FromString("1", 10))
+		if overflowed {
+			return &cmn.ContractCallBackInfo{
+				CodeResponse: uint32(CodeUnderflow),
+				Log:          "totalVotes underflow",
+			}
+		}
+		delegate.SetTotalVotes(v)
+	}
 
 	return &cmn.ContractCallBackInfo{
-		CodeResponse: uint32(codeOK),
-		Info: fmt.Sprintf(
-			"delegate %v has been reset to false",
-			hex.EncodeToString(delegate.env.From),
-		),
+		CodeResponse: uint32(CodeOK),
+		Data:         delegate.GetTotalVotes().Bytes(),
 	}
 }

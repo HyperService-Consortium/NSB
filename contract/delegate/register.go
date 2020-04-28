@@ -3,7 +3,7 @@ package delegate
 import (
 	"encoding/json"
 	cmn "github.com/HyperService-Consortium/NSB/common"
-	. "github.com/HyperService-Consortium/NSB/common/contract_response"
+	"github.com/HyperService-Consortium/NSB/common/contract_response"
 	"github.com/HyperService-Consortium/NSB/math"
 )
 
@@ -24,7 +24,7 @@ type ArgsRemoveDelegate struct {
 func MustUnmarshal(data []byte, load interface{}) {
 	err := json.Unmarshal(data, load)
 	if err != nil {
-		panic(DecodeJsonError(err))
+		panic(response.DecodeJsonError(err))
 	}
 }
 
@@ -36,7 +36,7 @@ func RegisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 	case "ResetVote":
 		return delegate.ResetVote()
 	default:
-		return InvalidFunctionType(contractEnvironment.FuncName)
+		return response.InvalidFunctionType(contractEnvironment.FuncName)
 	}
 }
 
