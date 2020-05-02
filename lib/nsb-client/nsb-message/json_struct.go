@@ -1,7 +1,6 @@
 package nsb_message
 
 import (
-	"github.com/HyperService-Consortium/NSB/merkmap"
 	"time"
 )
 
@@ -132,16 +131,21 @@ type Results struct {
 
 // DeliverTx is struct description of deliver tx in json
 type DeliverTx struct {
-	Info string  `json:"info"`
-	Log  string  `json:"log"`
-	Data []byte  `json:"data"`
-	Tags []*Tags `json:"tags"`
+	Info   string   `json:"info"`
+	Log    string   `json:"log"`
+	Data   []byte   `json:"data"`
+	Events []Events `json:"events"`
+}
+
+type Attributes struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 // Tags is struct description of tags in json
-type Tags struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
+type Events struct {
+	Type       string       `json:"type"`
+	Attributes []Attributes `json:"attributes"`
 }
 
 // EndBlockInfo temporarily unknown
@@ -355,16 +359,25 @@ type ResultInfo struct {
 
 // CheckTx temporarily unknown
 type CheckTx struct {
-	Info string `json:"info"`
-	Log  string `json:"log"`
-	Data []byte `json:"data"`
-	Tags []Tags `json:"tags"`
+	Info   string   `json:"info"`
+	Log    string   `json:"log"`
+	Data   []byte   `json:"data"`
+	Events []Events `json:"events"`
 }
 
 /**************************** proof_info ********************************/
 
+type ProofResponse struct {
+	Value  []byte `json:"value"`
+	Key    []byte `json:"key"`
+	Height string `json:"height"`
+	Info   string `json:"info"`
+	Log    string `json:"log"`
+	Code   uint32 `json:"code"`
+}
+
 type ProofInfo struct {
-	Response merkmap.ProofJson `json:"response"`
+	Response ProofResponse `json:"response"`
 }
 
 /****************************** receipt *********************************/
