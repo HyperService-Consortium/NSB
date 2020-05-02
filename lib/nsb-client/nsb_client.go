@@ -352,11 +352,11 @@ func (nsb *NSBClient) GetNetInfo() (*nsb_message.NetInfo, error) {
 	return &a, nil
 }
 
-func (nsb *NSBClient) GetProof(txHeader []byte, subQuery string) (*StorageProofResponse, error) {
+func (nsb *NSBClient) GetQuery(txHeader []byte, subQuery string) (*nsb_message.ProofInfo, error) {
 	b, err := nsb.handler.Group("/abci_query").GetWithParams(request.Param{
 		//todo: reduce cost of 0x
 		"data": "0x" + hex.EncodeToString(txHeader),
-		"path": subQuery,
+		"path": `"` + subQuery + `"`,
 	})
 	if err != nil {
 		return nil, err
@@ -371,7 +371,34 @@ func (nsb *NSBClient) GetProof(txHeader []byte, subQuery string) (*StorageProofR
 	if err != nil {
 		return nil, err
 	}
-	return &a.Response, nil
+	return &a, nil
+}
+
+func (nsb *NSBClient) GetProof(txHeader []byte, subQuery string) (*StorageProofResponse, error) {
+	b, err := nsb.handler.Group("/abci_query").GetWithParams(request.Param{
+		//todo: reduce cost of 0x
+		"data": "0x" + hex.EncodeToString(txHeader),
+		"path": `"` + subQuery + `"`,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var bb []byte
+	bb, err = nsb.preloadJSONResponse(b)
+	if err != nil {
+		return nil, err
+	}
+	var a nsb_message.ProofInfo
+	err = json.Unmarshal(bb, &a)
+	if err != nil {
+		return nil, err
+	}
+	var c StorageProofResponse
+	err = json.Unmarshal([]byte(a.Response.Info), &c)
+	if err != nil {
+		return nil, err
+	}
+	return &c, nil
 }
 
 func (nsb *NSBClient) GetNumUnconfirmedTxs() (*nsb_message.NumUnconfirmedTxsInfo, error) {

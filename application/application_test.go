@@ -2,7 +2,6 @@ package nsb
 
 import (
 	"bytes"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/HyperService-Consortium/go-uip/op-intent/instruction"
@@ -26,11 +25,7 @@ import (
 )
 
 func createISCTestPacket(t *testing.T, signer, uu, vv uip.Signer) (tx types.RequestDeliverTx, ok bool) {
-	var nonce, bytesBuf = make([]byte, 32), make([]byte, 65536)
-
 	var u, v = uu.GetPublicKey(), vv.GetPublicKey()
-	fmt.Println("main src...", hex.EncodeToString(u))
-
 	var iscOnwers = [][]byte{signer.GetPublicKey(), u, v}
 	var funds = []uint64{0, 0, 0}
 	var vesSig = []byte{0}
@@ -53,7 +48,6 @@ func createISCTestPacket(t *testing.T, signer, uu, vv uip.Signer) (tx types.Requ
 		VesSig:             vesSig,
 		TransactionIntents: transactionIntents,
 	}
-	var txHeader nsbrpc.TransactionHeader
 
 	var fap FAPair
 	var err error
@@ -63,6 +57,21 @@ func createISCTestPacket(t *testing.T, signer, uu, vv uip.Signer) (tx types.Requ
 		t.Error(err)
 		return
 	}
+
+	b, ok := pack(t, signer, fap)
+
+	return types.RequestDeliverTx{
+		Tx: b,
+	}, ok
+}
+
+func pack(t *testing.T, signer uip.Signer, fap FAPair) (b []byte, ok bool) {
+	var nonce, bytesBuf = make([]byte, 32), make([]byte, 65536)
+
+	var (
+		txHeader nsbrpc.TransactionHeader
+		err      error
+	)
 
 	txHeader.Data, err = proto.Marshal(&fap)
 	if err != nil {
@@ -97,7 +106,7 @@ func createISCTestPacket(t *testing.T, signer, uu, vv uip.Signer) (tx types.Requ
 		return
 	}
 	txHeader.Signature = signature.Bytes()
-	b, err := proto.Marshal(&txHeader)
+	b, err = proto.Marshal(&txHeader)
 	if err != nil {
 		t.Error(err)
 		return
@@ -106,10 +115,7 @@ func createISCTestPacket(t *testing.T, signer, uu, vv uip.Signer) (tx types.Requ
 	bytesBuf[0] = transactiontype.CreateContract
 
 	copy(bytesBuf[1:], b)
-
-	return types.RequestDeliverTx{
-		Tx: bytesBuf[:1+len(b)],
-	}, true
+	return bytesBuf[:1+len(b)], true
 }
 
 func createSigner(t *testing.T) uip.Signer {
@@ -145,7 +151,7 @@ func TestCreateContract(t *testing.T) {
 	vv := createV(t)
 	assert.NotNil(t, vv)
 
-	nsb := createApplication(t, "./data")
+	nsb := createApplication(t, "./data/")
 	if nsb == nil {
 		return
 	}

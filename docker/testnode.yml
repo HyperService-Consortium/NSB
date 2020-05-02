@@ -1,6 +1,18 @@
 version: '3'
 
 services:
+  uip-dns:
+    container_name: uip-dns
+    working_dir: /build
+    image: "alpine"
+    ports:
+      - "26668:26668"
+    volumes:
+      - {{build}}:/build:Z
+    command: ./dns
+    networks:
+      nsb_net:
+        ipv4_address: 192.167.233.2
   node:
     container_name: node
     image: "tendermint-nsb/node"
@@ -12,6 +24,7 @@ services:
       - TCP_AD=tcp://0.0.0.0:27667
       - ID=100
       - LOG=${LOG:-tendermint.log}
+      - UIP_CHAIN_DNS=http://uip-dns:26668
     volumes:
       - {{build}}:/tendermint:Z
     command: node --rpc.laddr=tcp://0.0.0.0:26657 --proxy_app=tcp://0.0.0.0:27667
