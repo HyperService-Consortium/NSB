@@ -12,8 +12,8 @@ type Option struct {
 }
 
 type ArgsCreateNewContract struct {
-	Owner       []byte        `json:"owner"`
-	StrikePrice *math.Uint256 `json:"strike_price"`
+	Owner       []byte        `json:"1"`
+	StrikePrice *math.Uint256 `json:"2"`
 }
 
 type ArgsUpdateStake struct {
@@ -22,6 +22,10 @@ type ArgsUpdateStake struct {
 
 type ArgsBuyOption struct {
 	Proposal *math.Uint256 `json:"1"`
+}
+
+type ArgsCashSettle struct {
+	GenuinePrice *math.Uint256 `json:"1"`
 }
 
 func MustUnmarshal(data []byte, load interface{}) {
@@ -45,6 +49,10 @@ func RegisteredMethod(contractEnvironment *cmn.ContractEnvironment) *cmn.Contrac
 		var args ArgsBuyOption
 		MustUnmarshal(contractEnvironment.Args, &args)
 		return option.BuyOption(args.Proposal)
+	case "CashSettle":
+		var args ArgsCashSettle
+		MustUnmarshal(contractEnvironment.Args, &args)
+		return option.CashSettle(args.GenuinePrice)
 	default:
 		return InvalidFunctionType(contractEnvironment.FuncName)
 	}
