@@ -163,6 +163,7 @@ func TestOption_NewContract(t *testing.T) {
 					Address: contract0,
 					Price:   _2.Bytes(),
 				})).([]byte),
+				Value: _11,
 			},
 			callback: func(t *testing.T, option *Option) {
 				sugar.HandlerError(option.env.Storage.Commit())
@@ -196,6 +197,7 @@ func TestOption_NewContract(t *testing.T) {
 					Address: contract0,
 					Price:   _2.Bytes(),
 				})).([]byte),
+				Value: _11,
 			},
 			callback: func(t *testing.T, option *Option) {
 				sugar.HandlerError(option.env.Storage.Commit())

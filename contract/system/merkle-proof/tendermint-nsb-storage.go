@@ -23,21 +23,21 @@ func SetNewNSBClient(f func(host string) NSBClient) {
 }
 
 func newTendermintNSBStorageHandler(host string) StorageHandler {
-	return tendermintNSBStorageHandler{
-		handler: newNSBClient(host),
+	return TendermintNSBStorageHandler{
+		Handler: newNSBClient(host),
 	}
 }
 
-type tendermintNSBStorageHandler struct {
-	handler NSBClient
+type TendermintNSBStorageHandler struct {
+	Handler NSBClient
 }
 
-func (t tendermintNSBStorageHandler) GetTransactionProof(blockID uip.BlockID, color []byte) (uip.MerkleProof, error) {
+func (t TendermintNSBStorageHandler) GetTransactionProof(blockID uip.BlockID, color []byte) (uip.MerkleProof, error) {
 	panic("implement me")
 }
 
-func (t tendermintNSBStorageHandler) GetStorageAt(typeID uip.TypeID, contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
-	resp, err := t.handler.GetStorageProofAt(
+func (t TendermintNSBStorageHandler) GetStorageAt(typeID uip.TypeID, contractAddress uip.ContractAddress, pos []byte, description []byte) (uip.Variable, error) {
+	resp, err := t.Handler.GetStorageProofAt(
 		nsb_proto.ArgsGetStorageAt{
 			Address: contractAddress,
 			Key:     description,

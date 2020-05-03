@@ -54,6 +54,7 @@ func (option *Option) NewContract(owner []byte, strikePrice *math.Uint256) *cmn.
 			Address: option.env.ContractAddress,
 			Price:   strikePrice.Bytes(),
 		})).([]byte),
+		Value: option.env.Value,
 	}
 }
 
